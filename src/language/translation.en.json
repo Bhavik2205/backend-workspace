@@ -1,0 +1,5 @@
+{
+  "ERR_INTERNAL_SERVER": "Internal Server Error.",
+  "ERR_URL_NOT_FOUND": "Requested URL not found!",
+  "ERR_UNAUTH": "You are unauthorized."
+}
