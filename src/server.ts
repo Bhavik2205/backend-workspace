@@ -6,8 +6,7 @@ import helmet from "helmet";
 import morgan from "morgan";
 import methodOverride from "method-override";
 import * as l10n from "jm-ez-l10n";
-import { DB } from "configs/db";
-import { env } from "@configs";
+import { env, DB } from "@configs";
 import { destructPager } from "middlewares";
 import { Cors, EnvValidator, HandleUnhandledPromise, Log } from "./helpers";
 
