@@ -8,6 +8,7 @@ export function InitRepository(entity: EntityTarget<any>) {
     if (!repositoryMap.has(target.constructor)) {
       repositoryMap.set(target.constructor, new Map());
     }
+
     const entityMap = repositoryMap.get(target.constructor);
     entityMap!.set(propertyKey, entity);
   };

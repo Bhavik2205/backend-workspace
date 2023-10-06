@@ -1,5 +1,17 @@
 {
   "ERR_INTERNAL_SERVER": "Internal Server Error.",
   "ERR_URL_NOT_FOUND": "Requested URL not found!",
-  "ERR_UNAUTH": "You are unauthorized."
+  "ERR_UNAUTH": "You are unauthorized.",
+  "CATEGORY_CREATE_SUCCESS": "Category created successfully.",
+  "FOLDER_CREATE_SUCCESS": "Folder created successfully.",
+  "FOLDER_UPDATE_SUCCESS": "Folder updated successfully.",
+  "FOLDER_DELETE_SUCCESS": "Folder deleted successfully.",
+  "WORKSPACE_CREATE_SUCCESS": "Workspace created successfully.",
+  "WORKSPACE_DELETE_SUCCESS": "Workspace deleted successfully.",
+  "WORKSPACE_NOT_EXIST": "Workspace not exist.",
+  "USER_CREATED": "User created successfully.",
+  "RESET_PASSWORD_LINK": "Reset password link sent in email, check it",
+  "PASSWORD_UPDATE": "Password updated successfully.",
+  "2FA_SENT": "Two-Factor Authentication has been sent successfully.",
+  "2FA_VERIFY": "Two-Factor Authentication verify successfully."
 }

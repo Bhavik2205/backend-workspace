@@ -17,7 +17,7 @@ export function acl(permission: string) {
     if (!canAccess) {
       return { code: 403, reason: l10n.t("ERR_PERMISSION_DENIED", { permission }) };
     }
-
+    req.me = user;
     return next();
   };
 }

@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 
 export interface Me {
   id: number;
-  permissions: string[];
 }
 
 export interface DecodedIdToken {
@@ -31,6 +30,7 @@ export interface TRequest<T = any> extends Request {
     page: number;
     limit: number;
   };
+  headers: any;
 }
 
 export interface TResponse extends Response {}
