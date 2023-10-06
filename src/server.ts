@@ -7,6 +7,7 @@ import morgan from "morgan";
 import methodOverride from "method-override";
 import * as l10n from "jm-ez-l10n";
 import { env, DB } from "@configs";
+import { ResetPasswordRequestEntity, TwoFactorAuthRequestEntity, UserEntity, CategoryEntity, FolderEntity, WorkspaceEntity } from "@entities";
 import { destructPager } from "middlewares";
 import { Cors, EnvValidator, HandleUnhandledPromise, Log } from "./helpers";
 
@@ -29,7 +30,7 @@ export default class App {
       username: env.dbUser,
       password: env.dbPassword,
       database: env.dbName,
-      entities: [],
+      entities: [CategoryEntity, FolderEntity, WorkspaceEntity, UserEntity, TwoFactorAuthRequestEntity, ResetPasswordRequestEntity],
     });
 
     // Handle Unhandled Promise Rejections

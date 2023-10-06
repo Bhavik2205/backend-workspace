@@ -3,5 +3,218 @@
     xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
     xmlns:pro="http://www.liquibase.org/xml/ns/pro"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
-    
+    <changeSet author="Dharmik Dalwadi" id="0">
+        <comment>Cleanup before you get started!</comment>
+        <sql>
+            DROP TYPE IF EXISTS "enum_workspace_purpose" CASCADE;
+            DROP TYPE IF EXISTS "enum_workspace_type" CASCADE;
+            CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+        </sql>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="1">
+        <createTable tableName="users">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="firstName" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="lastName" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="varchar(255)">
+                <constraints unique="true" nullable="false"/>
+            </column>
+            <column name="password" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="mobile" type="varchar(25)">
+            </column>
+            <column name="country" type="varchar(100)"/>
+            <column name="joinDate" type="date"/>
+            <column name="isActive" type="boolean" defaultValueComputed="true">
+                <constraints nullable="false"/>
+            </column>
+            <column name="isAdmin" type="boolean" defaultValueComputed="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="companyName" type="varchar(100)"/>
+            <column name="imageUrl" type="text"/>
+            <column name="is2FAEnabled" type="boolean"/>
+            <column name="planId" type="int" />
+            <column name="codeExpiredIn" type="datetime"/>
+            <column name="createdAt" type="datetime" defaultValueComputed="now()" >
+                <constraints nullable="false"/>
+            </column>
+            <column name="updatedAt" type="datetime" defaultValueComputed="now()"/>
+        </createTable>
+        <createIndex indexName="idx_email" tableName="users">
+            <column name="email"/>
+        </createIndex>
+        <createIndex indexName="idx_country" tableName="users">
+            <column name="country"/>
+        </createIndex>
+        <createIndex indexName="idx_isActive" tableName="users">
+            <column name="isActive"/>
+        </createIndex>
+        <createIndex indexName="idx_isAdmin" tableName="users">
+            <column name="isAdmin"/>
+        </createIndex>
+        <createIndex indexName="idx_companyName" tableName="users">
+            <column name="companyName"/>
+        </createIndex>
+        <createIndex indexName="idx_planId" tableName="users">
+            <column name="planId"/>
+        </createIndex>
+        <rollback>
+            <dropTable tableName="user"/>
+        </rollback>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="2">
+        <createTable tableName="resetPasswordRequest">
+            <column name="id" type="UUID" defaultValueComputed="uuid_generate_v4()">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="userId" type="INTEGER"/>
+            <column name="createdAt" type="datetime" defaultValueComputed="now()" >
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi"  id="3">
+        <createTable tableName="twoFactorAuthRequest">
+            <column name="id" type="UUID" defaultValueComputed="uuid_generate_v4()">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="userId" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="hashCode" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="createdAt" type="datetime" defaultValueComputed="now()" >
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="4">
+        <sql>CREATE TYPE enum_workspace_purpose AS ENUM ('Pre-Seed Funding','Seed Stage Funding','Series A','Series B onwards','Pre IPO','IPO','Legal','Financing(loans / credit)','Joint Venture / Partnership','Exit','M-A','Sale','LP / GP Due Dilligence','Capital Raise(Equality, Warrants-Others)')</sql>
+        <sql>CREATE TYPE enum_workspace_type AS ENUM ('Two Way','One Way')</sql>
+        <createTable tableName="workspaces">
+            <column autoIncrement="true" name="id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="workspace_pkey"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="TEXT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="userId" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="purpose" type="enum_workspace_purpose">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="enum_workspace_type">
+                <constraints nullable="false"/>
+            </column>
+            <column name="createdAt" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="now()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updatedAt" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="now()">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createIndex tableName="workspaces" indexName="idx_workspaces_userId">
+            <column name="userId"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="5">
+        <addForeignKeyConstraint baseColumnNames="userId" baseTableName="workspaces" constraintName="workspaces_userId_fkey" deferrable="false" initiallyDeferred="false" onDelete="SET NULL" onUpdate="SET NULL" referencedColumnNames="id" referencedTableName="users" validate="true"/>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="6">
+        <createTable tableName="categories">
+            <column autoIncrement="true" name="id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="categories_pkey"/>
+            </column>
+            <column name="name" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="workspaceId" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="createdAt" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="now()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updatedAt" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="now()">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createIndex tableName="categories" indexName="idx_categories_workspace_id">
+            <column name="workspaceId"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="7">
+        <addForeignKeyConstraint baseColumnNames="workspaceId" baseTableName="categories" constraintName="categories_workspaceId_fkey" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="workspaces" validate="true"/>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="8">
+        <createTable tableName="folders">
+            <column autoIncrement="true" name="id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="folders_pkey"/>
+            </column>
+            <column name="name" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="workspaceId" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="createdAt" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="now()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updatedAt" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="now()">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createIndex tableName="folders" indexName="idx_folders_workspace_id">
+            <column name="workspaceId"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="9">
+        <addForeignKeyConstraint baseColumnNames="workspaceId" baseTableName="folders" constraintName="folders_workspaceId_fkey" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="workspaces" validate="true"/>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="10">
+        <createTable tableName="subscriptionPlans">
+            <column autoIncrement="true" name="id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="subscriptionPlans_pkey"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="TEXT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="discount" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="planDetail" type="JSONB">
+                <constraints nullable="false"/>
+            </column>
+            <column name="price" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="duration" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="createdAt" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="now()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updatedAt" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="now()">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="11">
+        <addForeignKeyConstraint baseColumnNames="planId" baseTableName="users" constraintName="users_planId_fkey" deferrable="false" initiallyDeferred="false" onDelete="SET NULL" onUpdate="SET NULL" referencedColumnNames="id" referencedTableName="subscriptionPlans" validate="true"/>
+    </changeSet>
 </databaseChangeLog>

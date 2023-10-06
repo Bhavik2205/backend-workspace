@@ -1,11 +1,19 @@
 import { Router } from "express";
 import * as l10n from "jm-ez-l10n";
-import { LeadRouter } from "@modules/lead";
+import { CategoryRouter } from "@modules/category";
+import { FolderRouter } from "@modules/folder";
+import { WorkspaceRouter } from "@modules/workspace";
+import { MiscRouter } from "@modules/misc";
+import { AuthRouter } from "@modules/auth";
 
 export default class Routes {
   public configure() {
     const router = Router();
-    router.use("/leads", new LeadRouter().router);
+    router.use("/categories", new CategoryRouter().router);
+    router.use("/folders", new FolderRouter().router);
+    router.use("/misc", new MiscRouter().router);
+    router.use("/workspaces", new WorkspaceRouter().router);
+    router.use("/auth", new AuthRouter().router);
     router.all("/*", (req, res) =>
       res.status(404).json({
         error: l10n.t("ERR_URL_NOT_FOUND"),
