@@ -4,4 +4,4 @@ COPY . .
 RUN yarn install
 RUN yarn build
 EXPOSE 3100
-CMD [ "yarn", "start" ]
+CMD [ "node", "dist/index.js" ]

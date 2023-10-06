@@ -8,7 +8,7 @@
         <sql>
             DROP TYPE IF EXISTS "enum_workspace_purpose" CASCADE;
             DROP TYPE IF EXISTS "enum_workspace_type" CASCADE;
-            CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+            <!-- CREATE EXTENSION IF NOT EXISTS "uuid-ossp"; -->
         </sql>
     </changeSet>
     <changeSet author="Dharmik Dalwadi" id="1">
@@ -72,7 +72,7 @@
     </changeSet>
     <changeSet author="Dharmik Dalwadi" id="2">
         <createTable tableName="resetPasswordRequest">
-            <column name="id" type="UUID" defaultValueComputed="uuid_generate_v4()">
+            <column name="id" type="UUID">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="userId" type="INTEGER"/>
@@ -83,7 +83,7 @@
     </changeSet>
     <changeSet author="Dharmik Dalwadi"  id="3">
         <createTable tableName="twoFactorAuthRequest">
-            <column name="id" type="UUID" defaultValueComputed="uuid_generate_v4()">
+            <column name="id" type="UUID">
                 <constraints primaryKey="true" nullable="false" />
             </column>
             <column name="userId" type="INTEGER">
