@@ -36,7 +36,7 @@ export class Constants {
 
   public static readonly PASSWORD_MIN_LENGTH = 6;
 
-  public static readonly RESET_PASS_EXPIRY = 300;
+  public static readonly RESET_PASS_EXPIRY = 900;
 
-  public static readonly OTP_EXPIRY = 3300;
+  public static readonly OTP_EXPIRY = 300;
 }

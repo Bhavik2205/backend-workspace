@@ -155,7 +155,7 @@ export class AuthController {
 
     if (compare) {
       await this.userRepository.update(req.me.id, { is2FAEnabled: true });
-      await this.twoFactorAuthRequestEntity.delete(req.me.id);
+      await this.twoFactorAuthRequestEntity.delete({ userId: req.me.id });
     } else {
       return res.status(400).json({ error: "Invalid OTP" });
     }
