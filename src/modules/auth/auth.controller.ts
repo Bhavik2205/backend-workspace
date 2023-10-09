@@ -68,10 +68,6 @@ export class AuthController {
       return res.status(400).json({ error: "Please verify email account!" });
     }
 
-    if (!user.isActive) {
-      return res.status(400).json({ error: "User is not active" });
-    }
-
     const resetPasswordRequest = await this.resetPasswordRequest.create({ id: uuidv4(), userId: user.id });
     await this.resetPasswordRequest.save(resetPasswordRequest);
 

@@ -39,4 +39,6 @@ export class Constants {
   public static readonly RESET_PASS_EXPIRY = 900;
 
   public static readonly OTP_EXPIRY = 300;
+
+  public static readonly OTP_LENGTH = 6;
 }
