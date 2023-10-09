@@ -53,7 +53,11 @@ export class AuthController {
     }
 
     const token = JwtHelper.encode({ id: user.id });
-    return res.status(200).json({ token });
+
+    const userWithoutPassword = { ...user };
+    delete userWithoutPassword.password;
+
+    return res.status(200).json({ token, data: userWithoutPassword });
   };
 
   public forgotPassword = async (req: TRequest<ForgotPasswordDto>, res: TResponse) => {

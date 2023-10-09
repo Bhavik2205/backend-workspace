@@ -23,9 +23,6 @@ export class UserEntity {
   @Column({ type: "varchar", length: 100, nullable: true })
   country: string;
 
-  @Column({ type: "date", nullable: true })
-  joinDate: Date;
-
   @Column({ type: "boolean", nullable: false })
   isActive: boolean;
 

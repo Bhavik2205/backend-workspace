@@ -3,6 +3,6 @@ import { IsNotEmpty, IsString, MaxLength } from "class-validator";
 export class CreateFolderDto {
   @IsNotEmpty()
   @IsString()
-  @MaxLength(50)
+  @MaxLength(255)
   public name: string;
 }
