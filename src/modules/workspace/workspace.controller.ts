@@ -35,7 +35,7 @@ export class WorkspaceController {
 
     const [data, count] = await this.workspaceRepository.findAndCount({
       where: {
-        userId: me.id
+        userId: me.id,
       },
       take: limit,
       skip: (page - 1) * limit,

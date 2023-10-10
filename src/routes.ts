@@ -5,6 +5,7 @@ import { FolderRouter } from "@modules/folder";
 import { WorkspaceRouter } from "@modules/workspace";
 import { MiscRouter } from "@modules/misc";
 import { AuthRouter } from "@modules/auth";
+import { QuestionRouter } from "@modules/question";
 
 export default class Routes {
   public configure() {
@@ -14,6 +15,7 @@ export default class Routes {
     router.use("/misc", new MiscRouter().router);
     router.use("/workspaces", new WorkspaceRouter().router);
     router.use("/auth", new AuthRouter().router);
+    router.use("/questions", new QuestionRouter().router);
     router.all("/*", (req, res) =>
       res.status(404).json({
         error: l10n.t("ERR_URL_NOT_FOUND"),

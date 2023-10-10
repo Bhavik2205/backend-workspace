@@ -32,11 +32,11 @@ export class CategoryController {
     const [data] = await this.categoryRepository.findAndCount({
       where: {
         workspaceId,
-      }
+      },
     });
 
     res.status(200).json({
-      data
+      data,
     });
   };
 }
