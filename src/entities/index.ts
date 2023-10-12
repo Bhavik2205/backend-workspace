@@ -6,3 +6,5 @@ export * from "./two-factor-auth-request.entity";
 export * from "./user.entity";
 export * from "./question.entity";
 export * from "./answer.entity";
+export * from "./team.entity";
+export * from "./participate.entity";

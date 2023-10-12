@@ -16,5 +16,8 @@
   "2FA_VERIFY": "Two-Factor Authentication verify successfully.",
   "QUESTION_CREATE_SUCCESS": "Question created successfully.",
   "QUESTION_DELETE_SUCCESS": "Question deleted successfully.",
-  "ANSWER_SUBMITTED_SUCCESS": "Answer submitted successfully."
+  "ANSWER_SUBMITTED_SUCCESS": "Answer submitted successfully.",
+  "TEAM_CREATE_SUCCESS": "Team created successfully.",
+  "PARTICIPATE_CREATE_SUCCESS": "Participate created successfully.",
+  "PARTICIPATE_DELETE_SUCCESS": "Participate deleted successfully."
 }

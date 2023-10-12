@@ -1,4 +1,4 @@
-import { WorkspaceEntity } from "@entities";
+import { TeamEntity, WorkspaceEntity } from "@entities";
 import { InitRepository, InjectRepositories } from "@helpers";
 import { TRequest, TResponse } from "@types";
 import { Repository } from "typeorm";
@@ -8,6 +8,9 @@ import { CreateWorkspaceDto } from "./dto";
 export class WorkspaceController {
   @InitRepository(WorkspaceEntity)
   workspaceRepository: Repository<WorkspaceEntity>;
+
+  @InitRepository(TeamEntity)
+  teamRepository: Repository<TeamEntity>;
 
   constructor() {
     InjectRepositories(this);
@@ -26,6 +29,19 @@ export class WorkspaceController {
     });
 
     await this.workspaceRepository.save(workspace);
+
+    const internalTeam = await this.teamRepository.create({
+      name: "Internal Team",
+      workspaceId: workspace.id,
+    });
+
+    const externalTeam = await this.teamRepository.create({
+      name: "External Team",
+      workspaceId: workspace.id,
+    });
+
+    await this.teamRepository.save([internalTeam, externalTeam]);
+
     res.status(200).json({ msg: l10n.t("WORKSPACE_CREATE_SUCCESS"), data: workspace });
   };
 

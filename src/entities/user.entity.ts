@@ -1,6 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from "typeorm";
-import { QuestionEntity } from "./question.entity";
-import { AnswersEntity } from "./answer.entity";
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany, OneToOne } from "typeorm";
+import { ParticipateEntity, AnswersEntity, QuestionEntity } from "@entities";
 
 @Entity("users")
 export class UserEntity {
@@ -57,4 +56,7 @@ export class UserEntity {
 
   @OneToMany(() => AnswersEntity, answer => answer.user)
   answer: AnswersEntity[];
+
+  @OneToOne(() => ParticipateEntity, participates => participates.user)
+  participates: ParticipateEntity;
 }

@@ -1,6 +1,5 @@
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { AnswersEntity } from "./answer.entity";
-import { UserEntity } from "./user.entity";
+import { UserEntity, AnswersEntity, TeamEntity } from "@entities";
 
 @Entity("questions")
 export class QuestionEntity {
@@ -55,4 +54,12 @@ export class QuestionEntity {
 
   @OneToMany(() => AnswersEntity, answer => answer.question)
   answer: AnswersEntity[];
+
+  @ManyToOne(() => TeamEntity, from => from.question)
+  @JoinColumn({ name: "from" })
+  queFrom: TeamEntity;
+
+  @ManyToOne(() => TeamEntity, to => to.question)
+  @JoinColumn({ name: "to" })
+  queTo: TeamEntity;
 }

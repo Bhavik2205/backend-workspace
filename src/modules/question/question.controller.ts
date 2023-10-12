@@ -1,9 +1,10 @@
-import { QuestionEntity, AnswersEntity } from "@entities";
-import { InitRepository, InjectRepositories, RandomNumberGenerator } from "@helpers";
+import { QuestionEntity, AnswersEntity, TeamEntity, ParticipateEntity } from "@entities";
+import { InitRepository, InjectCls, InjectRepositories } from "@helpers";
 import { TRequest, TResponse } from "@types";
 import { Repository } from "typeorm";
 import * as l10n from "jm-ez-l10n";
 import { CreateAnswerDto, CreateQuestionDto } from "./dto";
+import { Utils } from "./question.util";
 
 export class QuestionController {
   @InitRepository(QuestionEntity)
@@ -11,6 +12,15 @@ export class QuestionController {
 
   @InitRepository(AnswersEntity)
   answerRepository: Repository<AnswersEntity>;
+
+  @InitRepository(TeamEntity)
+  teamRepository: Repository<TeamEntity>;
+
+  @InitRepository(ParticipateEntity)
+  participateRepository: Repository<ParticipateEntity>;
+
+  @InjectCls(Utils)
+  utils: Utils;
 
   constructor() {
     InjectRepositories(this);
@@ -20,8 +30,6 @@ export class QuestionController {
     const { topic, to, from, question, documentId, sendForApproval, isHighPriority, isClosed } = req.dto;
     const { workspaceid: workspaceId } = req.headers;
     const { me } = req;
-
-    const queNum = RandomNumberGenerator.generate();
 
     const questionDetail = await this.questionRepository.create({
       topic,
@@ -35,23 +43,45 @@ export class QuestionController {
       isClosed,
       isNew: true,
       workspaceId,
-      queNum,
     });
 
-    await this.questionRepository.save(questionDetail);
+    const questionData = await this.questionRepository.save(questionDetail);
+
+    const questionNumber = await this.utils.generateRandomNumber(questionDetail.userId, workspaceId, questionDetail.id);
+    questionDetail.queNum = parseInt(questionNumber, 10);
+
+    await this.questionRepository.save(questionData);
     res.status(200).json({ msg: l10n.t("QUESTION_CREATE_SUCCESS"), data: questionDetail });
   };
 
   public read = async (req: TRequest, res: TResponse) => {
     const { workspaceid: workspaceId } = req.headers;
+    const { me } = req;
+
+    const participateData = await this.participateRepository.findOne({
+      where: {
+        userId: me.id,
+      },
+    });
+
+    if (!participateData) {
+      return res.status(404).json({ error: "User is not a member of any team" });
+    }
+
+    const teamData = await this.teamRepository.findOne({
+      where: {
+        id: participateData.teamId,
+      },
+    });
 
     const questionDetail = await this.questionRepository
       .createQueryBuilder("question")
       .leftJoinAndSelect("question.user", "user")
+      .leftJoinAndSelect("question.queFrom", "from")
+      .leftJoinAndSelect("question.queTo", "to")
       .select([
         "question.id",
         "question.topic",
-        "question.to",
         "question.to",
         "question.from",
         "question.question",
@@ -67,22 +97,43 @@ export class QuestionController {
         "question.updatedAt",
         "user.firstName",
         "user.lastName",
+        "from.name",
+        "to.name",
       ])
-      .where({ workspaceId })
+      .where({ to: teamData.id, workspaceId })
       .getMany();
 
-    res.status(200).json({ data: questionDetail });
+    return res.status(200).json({ data: questionDetail });
   };
 
   public readOne = async (req: TRequest, res: TResponse) => {
     const { questionId } = req.params;
     const { workspaceid: workspaceId } = req.headers;
+    const { me } = req;
+
+    const participateData = await this.participateRepository.findOne({
+      where: {
+        userId: me.id,
+      },
+    });
+
+    if (!participateData) {
+      return res.status(404).json({ error: "User is not a member of any team" });
+    }
+
+    const teamData = await this.teamRepository.findOne({
+      where: {
+        id: participateData.teamId,
+      },
+    });
 
     const questionDetail = await this.questionRepository
       .createQueryBuilder("question")
       .leftJoinAndSelect("question.user", "user")
       .leftJoinAndSelect("question.answer", "answer")
       .leftJoinAndSelect("answer.user", "userAns")
+      .leftJoinAndSelect("question.queFrom", "from")
+      .leftJoinAndSelect("question.queTo", "to")
       .select([
         "question.id",
         "question.topic",
@@ -105,11 +156,13 @@ export class QuestionController {
         "answer.answer",
         "userAns.firstName",
         "userAns.lastName",
+        "from.name",
+        "to.name",
       ])
-      .where({ id: questionId, workspaceId })
+      .where({ id: questionId, workspaceId, to: teamData.id })
       .getMany();
 
-    res.status(200).json({ data: questionDetail });
+    return res.status(200).json({ data: questionDetail });
   };
 
   public delete = async (req: TRequest, res: TResponse) => {
