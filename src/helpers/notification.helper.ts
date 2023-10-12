@@ -1,37 +1,38 @@
-import axios from "axios";
+import Email from "email-templates";
+import nodemailer from "nodemailer";
 import twilio from "twilio";
 import { Constants, env } from "@configs";
 import { Log } from "./logger.helper";
 
-type TReceiverEmail = {
-  name: string;
-  email: string;
-};
-
-type TInviteEmail = {
-  email: string;
-};
-
 export class Notification {
-  public static async email(subject: string, to: TReceiverEmail[], dynamicData: { url: string }) {
-    const data = {
-      sender: {
-        name: "Workspace",
-        email: Constants.FROM_EMAIL,
+  public static async email(templateName: string, dynamicData: object, to: string[]) {
+    const logger = Log.getLogger();
+    const emailTransport = nodemailer.createTransport({
+      host: env.smtpHost,
+      port: env.smtpPort,
+      secure: false,
+      auth: {
+        user: env.smtpUser,
+        pass: env.smtpPass,
       },
-      to,
-      subject,
-      htmlContent: `<!DOCTYPE html><html><head><title>Reset Password Email</title></head><body><p>Hello,</p><p>If you've forgotten your password, please click the following link to reset it: <a href="${dynamicData.url}">Reset Password</a></p></body></html>
-      `,
-    };
+    });
 
-    const headers = {
-      Accept: "application/json",
-      "api-key": env.brevoApiKey,
-      "Content-Type": "application/json",
-    };
+    const email = new Email({
+      message: {
+        from: Constants.FROM_EMAIL,
+      },
+      send: true,
+      transport: emailTransport,
+    });
 
-    await axios.post(env.brevoURL, data, { headers });
+    const sentEmail = await email.send({
+      template: templateName,
+      message: { to },
+      locals: dynamicData,
+    });
+    logger.info("Email sent successfully", { emails: to, messageId: sentEmail.messageId });
+
+    return sentEmail;
   }
 
   public static async sms(message: string, phoneNumber: string): Promise<void> {
@@ -46,27 +47,7 @@ export class Notification {
       logger.info("SMS sent with SID", twilioMessage.messagingServiceSid);
     } catch (err) {
       logger.warn("Error sending SMS", err);
+      throw err;
     }
-  }
-
-  public static async inviteEmail(subject: string, to: TInviteEmail[], dynamicData: { url: string }) {
-    const data = {
-      sender: {
-        name: "Workspace",
-        email: Constants.FROM_EMAIL,
-      },
-      to,
-      subject,
-      htmlContent: `<!DOCTYPE html><html><head><title>Invitation</title></head><body><p>Hello,</p><p>Please click the following link to accept invite: <a href="${dynamicData.url}">Accept Invite</a></p></body></html>
-      `,
-    };
-
-    const headers = {
-      Accept: "application/json",
-      "api-key": env.brevoApiKey,
-      "Content-Type": "application/json",
-    };
-
-    axios.post(env.brevoURL, data, { headers });
   }
 }
