@@ -39,7 +39,7 @@ export class AuthController {
     });
 
     if (!user) {
-      return res.status(400).json({ error: "Please verify email account!" });
+      return res.status(400).json({ error: "Invalid Credentials!!" });
     }
 
     if (!user.isActive) {
@@ -49,7 +49,7 @@ export class AuthController {
     const compare = Bcrypt.verify(password, user.password);
 
     if (!compare) {
-      return res.status(400).json({ error: "Please check your password!" });
+      return res.status(400).json({ error: "Invalid Credentials!!" });
     }
 
     const token = JwtHelper.encode({ id: user.id });
@@ -65,7 +65,7 @@ export class AuthController {
     });
 
     if (!user) {
-      return res.status(400).json({ error: "Please verify email account!" });
+      return res.status(400).json({ error: "User not found, Please verify email account!" });
     }
 
     const resetPasswordRequest = await this.resetPasswordRequest.create({ id: uuidv4(), userId: user.id });

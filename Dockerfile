@@ -1,7 +1,19 @@
-FROM node:18
+FROM node:18-alpine3.16
+
+RUN npm install pm2 -g
+
 WORKDIR /app
-COPY . .
+
+COPY *.json ./
+
+COPY yarn.lock .
+
 RUN yarn install
+
+COPY . .
+
 RUN yarn build
+
 EXPOSE 3100
-CMD [ "node", "dist/index.js" ]
+
+CMD ["pm2-runtime", "dist/index.js"]
