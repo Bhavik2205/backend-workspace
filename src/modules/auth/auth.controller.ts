@@ -46,7 +46,7 @@ export class AuthController {
       return res.status(400).json({ error: "User is not active" });
     }
 
-    const compare = Bcrypt.verify(password, user.password);
+    const compare = await Bcrypt.verify(password, user.password);
 
     if (!compare) {
       return res.status(400).json({ error: "Invalid Credentials!!" });
