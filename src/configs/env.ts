@@ -31,33 +31,35 @@ class Env {
   @IsIn(Constants.ENVIRONMENTS)
   public nodeEnv: string;
 
+  @IsNotEmpty()
   @IsInt()
   public smtpPort: number;
 
+  @IsNotEmpty()
   @IsString()
   public smtpHost: string;
 
+  @IsNotEmpty()
   @IsString()
   public smtpUser: string;
 
+  @IsNotEmpty()
   @IsString()
   public smtpPass: string;
 
+  @IsNotEmpty()
   @IsString()
   public twilioSID: string;
 
+  @IsNotEmpty()
   @IsString()
   public twilioToken: string;
 
+  @IsNotEmpty()
   @IsString()
   public twilioNumber: string;
 
-  @IsString()
-  public brevoApiKey: string;
-
-  @IsString()
-  public brevoURL: string;
-
+  @IsNotEmpty()
   @IsString()
   public domain: string;
 }
@@ -78,6 +80,8 @@ env.smtpPass = process.env.SMTP_PASS;
 env.twilioSID = process.env.TWILIO_SID;
 env.twilioToken = process.env.TWILIO_TOKEN;
 env.twilioNumber = process.env.TWILIO_NUMBER;
-env.brevoApiKey = process.env.BREVO_API_KEY;
-env.brevoURL = process.env.BREVO_URL;
 env.domain = process.env.DOMAIN;
+env.smtpHost = process.env.SMTP_HOST;
+env.smtpUser = process.env.SMTP_USER;
+env.smtpPass = process.env.SMTP_PASS;
+env.smtpPort = +process.env.SMTP_PORT;

@@ -72,12 +72,15 @@ export class AuthController {
     await this.resetPasswordRequest.save(resetPasswordRequest);
 
     const emailData = {
-      url: `${env.domain}/reset-password/${resetPasswordRequest.id}`,
+      link: `${env.domain}/reset-password/${resetPasswordRequest.id}`,
     };
+    try {
+      await Notification.email("reset-password", emailData, [user.email]);
 
-    await Notification.email("Change Password", [{ name: `${user.firstName} ${user.lastName}`, email: user.email }], emailData);
-
-    return res.status(200).json({ msg: l10n.t("RESET_PASSWORD_LINK") });
+      return res.status(200).json({ msg: l10n.t("RESET_PASSWORD_LINK") });
+    } catch (err) {
+      return res.status(400).json({ error: err });
+    }
   };
 
   public resetPassword = async (req: TRequest<ResetPasswordDto>, res: TResponse) => {
@@ -121,10 +124,13 @@ export class AuthController {
     await this.twoFactorAuthRequestEntity.save(twoFactorAuth);
 
     const message = `Use this OTP: ${otp} for 2FA authentication. Keep it secret and don't share it with anyone.`;
+    try {
+      await Notification.sms(message, mobile.trim());
 
-    await Notification.sms(message, mobile.trim());
-
-    return res.status(200).json({ msg: l10n.t("2FA_SENT") });
+      return res.status(200).json({ msg: l10n.t("2FA_SENT") });
+    } catch (err) {
+      return res.status(400).json({ error: err });
+    }
   };
 
   public verifyTwoFactor = async (req: TRequest<VerifyTwoFactorDto>, res: TResponse) => {
