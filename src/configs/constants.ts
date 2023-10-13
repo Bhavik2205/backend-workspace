@@ -41,4 +41,8 @@ export class Constants {
   public static readonly OTP_EXPIRY = 300;
 
   public static readonly OTP_LENGTH = 6;
+
+  public static readonly MAX_FILE_SIZE = 20 * 1024 * 1024;
+
+  public static readonly VALID_MIMETYPES = ["image/jpeg", "image/png", "image/pdf"];
 }

@@ -8,3 +8,4 @@ export * from "./question.entity";
 export * from "./answer.entity";
 export * from "./team.entity";
 export * from "./participate.entity";
+export * from "./document.entity";

@@ -414,7 +414,78 @@
             </column>
         </createTable>
     </changeSet>
-      <changeSet author="Dharmik Dalwadi" id="28">
+    <changeSet author="Dharmik Dalwadi" id="28">
         <addForeignKeyConstraint baseColumnNames="roleId" baseTableName="participates" constraintName="participates_roleId_fkey" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="roles" validate="true"/>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="29">
+        <createTable tableName="documents">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="docNum" type="INTEGER">
+                <constraints nullable="true"/>
+            </column>
+            <column name="file" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="size" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="folderId" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="categoryId" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="userId" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="workspaceId" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="isEditable" type="boolean" defaultValueComputed="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="isDownloadable" type="boolean" defaultValueComputed="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="createdAt" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="now()" >
+                <constraints nullable="false"/>
+            </column>
+            <column name="updatedAt" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="now()"/>
+        </createTable>
+        <createIndex indexName="idx_docNum" tableName="documents">
+            <column name="docNum"/>
+        </createIndex>
+        <createIndex indexName="idx_name" tableName="documents">
+            <column name="name"/>
+        </createIndex>
+        <createIndex indexName="idx_folderId" tableName="documents">
+            <column name="folderId"/>
+        </createIndex>
+        <createIndex indexName="idx_categoryId" tableName="documents">
+            <column name="categoryId"/>
+        </createIndex>
+        <createIndex indexName="idx_userId" tableName="documents">
+            <column name="userId"/>
+        </createIndex>
+        <createIndex indexName="idx_workspaceId" tableName="documents">
+            <column name="workspaceId"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="30">
+            <addForeignKeyConstraint baseColumnNames="workspaceId" baseTableName="documents" constraintName="documents_workspaceId_fkey" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="workspaces" validate="true"/>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="31">
+        <addForeignKeyConstraint baseColumnNames="userId" baseTableName="documents" constraintName="documents_userId_fkey" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="users" validate="true"/>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="32">
+        <addForeignKeyConstraint baseColumnNames="folderId" baseTableName="documents" constraintName="documents_folderId_fkey" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="folders" validate="true"/>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="33">
+        <addForeignKeyConstraint baseColumnNames="categoryId" baseTableName="documents" constraintName="documents_categoryId_fkey" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="categories" validate="true"/>
     </changeSet>
 </databaseChangeLog>

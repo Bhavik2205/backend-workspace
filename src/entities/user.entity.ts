@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany, OneToOne } from "typeorm";
-import { ParticipateEntity, AnswersEntity, QuestionEntity } from "@entities";
+import { ParticipateEntity, AnswersEntity, QuestionEntity, DocumentEntity } from "@entities";
 
 @Entity("users")
 export class UserEntity {
@@ -59,4 +59,7 @@ export class UserEntity {
 
   @OneToOne(() => ParticipateEntity, participates => participates.user)
   participates: ParticipateEntity;
+
+  @OneToMany(() => DocumentEntity, document => document.user)
+  document: DocumentEntity[];
 }

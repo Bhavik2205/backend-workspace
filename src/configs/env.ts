@@ -62,6 +62,21 @@ class Env {
   @IsNotEmpty()
   @IsString()
   public domain: string;
+
+  @IsString()
+  public azureStorageAccountName: string;
+
+  @IsString()
+  public azureStorageAccountKey: string;
+
+  @IsString()
+  public containerName: string;
+
+  @IsString()
+  public connectionString: string;
+
+  @IsString()
+  public azureURL: string;
 }
 
 export const env = new Env();
@@ -85,3 +100,8 @@ env.smtpHost = process.env.SMTP_HOST;
 env.smtpUser = process.env.SMTP_USER;
 env.smtpPass = process.env.SMTP_PASS;
 env.smtpPort = +process.env.SMTP_PORT;
+env.azureStorageAccountName = process.env.AZURE_STORAGE_ACCOUNT_NAME;
+env.azureStorageAccountKey = process.env.AZURE_STORAGE_ACCOUNT_KEY;
+env.containerName = process.env.CONTAINER_NAME;
+env.connectionString = process.env.CONNECTION_STRING;
+env.azureURL = process.env.AZURE_URL;

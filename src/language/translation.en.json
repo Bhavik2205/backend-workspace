@@ -19,5 +19,7 @@
   "ANSWER_SUBMITTED_SUCCESS": "Answer submitted successfully.",
   "TEAM_CREATE_SUCCESS": "Team created successfully.",
   "PARTICIPATE_CREATE_SUCCESS": "Participate created successfully.",
-  "PARTICIPATE_DELETE_SUCCESS": "Participate deleted successfully."
+  "PARTICIPATE_DELETE_SUCCESS": "Participate deleted successfully.",
+  "DOCUMENT_UPLOAD_SUCCESS": "Document uploaded successfully.",
+  "DOCUMENT_DELETE_SUCCESS": "Document deleted successfully."
 }

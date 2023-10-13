@@ -7,6 +7,7 @@ import { MiscRouter } from "@modules/misc";
 import { AuthRouter } from "@modules/auth";
 import { QuestionRouter } from "@modules/question";
 import { TeamRouter } from "@modules/team";
+import { DocumentRouter } from "@modules/document";
 
 export default class Routes {
   public configure() {
@@ -18,6 +19,7 @@ export default class Routes {
     router.use("/auth", new AuthRouter().router);
     router.use("/questions", new QuestionRouter().router);
     router.use("/teams", new TeamRouter().router);
+    router.use("/documents", new DocumentRouter().router);
     router.all("/*", (req, res) =>
       res.status(404).json({
         error: l10n.t("ERR_URL_NOT_FOUND"),

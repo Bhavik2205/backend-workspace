@@ -1,4 +1,5 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { DocumentEntity } from "@entities";
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity("folders")
 export class FolderEntity {
@@ -16,4 +17,7 @@ export class FolderEntity {
 
   @UpdateDateColumn()
   public updatedAt: Date;
+
+  @OneToMany(() => DocumentEntity, document => document.folder)
+  document: DocumentEntity[];
 }

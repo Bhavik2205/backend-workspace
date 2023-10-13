@@ -18,6 +18,7 @@ import {
   AnswersEntity,
   TeamEntity,
   ParticipateEntity,
+  DocumentEntity,
 } from "@entities";
 import { destructPager } from "middlewares";
 import { Cors, EnvValidator, HandleUnhandledPromise, Log } from "./helpers";
@@ -52,6 +53,7 @@ export default class App {
         AnswersEntity,
         TeamEntity,
         ParticipateEntity,
+        DocumentEntity,
       ],
     });
 
