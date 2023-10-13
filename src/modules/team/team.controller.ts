@@ -57,9 +57,9 @@ export class TeamController {
     const { workspaceid: workspaceId } = req.headers;
 
     const participantsData = req.dto.participatesData;
-    const responses = [];
+    const responses: { msg: string; email: string }[] = [];
 
-    for (const participantData of participantsData) {
+    const promises = participantsData.map(async participantData => {
       const { email, roleId } = participantData;
 
       const user = await this.userRepository.findOne({
@@ -82,7 +82,7 @@ export class TeamController {
         await this.participateRepository.save(participate);
         await Notification.email("invitation", emailData, [email]);
 
-        responses.push({ msg: "Invitation sent" });
+        responses.push({ msg: "Invitation sent", email });
       } else {
         const userExists = await this.participateRepository.findOne({
           where: {
@@ -91,7 +91,7 @@ export class TeamController {
         });
 
         if (userExists) {
-          responses.push({ msg: "User already participating" });
+          responses.push({ msg: "User already participating", email });
         } else {
           const participate = this.participateRepository.create({
             teamId: +teamId,
@@ -103,10 +103,12 @@ export class TeamController {
           });
 
           await this.participateRepository.save(participate);
-          responses.push({ msg: l10n.t("PARTICIPATE_CREATE_SUCCESS") });
+          responses.push({ msg: l10n.t("PARTICIPATE_CREATE_SUCCESS"), email });
         }
       }
-    }
+    });
+
+    await Promise.all(promises);
 
     res.status(200).json(responses);
   };
