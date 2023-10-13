@@ -1,7 +1,5 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { UserEntity } from "./user.entity";
-import { CategoryEntity } from "./category.entity";
-import { FolderEntity } from "./folder.entity";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { UserEntity, CategoryEntity, FolderEntity, QuestionEntity } from "@entities";
 
 @Entity("documents")
 export class DocumentEntity {
@@ -55,4 +53,7 @@ export class DocumentEntity {
   @ManyToOne(() => FolderEntity, folder => folder.document)
   @JoinColumn({ name: "folderId" })
   folder: FolderEntity;
+
+  @OneToOne(() => QuestionEntity, question => question.document)
+  question: QuestionEntity;
 }

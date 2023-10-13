@@ -1,4 +1,4 @@
-import { DocumentEntity, FolderEntity } from "@entities";
+import { DocumentEntity, FolderEntity, ParticipateEntity, TeamEntity } from "@entities";
 import * as l10n from "jm-ez-l10n";
 import { TResponse, TRequest } from "@types";
 import { Repository } from "typeorm";
@@ -19,6 +19,12 @@ export class DocumentController {
 
   @InitRepository(FolderEntity)
   folderRepository: Repository<FolderEntity>;
+
+  @InitRepository(ParticipateEntity)
+  participateRepository: Repository<ParticipateEntity>;
+
+  @InitRepository(TeamEntity)
+  teamRepository: Repository<TeamEntity>;
 
   constructor() {
     InjectRepositories(this);
@@ -67,19 +73,24 @@ export class DocumentController {
       .leftJoinAndSelect("folder.document", "document")
       .leftJoinAndSelect("document.category", "category")
       .leftJoinAndSelect("document.user", "user")
+      .leftJoinAndSelect("document.question", "question")
+      .leftJoinAndSelect("user.participates", "participates")
+      .leftJoinAndSelect("participates.teams", "teams")
       .select([
         "folder.id",
         "folder.name",
         "document.id",
         "document.name",
         "document.docNum",
-        "document.file",
         "document.categoryId",
         "document.createdAt",
         "document.updatedAt",
         "category.name",
         "user.firstName",
         "user.lastName",
+        "question.id",
+        "participates.teamId",
+        "teams.name",
       ])
       .where({ workspaceId })
       .getMany();
@@ -122,6 +133,9 @@ export class DocumentController {
       .leftJoinAndSelect("folder.document", "document")
       .leftJoinAndSelect("document.category", "category")
       .leftJoinAndSelect("document.user", "user")
+      .leftJoinAndSelect("document.question", "question")
+      .leftJoinAndSelect("user.participates", "participates")
+      .leftJoinAndSelect("participates.teams", "teams")
       .select([
         "folder.id",
         "folder.name",
@@ -134,6 +148,9 @@ export class DocumentController {
         "category.name",
         "user.firstName",
         "user.lastName",
+        "question.id",
+        "participates.teamId",
+        "teams.name",
       ])
       .where("document.name LIKE :query", { query: `%${query}%` })
       .andWhere("document.workspaceId = :workspaceId", { workspaceId })
