@@ -130,6 +130,7 @@ export class QuestionController {
       .leftJoinAndSelect("answer.user", "userAns")
       .leftJoinAndSelect("question.queFrom", "from")
       .leftJoinAndSelect("question.queTo", "to")
+      .leftJoinAndSelect("question.document", "document")
       .select([
         "question.id",
         "question.topic",
@@ -154,6 +155,7 @@ export class QuestionController {
         "userAns.lastName",
         "from.name",
         "to.name",
+        "document.file",
       ])
       .where({ id: questionId, workspaceId, to: teamData.id })
       .getMany();
