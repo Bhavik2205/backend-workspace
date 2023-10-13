@@ -96,7 +96,10 @@ export class QuestionController {
         "from.name",
         "to.name",
       ])
-      .where({ to: teamData.id, workspaceId })
+      .where("(question.to = :teamId) OR (question.from = :teamId )", {
+        teamId: teamData.id,
+        workspaceId,
+      })
       .getMany();
 
     return res.status(200).json({ data: questionDetail });
@@ -157,7 +160,11 @@ export class QuestionController {
         "to.name",
         "document.file",
       ])
-      .where({ id: questionId, workspaceId, to: teamData.id })
+      .where("(question.to = :teamId) OR (question.from = :teamId )", {
+        teamId: teamData.id,
+        id: questionId,
+        workspaceId,
+      })
       .getMany();
 
     return res.status(200).json({ data: questionDetail });
