@@ -68,10 +68,10 @@ export class TeamController {
 
       if (!user) {
         const emailData = {
-          url: `${env.domain}/sign-up`,
+          link: `${env.domain}/sign-up`,
         };
 
-        await Notification.inviteEmail("Invitation", [{ email }], emailData);
+        await Notification.email("invitation", emailData, [email]);
 
         responses.push({ msg: "Invitation sent" });
       } else {
