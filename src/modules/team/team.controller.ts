@@ -71,11 +71,20 @@ export class TeamController {
           link: `${env.domain}/sign-up`,
         };
 
+        const participate = this.participateRepository.create({
+          teamId: +teamId,
+          roleId,
+          email,
+          workspaceId,
+          isInvited: true,
+        });
+
+        await this.participateRepository.save(participate);
         await Notification.email("invitation", emailData, [email]);
 
         responses.push({ msg: "Invitation sent" });
       } else {
-        const userExists = this.participateRepository.findOne({
+        const userExists = await this.participateRepository.findOne({
           where: {
             userId: user.id,
           },
@@ -89,6 +98,7 @@ export class TeamController {
             roleId,
             workspaceId,
             userId: user.id,
+            email,
             isInvited: false,
           });
 

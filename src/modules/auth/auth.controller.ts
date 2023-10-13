@@ -3,7 +3,7 @@ import moment from "moment";
 import * as l10n from "jm-ez-l10n";
 import { v4 as uuidv4 } from "uuid";
 import { TRequest, TResponse } from "@types";
-import { ResetPasswordRequestEntity, TwoFactorAuthRequestEntity, UserEntity } from "@entities";
+import { ParticipateEntity, ResetPasswordRequestEntity, TwoFactorAuthRequestEntity, UserEntity } from "@entities";
 import { InitRepository, InjectRepositories, Bcrypt, JwtHelper, GenerateOTP, Notification, PhoneNumberValidator } from "@helpers";
 import { Constants, env } from "@configs";
 import { CreateUserDto, ForgotPasswordDto, ResetPasswordDto, SendTwoFactorDto, SignInDto, VerifyTwoFactorDto } from "./dto";
@@ -18,6 +18,9 @@ export class AuthController {
   @InitRepository(TwoFactorAuthRequestEntity)
   twoFactorAuthRequestEntity: Repository<TwoFactorAuthRequestEntity>;
 
+  @InitRepository(ParticipateEntity)
+  participateRepository: Repository<ParticipateEntity>;
+
   constructor() {
     InjectRepositories(this);
   }
@@ -27,6 +30,20 @@ export class AuthController {
     const user = await this.userRepository.create(req.dto);
     await this.userRepository.save(user);
     const token = JwtHelper.encode({ id: user.id });
+
+    const participate = await this.participateRepository.findOne({
+      where: {
+        email: user.email,
+      },
+    });
+
+    if (participate) {
+      await this.participateRepository.update(participate.id, {
+        userId: user.id,
+        isInvited: false,
+      });
+    }
+
     return res.status(200).json({ msg: l10n.t("USER_CREATED"), token });
   };
 

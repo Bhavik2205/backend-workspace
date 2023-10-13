@@ -9,8 +9,11 @@ export class ParticipateEntity {
   @Column({ type: "integer" })
   teamId: number;
 
-  @Column({ type: "integer" })
+  @Column({ type: "integer", nullable: true })
   userId: number;
+
+  @Column({ type: "varchar", length: 255 })
+  email: string;
 
   @Column({ type: "integer", nullable: true })
   roleId: number;
