@@ -217,4 +217,10 @@
     <changeSet author="Dharmik Dalwadi" id="11">
         <addForeignKeyConstraint baseColumnNames="planId" baseTableName="users" constraintName="users_planId_fkey" deferrable="false" initiallyDeferred="false" onDelete="SET NULL" onUpdate="SET NULL" referencedColumnNames="id" referencedTableName="subscriptionPlans" validate="true"/>
     </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="12">
+        <dropColumn tableName="users" columnName="joinDate"/>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="13">
+        <modifyDataType tableName="folders" columnName="name" newDataType="VARCHAR(255)"/>
+    </changeSet>
 </databaseChangeLog>

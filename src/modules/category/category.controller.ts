@@ -27,21 +27,16 @@ export class CategoryController {
   };
 
   public read = async (req: TRequest, res: TResponse) => {
-    const { page, limit } = req.pager;
     const { workspaceid: workspaceId } = req.headers;
 
-    const [data, count] = await this.categoryRepository.findAndCount({
+    const [data] = await this.categoryRepository.findAndCount({
       where: {
         workspaceId,
-      },
-      take: limit,
-      skip: (page - 1) * limit,
+      }
     });
 
     res.status(200).json({
-      data,
-      count,
-      limit,
+      data
     });
   };
 }

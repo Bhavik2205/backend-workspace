@@ -27,21 +27,16 @@ export class FolderController {
   };
 
   public read = async (req: TRequest, res: TResponse) => {
-    const { page, limit } = req.pager;
     const { workspaceid: workspaceId } = req.headers;
 
-    const [data, count] = await this.folderRepository.findAndCount({
+    const [data] = await this.folderRepository.findAndCount({
       where: {
         workspaceId,
-      },
-      take: limit,
-      skip: (page - 1) * limit,
+      }
     });
 
     res.status(200).json({
-      data,
-      count,
-      limit,
+      data
     });
   };
 
@@ -50,18 +45,22 @@ export class FolderController {
     const { folderId } = req.params;
     const { workspaceid: workspaceId } = req.headers;
 
-    await this.folderRepository.update(folderId, {
-      name,
-      workspaceId,
-    });
+    try {
+      await this.folderRepository.update(folderId, {
+        name
+      });
 
-    const folder = await this.folderRepository.findOne({
-      where: {
-        id: +folderId,
-      },
-    });
+      const folder = await this.folderRepository.findOne({
+        where: {
+          id: +folderId,
+          workspaceId,
+        },
+      });
 
-    res.status(200).json({ msg: l10n.t("FOLDER_UPDATE_SUCCESS"), data: folder });
+      res.status(200).json({ msg: l10n.t("FOLDER_UPDATE_SUCCESS"), data: folder });
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
   };
 
   public delete = async (req: TRequest, res: TResponse) => {
