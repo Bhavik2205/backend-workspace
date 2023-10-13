@@ -295,7 +295,7 @@
         <addForeignKeyConstraint baseColumnNames="userId" baseTableName="participates" constraintName="participates_userId_fkey" deferrable="false" initiallyDeferred="false" onDelete="SET NULL" onUpdate="SET NULL" referencedColumnNames="id" referencedTableName="users" validate="true"/>
     </changeSet>
     <changeSet author="Dharmik Dalwadi" id="18">
-        <addForeignKeyConstraint baseColumnNames="workspaceId" baseTableName="participates" constraintName="participates_workspaceId_fkey" deferrable="false" initiallyDeferred="false" onDelete="SET NULL" onUpdate="SET NULL" referencedColumnNames="id" referencedTableName="workspaces" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="workspaceId" baseTableName="participates" constraintName="participates_workspaceId_fkey" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="workspaces" validate="true"/>
     </changeSet>
     <changeSet author="Dharmik Dalwadi" id="19">
         <createTable tableName="questions">
@@ -359,7 +359,7 @@
         <addForeignKeyConstraint baseColumnNames="userId" baseTableName="questions" constraintName="questions_userId_fkey" deferrable="false" initiallyDeferred="false" onDelete="SET NULL" onUpdate="SET NULL" referencedColumnNames="id" referencedTableName="users" validate="true"/>
     </changeSet>
     <changeSet author="Dharmik Dalwadi" id="21">
-        <addForeignKeyConstraint baseColumnNames="workspaceId" baseTableName="questions" constraintName="questions_workspaceId_fkey" deferrable="false" initiallyDeferred="false" onDelete="SET NULL" onUpdate="SET NULL" referencedColumnNames="id" referencedTableName="workspaces" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="workspaceId" baseTableName="questions" constraintName="questions_workspaceId_fkey" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="workspaces" validate="true"/>
     </changeSet>
     <changeSet author="Dharmik Dalwadi" id="22">
         <addForeignKeyConstraint baseColumnNames="to" baseTableName="questions" constraintName="questions_to_fkey" deferrable="false" initiallyDeferred="false" onDelete="SET NULL" onUpdate="SET NULL" referencedColumnNames="id" referencedTableName="teams" validate="true"/>
@@ -426,7 +426,7 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="name" type="varchar(255)">
-                <constraints nullable="true"/>
+                <constraints nullable="false"/>
             </column>
             <column name="docNum" type="INTEGER">
                 <constraints nullable="true"/>
@@ -435,7 +435,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="size" type="varchar(255)">
-                <constraints nullable="true"/>
+                <constraints nullable="false"/>
             </column>
             <column name="folderId" type="INTEGER">
                 <constraints nullable="false"/>
@@ -490,5 +490,8 @@
     </changeSet>
     <changeSet author="Dharmik Dalwadi" id="33">
         <addForeignKeyConstraint baseColumnNames="categoryId" baseTableName="documents" constraintName="documents_categoryId_fkey" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="categories" validate="true"/>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="34">
+        <addForeignKeyConstraint baseColumnNames="documentId" baseTableName="questions" constraintName="questions_documentId_fkey" deferrable="false" initiallyDeferred="false" onDelete="SET NULL" onUpdate="SET NULL" referencedColumnNames="id" referencedTableName="documents" validate="true"/>
     </changeSet>
 </databaseChangeLog>

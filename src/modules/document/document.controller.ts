@@ -2,17 +2,16 @@ import { DocumentEntity, FolderEntity } from "@entities";
 import * as l10n from "jm-ez-l10n";
 import { TResponse, TRequest } from "@types";
 import { Repository } from "typeorm";
-import { InitRepository, InjectRepositories, InjectCls } from "@helpers";
+import { InitRepository, InjectRepositories, Utils } from "@helpers";
 import { env } from "@configs";
 import { BlobServiceClient, StorageSharedKeyCredential } from "@azure/storage-blob";
 import { CreateDocumentDto } from "./dto";
-import { DocumentUtils } from "./document.utils";
 
 const account = env.azureStorageAccountName;
 const accountKey = env.azureStorageAccountKey;
 
 const sharedKeyCredential = new StorageSharedKeyCredential(account, accountKey);
-const blobServiceClient = new BlobServiceClient(`https://${account}.blob.core.windows.net`, sharedKeyCredential);
+const blobServiceClient = new BlobServiceClient(env.azureURL, sharedKeyCredential);
 
 export class DocumentController {
   @InitRepository(DocumentEntity)
@@ -20,9 +19,6 @@ export class DocumentController {
 
   @InitRepository(FolderEntity)
   folderRepository: Repository<FolderEntity>;
-
-  @InjectCls(DocumentUtils)
-  documentUtils: DocumentUtils;
 
   constructor() {
     InjectRepositories(this);
@@ -32,13 +28,12 @@ export class DocumentController {
     const { categoryId, folderId, isEditable, isDownloadable } = req.dto;
     const { me } = req;
     const { workspaceid: workspaceId } = req.headers;
-
     const { file } = req.files;
-    const blobName = `new${new Date().getTime()}`;
 
+    const blobName = `new${new Date().getTime()}`;
     const containerClient = blobServiceClient.getContainerClient(env.containerName);
     const blockBlobClient = containerClient.getBlockBlobClient(blobName);
-    const uploadBlobResponse = await blockBlobClient.uploadData(file.data, file.size);
+    await blockBlobClient.uploadData(file.data, file.size);
 
     const blobUrl = `${env.containerName}/${blobName}`;
 
@@ -56,7 +51,7 @@ export class DocumentController {
 
     const document = await this.documentRepository.save(updatedDocument);
 
-    const documentNumber = await this.documentUtils.generateRandomNumber(document.userId, workspaceId, document.id);
+    const documentNumber = await Utils.generateRandomNumber(document.userId, workspaceId, document.id);
     document.docNum = parseInt(documentNumber, 10);
 
     await this.documentRepository.save(document);

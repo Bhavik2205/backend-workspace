@@ -12,3 +12,4 @@ export * from "./bcrypt.helper";
 export * from "./generate-otp.helper";
 export * from "./notification.helper";
 export * from "./phone-number-validator.helper";
+export * from "./generate-random-number.helper";
