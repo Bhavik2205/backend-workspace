@@ -1,4 +1,4 @@
-import { IsArray, IsInt, IsNotEmpty, IsOptional, IsString, MaxLength, ValidateNested } from "class-validator";
+import { IsInt, IsNotEmpty, IsOptional, IsString, MaxLength } from "class-validator";
 
 export class CreateParticipateDto {
   @IsNotEmpty()
@@ -9,10 +9,4 @@ export class CreateParticipateDto {
   @IsOptional()
   @IsInt()
   public roleId: number;
-}
-
-export class CreateMultipleParticipateDto {
-  @IsArray()
-  @ValidateNested({ each: true })
-  public participatesData: CreateParticipateDto[];
 }
