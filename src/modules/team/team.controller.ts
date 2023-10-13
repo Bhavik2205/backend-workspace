@@ -127,6 +127,7 @@ export class TeamController {
         "participates.id",
         "participates.roleId",
         "participates.isInvited",
+        "participates.email",
         "participates.userId",
         "user.firstName",
         "user.lastName",
