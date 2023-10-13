@@ -13,5 +13,11 @@
   "RESET_PASSWORD_LINK": "Reset password link sent in email, check it",
   "PASSWORD_UPDATE": "Password updated successfully.",
   "2FA_SENT": "Two-Factor Authentication has been sent successfully.",
-  "2FA_VERIFY": "Two-Factor Authentication verify successfully."
+  "2FA_VERIFY": "Two-Factor Authentication verify successfully.",
+  "QUESTION_CREATE_SUCCESS": "Question created successfully.",
+  "QUESTION_DELETE_SUCCESS": "Question deleted successfully.",
+  "ANSWER_SUBMITTED_SUCCESS": "Answer submitted successfully.",
+  "TEAM_CREATE_SUCCESS": "Team created successfully.",
+  "PARTICIPATE_CREATE_SUCCESS": "Participate created successfully.",
+  "PARTICIPATE_DELETE_SUCCESS": "Participate deleted successfully."
 }

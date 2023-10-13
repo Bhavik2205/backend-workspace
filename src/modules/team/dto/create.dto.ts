@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsString, MaxLength } from "class-validator";
 
-export class CreateFolderDto {
+export class CreateTeamDto {
   @IsNotEmpty()
   @IsString()
   @MaxLength(255)

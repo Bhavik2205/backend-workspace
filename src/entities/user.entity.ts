@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany, OneToOne } from "typeorm";
+import { ParticipateEntity, AnswersEntity, QuestionEntity } from "@entities";
 
 @Entity("users")
 export class UserEntity {
@@ -22,9 +23,6 @@ export class UserEntity {
 
   @Column({ type: "varchar", length: 100, nullable: true })
   country: string;
-
-  @Column({ type: "date", nullable: true })
-  joinDate: Date;
 
   @Column({ type: "boolean", nullable: false })
   isActive: boolean;
@@ -52,4 +50,13 @@ export class UserEntity {
 
   @UpdateDateColumn({ nullable: true })
   updatedAt: Date;
+
+  @OneToMany(() => QuestionEntity, question => question.user)
+  question: QuestionEntity[];
+
+  @OneToMany(() => AnswersEntity, answer => answer.user)
+  answer: AnswersEntity[];
+
+  @OneToOne(() => ParticipateEntity, participates => participates.user)
+  participates: ParticipateEntity;
 }
