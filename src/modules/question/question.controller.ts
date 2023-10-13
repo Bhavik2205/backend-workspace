@@ -1,10 +1,9 @@
 import { QuestionEntity, AnswersEntity, TeamEntity, ParticipateEntity } from "@entities";
-import { InitRepository, InjectCls, InjectRepositories } from "@helpers";
+import { InitRepository, InjectRepositories, Utils } from "@helpers";
 import { TRequest, TResponse } from "@types";
 import { Repository } from "typeorm";
 import * as l10n from "jm-ez-l10n";
 import { CreateAnswerDto, CreateQuestionDto } from "./dto";
-import { Utils } from "./question.util";
 
 export class QuestionController {
   @InitRepository(QuestionEntity)
@@ -18,9 +17,6 @@ export class QuestionController {
 
   @InitRepository(ParticipateEntity)
   participateRepository: Repository<ParticipateEntity>;
-
-  @InjectCls(Utils)
-  utils: Utils;
 
   constructor() {
     InjectRepositories(this);
@@ -47,7 +43,7 @@ export class QuestionController {
 
     const questionData = await this.questionRepository.save(questionDetail);
 
-    const questionNumber = await this.utils.generateRandomNumber(questionDetail.userId, workspaceId, questionDetail.id);
+    const questionNumber = await Utils.generateRandomNumber(questionDetail.userId, workspaceId, questionDetail.id);
     questionDetail.queNum = parseInt(questionNumber, 10);
 
     await this.questionRepository.save(questionData);
