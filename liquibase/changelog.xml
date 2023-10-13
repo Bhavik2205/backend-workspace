@@ -254,6 +254,9 @@
                 <constraints nullable="false"/>
             </column>
             <column name="userId" type="INTEGER">
+                <constraints nullable="true"/>
+            </column>
+             <column name="email" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
             <column name="roleId" type="INTEGER">
