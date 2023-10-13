@@ -223,4 +223,275 @@
     <changeSet author="Dharmik Dalwadi" id="13">
         <modifyDataType tableName="folders" columnName="name" newDataType="VARCHAR(255)"/>
     </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="14">
+        <createTable tableName="teams">
+            <column autoIncrement="true" name="id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="teams_pkey"/>
+            </column>
+            <column name="name" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="workspaceId" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="createdAt" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="now()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updatedAt" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="now()">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createIndex tableName="teams" indexName="idx_teams_workspace_id">
+            <column name="workspaceId"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="15">
+        <createTable tableName="participates">
+            <column autoIncrement="true" name="id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="participates_pkey"/>
+            </column>
+            <column name="teamId" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="userId" type="INTEGER">
+                <constraints nullable="true"/>
+            </column>
+             <column name="email" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="roleId" type="INTEGER">
+                <constraints nullable="true"/>
+            </column>
+            <column name="isInvited" type="BOOLEAN">
+                <constraints nullable="true"/>
+            </column>
+            <column name="workspaceId" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="createdAt" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="now()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updatedAt" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="now()">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createIndex tableName="participates" indexName="idx_participates_team_id">
+            <column name="teamId"/>
+        </createIndex>
+        <createIndex tableName="participates" indexName="idx_participates_user_id">
+            <column name="userId"/>
+        </createIndex>
+        <createIndex tableName="participates" indexName="idx_participates_role_id">
+            <column name="roleId"/>
+        </createIndex>
+        <createIndex tableName="participates" indexName="idx_participates_workspace_id">
+            <column name="workspaceId"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="16">
+        <addForeignKeyConstraint baseColumnNames="teamId" baseTableName="participates" constraintName="participates_teamId_fkey" deferrable="false" initiallyDeferred="false" onDelete="SET NULL" onUpdate="SET NULL" referencedColumnNames="id" referencedTableName="teams" validate="true"/>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="17">
+        <addForeignKeyConstraint baseColumnNames="userId" baseTableName="participates" constraintName="participates_userId_fkey" deferrable="false" initiallyDeferred="false" onDelete="SET NULL" onUpdate="SET NULL" referencedColumnNames="id" referencedTableName="users" validate="true"/>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="18">
+        <addForeignKeyConstraint baseColumnNames="workspaceId" baseTableName="participates" constraintName="participates_workspaceId_fkey" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="workspaces" validate="true"/>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="19">
+        <createTable tableName="questions">
+            <column autoIncrement="true" name="id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="questions_pkey"/>
+            </column>
+            <column name="topic" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="to" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="from" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="question" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="documentId" type="INTEGER">
+                <constraints nullable="true"/>
+            </column>
+            <column name="userId" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="sendForApproval" type="BOOLEAN" defaultValueComputed="false">
+                <constraints nullable="true"/>
+            </column>
+            <column name="isHighPriority" type="BOOLEAN" defaultValueComputed="false">
+                <constraints nullable="true"/>
+            </column>
+            <column name="isClosed" type="BOOLEAN" defaultValueComputed="false">
+                <constraints nullable="true"/>
+            </column>
+            <column name="isNew" type="BOOLEAN" defaultValueComputed="true">
+                <constraints nullable="true"/>
+            </column>
+            <column name="workspaceId" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="queNum" type="INTEGER">
+                <constraints nullable="true"/>
+            </column>
+            <column name="createdAt" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="now()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updatedAt" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="now()">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createIndex tableName="questions" indexName="idx_questions_workspace_id">
+            <column name="workspaceId"/>
+        </createIndex>
+        <createIndex tableName="questions" indexName="idx_questions_is_high_priority">
+            <column name="isHighPriority"/>
+        </createIndex>
+         <createIndex tableName="questions" indexName="idx_questions_is_closed">
+            <column name="isClosed"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="20">
+        <addForeignKeyConstraint baseColumnNames="userId" baseTableName="questions" constraintName="questions_userId_fkey" deferrable="false" initiallyDeferred="false" onDelete="SET NULL" onUpdate="SET NULL" referencedColumnNames="id" referencedTableName="users" validate="true"/>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="21">
+        <addForeignKeyConstraint baseColumnNames="workspaceId" baseTableName="questions" constraintName="questions_workspaceId_fkey" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="workspaces" validate="true"/>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="22">
+        <addForeignKeyConstraint baseColumnNames="to" baseTableName="questions" constraintName="questions_to_fkey" deferrable="false" initiallyDeferred="false" onDelete="SET NULL" onUpdate="SET NULL" referencedColumnNames="id" referencedTableName="teams" validate="true"/>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="23">
+        <addForeignKeyConstraint baseColumnNames="from" baseTableName="questions" constraintName="questions_from_fkey" deferrable="false" initiallyDeferred="false" onDelete="SET NULL" onUpdate="SET NULL" referencedColumnNames="id" referencedTableName="teams" validate="true"/>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="24">
+        <createTable tableName="answers">
+            <column autoIncrement="true" name="id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="answers_pkey"/>
+            </column>
+            <column name="questionId" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="answer" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="userId" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="createdAt" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="now()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updatedAt" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="now()">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createIndex tableName="answers" indexName="idx_answers_question_id">
+            <column name="questionId"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="25">
+        <addForeignKeyConstraint baseColumnNames="userId" baseTableName="answers" constraintName="answers_userId_fkey" deferrable="false" initiallyDeferred="false" onDelete="SET NULL" onUpdate="SET NULL" referencedColumnNames="id" referencedTableName="users" validate="true"/>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="26">
+        <addForeignKeyConstraint baseColumnNames="questionId" baseTableName="answers" constraintName="answers_questionId_fkey" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="questions" validate="true"/>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="27">
+        <createTable tableName="roles">
+            <column autoIncrement="true" name="id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="roles_pkey"/>
+            </column>
+            <column name="role" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="permission" type="JSONB">
+                <constraints nullable="false"/>
+            </column>
+            <column name="createdAt" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="now()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updatedAt" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="now()">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="28">
+        <addForeignKeyConstraint baseColumnNames="roleId" baseTableName="participates" constraintName="participates_roleId_fkey" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="roles" validate="true"/>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="29">
+        <createTable tableName="documents">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="docNum" type="INTEGER">
+                <constraints nullable="true"/>
+            </column>
+            <column name="file" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="size" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="folderId" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="categoryId" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="userId" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="workspaceId" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="isEditable" type="boolean" defaultValueComputed="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="isDownloadable" type="boolean" defaultValueComputed="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="createdAt" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="now()" >
+                <constraints nullable="false"/>
+            </column>
+            <column name="updatedAt" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="now()"/>
+        </createTable>
+        <createIndex indexName="idx_docNum" tableName="documents">
+            <column name="docNum"/>
+        </createIndex>
+        <createIndex indexName="idx_name" tableName="documents">
+            <column name="name"/>
+        </createIndex>
+        <createIndex indexName="idx_folderId" tableName="documents">
+            <column name="folderId"/>
+        </createIndex>
+        <createIndex indexName="idx_categoryId" tableName="documents">
+            <column name="categoryId"/>
+        </createIndex>
+        <createIndex indexName="idx_userId" tableName="documents">
+            <column name="userId"/>
+        </createIndex>
+        <createIndex indexName="idx_workspaceId" tableName="documents">
+            <column name="workspaceId"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="30">
+            <addForeignKeyConstraint baseColumnNames="workspaceId" baseTableName="documents" constraintName="documents_workspaceId_fkey" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="workspaces" validate="true"/>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="31">
+        <addForeignKeyConstraint baseColumnNames="userId" baseTableName="documents" constraintName="documents_userId_fkey" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="users" validate="true"/>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="32">
+        <addForeignKeyConstraint baseColumnNames="folderId" baseTableName="documents" constraintName="documents_folderId_fkey" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="folders" validate="true"/>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="33">
+        <addForeignKeyConstraint baseColumnNames="categoryId" baseTableName="documents" constraintName="documents_categoryId_fkey" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="categories" validate="true"/>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="34">
+        <addForeignKeyConstraint baseColumnNames="documentId" baseTableName="questions" constraintName="questions_documentId_fkey" deferrable="false" initiallyDeferred="false" onDelete="SET NULL" onUpdate="SET NULL" referencedColumnNames="id" referencedTableName="documents" validate="true"/>
+    </changeSet>
 </databaseChangeLog>

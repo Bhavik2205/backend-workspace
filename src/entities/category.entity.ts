@@ -1,4 +1,5 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { DocumentEntity } from "@entities";
 
 @Entity("categories")
 export class CategoryEntity {
@@ -16,4 +17,7 @@ export class CategoryEntity {
 
   @UpdateDateColumn()
   public updatedAt: Date;
+
+  @OneToMany(() => DocumentEntity, document => document.category)
+  document: DocumentEntity[];
 }

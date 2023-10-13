@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany, OneToOne } from "typeorm";
+import { ParticipateEntity, AnswersEntity, QuestionEntity, DocumentEntity } from "@entities";
 
 @Entity("users")
 export class UserEntity {
@@ -49,4 +50,16 @@ export class UserEntity {
 
   @UpdateDateColumn({ nullable: true })
   updatedAt: Date;
+
+  @OneToMany(() => QuestionEntity, question => question.user)
+  question: QuestionEntity[];
+
+  @OneToMany(() => AnswersEntity, answer => answer.user)
+  answer: AnswersEntity[];
+
+  @OneToOne(() => ParticipateEntity, participates => participates.user)
+  participates: ParticipateEntity;
+
+  @OneToMany(() => DocumentEntity, document => document.user)
+  document: DocumentEntity[];
 }

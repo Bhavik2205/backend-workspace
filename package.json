@@ -26,6 +26,8 @@
   "author": "Seaflux Technologies",
   "license": "ISC",
   "dependencies": {
+    "@azure/storage-blob": "^12.16.0",
+    "@types/express-fileupload": "^1.4.2",
     "axios": "^1.5.1",
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
@@ -39,6 +41,7 @@
     "eslint-config-prettier": "^8.10.0",
     "eslint-plugin-import": "^2.27.5",
     "express": "^4.18.2",
+    "express-fileupload": "^1.4.1",
     "helmet": "^7.0.0",
     "jm-ez-l10n": "^1.0.0",
     "jsonwebtoken": "^9.0.1",

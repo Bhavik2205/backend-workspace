@@ -32,11 +32,11 @@ export class FolderController {
     const [data] = await this.folderRepository.findAndCount({
       where: {
         workspaceId,
-      }
+      },
     });
 
     res.status(200).json({
-      data
+      data,
     });
   };
 
@@ -47,7 +47,7 @@ export class FolderController {
 
     try {
       await this.folderRepository.update(folderId, {
-        name
+        name,
       });
 
       const folder = await this.folderRepository.findOne({
