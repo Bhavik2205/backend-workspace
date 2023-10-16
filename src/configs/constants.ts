@@ -44,5 +44,5 @@ export class Constants {
 
   public static readonly MAX_FILE_SIZE = 20 * 1024 * 1024;
 
-  public static readonly VALID_MIMETYPES = ["image/jpeg", "image/png", "image/pdf"];
+  public static readonly VALID_MIMETYPES = ["image/jpeg", "image/png", "application/pdf"];
 }
