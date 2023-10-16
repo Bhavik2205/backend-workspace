@@ -1,4 +1,4 @@
-import { DocumentEntity, FolderEntity, ParticipateEntity, TeamEntity } from "@entities";
+import { DocumentEntity, FolderEntity } from "@entities";
 import * as l10n from "jm-ez-l10n";
 import { TResponse, TRequest } from "@types";
 import { Repository } from "typeorm";
@@ -19,12 +19,6 @@ export class DocumentController {
 
   @InitRepository(FolderEntity)
   folderRepository: Repository<FolderEntity>;
-
-  @InitRepository(ParticipateEntity)
-  participateRepository: Repository<ParticipateEntity>;
-
-  @InitRepository(TeamEntity)
-  teamRepository: Repository<TeamEntity>;
 
   constructor() {
     InjectRepositories(this);
