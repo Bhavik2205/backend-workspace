@@ -1,4 +1,4 @@
-import { IsBoolean, IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { IsNotEmpty, IsOptional, IsString } from "class-validator";
 
 export class CreateDocumentDto {
   @IsNotEmpty()
@@ -10,10 +10,10 @@ export class CreateDocumentDto {
   public folderId: number;
 
   @IsOptional()
-  @IsBoolean()
+  @IsString()
   isEditable?: boolean;
 
   @IsOptional()
-  @IsBoolean()
+  @IsString()
   isDownloadable?: boolean;
 }

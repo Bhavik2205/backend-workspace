@@ -1,5 +1,5 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { UserEntity, AnswersEntity, TeamEntity } from "@entities";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { UserEntity, AnswersEntity, TeamEntity, DocumentEntity } from "@entities";
 
 @Entity("questions")
 export class QuestionEntity {
@@ -62,4 +62,8 @@ export class QuestionEntity {
   @ManyToOne(() => TeamEntity, to => to.question)
   @JoinColumn({ name: "to" })
   queTo: TeamEntity;
+
+  @OneToOne(() => DocumentEntity, document => document.question)
+  @JoinColumn({ name: "documentId" })
+  document: DocumentEntity;
 }
