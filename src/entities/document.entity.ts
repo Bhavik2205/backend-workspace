@@ -1,5 +1,5 @@
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { UserEntity, CategoryEntity, FolderEntity, QuestionEntity } from "@entities";
+import { UserEntity, QuestionEntity, FolderEntity, CategoryEntity } from "@entities";
 
 @Entity("documents")
 export class DocumentEntity {

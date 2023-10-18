@@ -96,7 +96,10 @@ export class QuestionController {
         "from.name",
         "to.name",
       ])
-      .where({ to: teamData.id, workspaceId })
+      .where("(question.to = :teamId) OR (question.from = :teamId )", {
+        teamId: teamData.id,
+        workspaceId,
+      })
       .getMany();
 
     return res.status(200).json({ data: questionDetail });
@@ -130,6 +133,7 @@ export class QuestionController {
       .leftJoinAndSelect("answer.user", "userAns")
       .leftJoinAndSelect("question.queFrom", "from")
       .leftJoinAndSelect("question.queTo", "to")
+      .leftJoinAndSelect("question.document", "document")
       .select([
         "question.id",
         "question.topic",
@@ -154,8 +158,13 @@ export class QuestionController {
         "userAns.lastName",
         "from.name",
         "to.name",
+        "document.file",
       ])
-      .where({ id: questionId, workspaceId, to: teamData.id })
+      .where("(question.to = :teamId) OR (question.from = :teamId )", {
+        teamId: teamData.id,
+        id: questionId,
+        workspaceId,
+      })
       .getMany();
 
     return res.status(200).json({ data: questionDetail });

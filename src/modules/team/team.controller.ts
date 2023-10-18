@@ -57,7 +57,6 @@ export class TeamController {
     const { workspaceid: workspaceId } = req.headers;
 
     const participantsData = req.dto.participatesData;
-    const responses: { msg: string; email: string }[] = [];
 
     const promises = participantsData.map(async participantData => {
       const { email, roleId } = participantData;
@@ -71,18 +70,27 @@ export class TeamController {
           link: `${env.domain}/sign-up`,
         };
 
-        const participate = this.participateRepository.create({
-          teamId: +teamId,
-          roleId,
-          email,
-          workspaceId,
-          isInvited: true,
+        const invitedParticipate = await this.participateRepository.findOne({
+          where: {
+            email,
+          },
         });
 
-        await this.participateRepository.save(participate);
+        if (!invitedParticipate) {
+          const participate = this.participateRepository.create({
+            teamId: +teamId,
+            roleId,
+            email,
+            workspaceId,
+            isInvited: true,
+          });
+
+          await this.participateRepository.save(participate);
+        }
+
         await Notification.email("invitation", emailData, [email]);
 
-        responses.push({ msg: "Invitation sent", email });
+        res.status(200).json({ msg: l10n.t("PARTICIPATE_CREATE_SUCCESS") });
       } else {
         const userExists = await this.participateRepository.findOne({
           where: {
@@ -90,9 +98,7 @@ export class TeamController {
           },
         });
 
-        if (userExists) {
-          responses.push({ msg: "User already participating", email });
-        } else {
+        if (!userExists) {
           const participate = this.participateRepository.create({
             teamId: +teamId,
             roleId,
@@ -103,14 +109,12 @@ export class TeamController {
           });
 
           await this.participateRepository.save(participate);
-          responses.push({ msg: l10n.t("PARTICIPATE_CREATE_SUCCESS"), email });
+          res.status(200).json({ msg: l10n.t("PARTICIPATE_CREATE_SUCCESS") });
         }
       }
     });
 
     await Promise.all(promises);
-
-    res.status(200).json(responses);
   };
 
   public readParticipate = async (req: TRequest, res: TResponse) => {
