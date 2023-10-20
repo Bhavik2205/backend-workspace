@@ -21,8 +21,9 @@ export class TeamRouter extends SFRouter implements RouterDelegates {
       isWorkspaceExist(),
       this.teamController.createParticipates,
     );
-    this.router.get("/participate/", this.authMiddleware.auth, isWorkspaceExist(), this.teamController.readParticipate);
+    this.router.get("/participate", this.authMiddleware.auth, isWorkspaceExist(), this.teamController.readParticipate);
     this.router.delete("/:participateId", this.authMiddleware.auth, this.teamController.deleteParticipate);
     this.router.get("/user", this.authMiddleware.auth, this.teamController.readUserTeam);
+    this.router.get("/all-participate", this.authMiddleware.auth, isWorkspaceExist(), this.teamController.readAllParticipate);
   }
 }

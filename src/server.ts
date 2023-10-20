@@ -19,6 +19,8 @@ import {
   TeamEntity,
   ParticipateEntity,
   DocumentEntity,
+  WorkflowEntity,
+  LogEntity,
 } from "@entities";
 import { destructPager } from "middlewares";
 import { Cors, EnvValidator, HandleUnhandledPromise, Log } from "./helpers";
@@ -54,6 +56,8 @@ export default class App {
         TeamEntity,
         ParticipateEntity,
         DocumentEntity,
+        WorkflowEntity,
+        LogEntity,
       ],
     });
 

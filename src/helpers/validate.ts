@@ -1,4 +1,6 @@
 import { validate } from "class-validator";
+import { TRequest, TResponse } from "@types";
+import { Constants } from "../configs/constants";
 
 export class Validator {
   public static validate<T>(objType: new () => T) {
@@ -35,5 +37,26 @@ export class Validator {
       }
     }
     return newObj;
+  }
+
+  public static fileMimeValidate(req: TRequest, res: TResponse, next: () => void) {
+    if (req.files) {
+      const { file } = req.files;
+      const validMimes = Constants.VALID_MIMETYPES;
+      if (!validMimes.includes(file.mimetype)) {
+        return res.status(400).json({ error: `Invalid file, allowed file types are [${Constants.VALID_MIMETYPES.join(", ")}]` });
+      }
+    }
+    return next();
+  }
+
+  public static fileSizeValidate(req: TRequest, res: TResponse, next: () => void) {
+    if (req.files) {
+      const { file } = req.files;
+      if (file.truncated) {
+        return res.status(413).json({ error: `File size limit has been reached, Max allowed size is ${Constants.MAX_FILE_SIZE / 1024 / 1024}MB` });
+      }
+    }
+    return next();
   }
 }

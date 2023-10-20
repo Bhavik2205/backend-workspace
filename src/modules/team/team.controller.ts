@@ -1,6 +1,6 @@
-import { ParticipateEntity, TeamEntity, UserEntity } from "@entities";
+import { LogEntity, ParticipateEntity, TeamEntity, UserEntity } from "@entities";
 import { InitRepository, InjectRepositories, Notification } from "@helpers";
-import { TRequest, TResponse } from "@types";
+import { EActivityStatus, ELogsActivity, TRequest, TResponse } from "@types";
 import { Repository } from "typeorm";
 import * as l10n from "jm-ez-l10n";
 import { env } from "@configs";
@@ -16,6 +16,9 @@ export class TeamController {
   @InitRepository(UserEntity)
   userRepository: Repository<UserEntity>;
 
+  @InitRepository(LogEntity)
+  logRepository: Repository<LogEntity>;
+
   constructor() {
     InjectRepositories(this);
   }
@@ -23,11 +26,25 @@ export class TeamController {
   public create = async (req: TRequest<CreateTeamDto>, res: TResponse) => {
     const { name } = req.dto;
     const { workspaceid: workspaceId } = req.headers;
+    const { me } = req;
 
     const team = await this.teamRepository.create({
       name,
       workspaceId,
     });
+
+    const teamData = {
+      name,
+      Status: EActivityStatus.Team_Created,
+    };
+
+    const log = this.logRepository.create({
+      metadata: teamData,
+      workspaceId,
+      activity: ELogsActivity.Participant_And_Team_Add_Remove,
+      userId: me.id,
+    });
+    await this.logRepository.save(log);
 
     await this.teamRepository.save(team);
     res.status(200).json({ msg: l10n.t("TEAM_CREATE_SUCCESS"), data: team });
@@ -55,6 +72,7 @@ export class TeamController {
   public createParticipates = async (req: TRequest<CreateMultipleParticipateDto>, res: TResponse) => {
     const { teamId } = req.params;
     const { workspaceid: workspaceId } = req.headers;
+    const { me } = req;
 
     const participantsData = req.dto.participatesData;
 
@@ -85,6 +103,20 @@ export class TeamController {
             isInvited: true,
           });
 
+          const participantsDetail = {
+            teamId: +teamId,
+            isInvited: true,
+            Status: EActivityStatus.Participant_Created,
+          };
+
+          const log = await this.logRepository.create({
+            metadata: participantsDetail,
+            workspaceId,
+            activity: ELogsActivity.Participant_And_Team_Add_Remove,
+            userId: me.id,
+          });
+          await this.logRepository.save(log);
+
           await this.participateRepository.save(participate);
         }
 
@@ -108,9 +140,24 @@ export class TeamController {
             isInvited: false,
           });
 
+          const participantsDetail = {
+            teamId: +teamId,
+            isInvited: false,
+            Status: EActivityStatus.Participant_Created,
+          };
+
+          const log = await this.logRepository.create({
+            metadata: participantsDetail,
+            workspaceId,
+            activity: ELogsActivity.Participant_And_Team_Add_Remove,
+            userId: me.id,
+          });
+          await this.logRepository.save(log);
+
           await this.participateRepository.save(participate);
           res.status(200).json({ msg: l10n.t("PARTICIPATE_CREATE_SUCCESS") });
         }
+        res.status(200).json({ msg: l10n.t("PARTICIPATE_CREATE_SUCCESS") });
       }
     });
 
@@ -147,8 +194,23 @@ export class TeamController {
 
   public deleteParticipate = async (req: TRequest, res: TResponse) => {
     const { participateId } = req.params;
+    const { me } = req;
+    const { workspaceid: workspaceId } = req.headers;
 
     await this.participateRepository.delete(participateId);
+
+    const participantsDetail = {
+      participateId: +participateId,
+      status: EActivityStatus.Participant_Remove,
+    };
+
+    const log = await this.logRepository.create({
+      metadata: participantsDetail,
+      workspaceId,
+      activity: ELogsActivity.Participant_And_Team_Add_Remove,
+      userId: me.id,
+    });
+    await this.logRepository.save(log);
 
     res.status(200).json({ msg: l10n.t("PARTICIPATE_DELETE_SUCCESS") });
   };
@@ -174,6 +236,21 @@ export class TeamController {
 
     return res.status(200).json({
       data: teamData,
+    });
+  };
+
+  public readAllParticipate = async (req: TRequest, res: TResponse) => {
+    const { workspaceid: workspaceId } = req.headers;
+
+    const data = await this.participateRepository
+      .createQueryBuilder("participates")
+      .leftJoinAndSelect("participates.user", "user")
+      .select(["participates.id", "participates.userId", "participates.workspaceId", "user.firstName", "user.lastName"])
+      .where({ workspaceId })
+      .getMany();
+
+    res.status(200).json({
+      data,
     });
   };
 }

@@ -21,5 +21,19 @@
   "PARTICIPATE_CREATE_SUCCESS": "Participate created successfully.",
   "PARTICIPATE_DELETE_SUCCESS": "Participate deleted successfully.",
   "DOCUMENT_UPLOAD_SUCCESS": "Document uploaded successfully.",
-  "DOCUMENT_DELETE_SUCCESS": "Document deleted successfully."
+  "DOCUMENT_DELETE_SUCCESS": "Document deleted successfully.",
+  "EMAIL_UPDATE_SUCCESS": "Email updated successfully.",
+  "NAME_UPDATE_SUCCESS": "Profile name updated successfully.",
+  "MOBILE_UPDATE_SUCCESS": "Mobile updated successfully.",
+  "COMPANY_NAME_UPDATE_SUCCESS": "Company name updated successfully.",
+  "PASSWORD_UPDATE_SUCCESS": "Password updated successfully.",
+  "WORKSPACE_UPDATE_SUCCESS": "Workspace updated successfully.",
+  "ACCOUNT_DELETE_SUCCESS": "Account delete successfully.",
+  "DESCRIPTION_UPDATE_SUCCESS": "Description updated successfully.",
+  "INVALID_PASSWORD": "Invalid Password!!",
+  "WORKFLOW_CREATE_SUCCESS": "Workflow created successfully.",
+  "WORKFLOW_UPDATE_SUCCESS": "Workflow updated successfully.",
+  "WORKFLOW_DELETE_SUCCESS": "Workflow deleted successfully.",
+  "DUEDATE_UPDATED_SUCCESS": "Due date updated successfully.",
+  "DUEDATE_DELETE_SUCCESS": "Due date deleted successfully."
 }

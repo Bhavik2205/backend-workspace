@@ -1,17 +1,11 @@
-import { DocumentEntity, FolderEntity } from "@entities";
+import { DocumentEntity, FolderEntity, LogEntity } from "@entities";
 import * as l10n from "jm-ez-l10n";
-import { TResponse, TRequest } from "@types";
+import { TResponse, TRequest, EAzureFolder, ELogsActivity } from "@types";
 import { Repository } from "typeorm";
-import { InitRepository, InjectRepositories, Utils } from "@helpers";
+import { AzureUtils, InitRepository, InjectRepositories, Utils } from "@helpers";
 import { env } from "@configs";
-import { BlobServiceClient, StorageSharedKeyCredential } from "@azure/storage-blob";
+import moment from "moment";
 import { CreateDocumentDto } from "./dto";
-
-const account = env.azureStorageAccountName;
-const accountKey = env.azureStorageAccountKey;
-
-const sharedKeyCredential = new StorageSharedKeyCredential(account, accountKey);
-const blobServiceClient = new BlobServiceClient(env.azureURL, sharedKeyCredential);
 
 export class DocumentController {
   @InitRepository(DocumentEntity)
@@ -19,6 +13,9 @@ export class DocumentController {
 
   @InitRepository(FolderEntity)
   folderRepository: Repository<FolderEntity>;
+
+  @InitRepository(LogEntity)
+  logRepository: Repository<LogEntity>;
 
   constructor() {
     InjectRepositories(this);
@@ -30,9 +27,11 @@ export class DocumentController {
     const { workspaceid: workspaceId } = req.headers;
     const { file } = req.files;
 
-    const blobName = `new${new Date().getTime()}`;
-    const containerClient = blobServiceClient.getContainerClient(env.containerName);
-    const blockBlobClient = containerClient.getBlockBlobClient(blobName);
+    AzureUtils.initialize();
+
+    const blobName = `${EAzureFolder.Workspace}/${workspaceId}/${moment().format("YYYYMMDDHHmmss")}`;
+    const containerClient = AzureUtils.getContainerClient(env.containerName);
+    const blockBlobClient = AzureUtils.getBlockBlobClient(blobName, containerClient);
     await blockBlobClient.uploadData(file.data, file.size);
 
     const blobUrl = `${env.containerName}/${blobName}`;
@@ -51,12 +50,29 @@ export class DocumentController {
 
     const document = await this.documentRepository.save(updatedDocument);
 
-    const documentNumber = await Utils.generateRandomNumber(document.userId, workspaceId, document.id);
+    const documentNumber = Utils.generateRandomNumber(document.userId, workspaceId, document.id);
     document.docNum = parseInt(documentNumber, 10);
+
+    const documentDetail = {
+      file: updatedDocument.file,
+      size: updatedDocument.size,
+      workspaceId: updatedDocument.workspaceId,
+      fileName: updatedDocument.name,
+      categoryId: updatedDocument.categoryId,
+      folderId: updatedDocument.folderId,
+    };
+
+    const log = await this.logRepository.create({
+      metadata: documentDetail,
+      workspaceId: 1,
+      activity: ELogsActivity.Document_Upload,
+      userId: me.id,
+    });
+    await this.logRepository.save(log);
 
     await this.documentRepository.save(document);
 
-    res.status(200).json({ msg: l10n.t("DOCUMENT_UPLOAD_SUCCESS"), data: document });
+    return res.status(200).json({ msg: l10n.t("DOCUMENT_UPLOAD_SUCCESS"), data: document });
   };
 
   public read = async (req: TRequest, res: TResponse) => {
