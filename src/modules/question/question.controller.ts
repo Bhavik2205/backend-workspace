@@ -119,7 +119,6 @@ export class QuestionController {
     if (!participateData) {
       return res.status(404).json({ error: "User is not a member of any team" });
     }
-    
     const questionDetail = await this.questionRepository
       .createQueryBuilder("question")
       .leftJoinAndSelect("question.user", "user")

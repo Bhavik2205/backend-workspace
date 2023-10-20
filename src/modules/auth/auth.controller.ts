@@ -30,6 +30,17 @@ export class AuthController {
 
   public create = async (req: TRequest<CreateUserDto>, res: TResponse) => {
     req.dto.password = await Bcrypt.hash(req.dto.password);
+
+    const userDetail = await this.userRepository.findOne({
+      where: {
+        email: req.dto.email,
+      },
+    });
+
+    if (userDetail) {
+      return res.status(400).json({ error: l10n.t("USER_ALREADY_EXIST") });
+    }
+
     const user = await this.userRepository.create(req.dto);
     await this.userRepository.save(user);
     const token = JwtHelper.encode({ id: user.id });
