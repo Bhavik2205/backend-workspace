@@ -8,8 +8,6 @@
         <sql>
             DROP TYPE IF EXISTS "enum_workspace_purpose" CASCADE;
             DROP TYPE IF EXISTS "enum_workspace_type" CASCADE;
-            DROP TYPE IF EXISTS "enum_workflow_status" CASCADE;
-            DROP TYPE IF EXISTS "enum_logs_activity" CASCADE;
             <!-- CREATE EXTENSION IF NOT EXISTS "uuid-ossp"; -->
         </sql>
     </changeSet>
@@ -504,7 +502,11 @@
         </addColumn> 
     </changeSet>
     <changeSet author="Dharmik Dalwadi" id="36">
-        <sql>CREATE TYPE enum_workflow_status AS ENUM ('Pending','In Process','Complete')</sql>
+        <sql>
+            DROP TYPE IF EXISTS "enum_workflow_status" CASCADE;
+            DROP TYPE IF EXISTS "enum_logs_activity" CASCADE;
+            CREATE TYPE enum_workflow_status AS ENUM ('Pending','In Process','Complete')
+        </sql>
         <createTable tableName="workflows">
             <column name="id" type="int" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
