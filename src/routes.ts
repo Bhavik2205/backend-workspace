@@ -8,6 +8,9 @@ import { AuthRouter } from "@modules/auth";
 import { QuestionRouter } from "@modules/question";
 import { TeamRouter } from "@modules/team";
 import { DocumentRouter } from "@modules/document";
+import { ProfileRouter } from "@modules/profile";
+import { WorkflowRouter } from "@modules/workflow";
+import { LogRouter } from "@modules/log";
 
 export default class Routes {
   public configure() {
@@ -20,6 +23,9 @@ export default class Routes {
     router.use("/questions", new QuestionRouter().router);
     router.use("/teams", new TeamRouter().router);
     router.use("/documents", new DocumentRouter().router);
+    router.use("/profile", new ProfileRouter().router);
+    router.use("/workflows", new WorkflowRouter().router);
+    router.use("/logs", new LogRouter().router);
     router.all("/*", (req, res) =>
       res.status(404).json({
         error: l10n.t("ERR_URL_NOT_FOUND"),

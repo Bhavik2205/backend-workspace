@@ -2,8 +2,8 @@ import { MoreThanOrEqual, Repository } from "typeorm";
 import moment from "moment";
 import * as l10n from "jm-ez-l10n";
 import { v4 as uuidv4 } from "uuid";
-import { TRequest, TResponse } from "@types";
-import { ParticipateEntity, ResetPasswordRequestEntity, TwoFactorAuthRequestEntity, UserEntity } from "@entities";
+import { ELogsActivity, TRequest, TResponse } from "@types";
+import { LogEntity, ParticipateEntity, ResetPasswordRequestEntity, TwoFactorAuthRequestEntity, UserEntity } from "@entities";
 import { InitRepository, InjectRepositories, Bcrypt, JwtHelper, GenerateOTP, Notification, PhoneNumberValidator } from "@helpers";
 import { Constants, env } from "@configs";
 import { CreateUserDto, ForgotPasswordDto, ResetPasswordDto, SendTwoFactorDto, SignInDto, VerifyTwoFactorDto } from "./dto";
@@ -20,6 +20,9 @@ export class AuthController {
 
   @InitRepository(ParticipateEntity)
   participateRepository: Repository<ParticipateEntity>;
+
+  @InitRepository(LogEntity)
+  logRepository: Repository<LogEntity>;
 
   constructor() {
     InjectRepositories(this);
@@ -73,6 +76,19 @@ export class AuthController {
 
     const userWithoutPassword = { ...user };
     delete userWithoutPassword.password;
+
+    const logDetails = {
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+    };
+
+    const log = await this.logRepository.create({
+      metadata: logDetails,
+      activity: ELogsActivity.Login_History,
+      userId: user.id,
+    });
+    await this.logRepository.save(log);
 
     return res.status(200).json({ token, data: userWithoutPassword });
   };

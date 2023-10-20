@@ -1,5 +1,5 @@
+import { EWorkspacePurpose, EWorkspaceType } from "@types";
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { EWorkspacePurpose, EWorkspaceType } from "../types/index";
 
 @Entity("workspaces")
 export class WorkspaceEntity {
@@ -15,10 +15,13 @@ export class WorkspaceEntity {
   @Column({ type: "integer" })
   userId: number;
 
-  @Column({ type: "enum", enum: "EWorkspacePurpose" })
+  @Column({ type: "text", nullable: true })
+  imageUrl: string;
+
+  @Column({ type: "enum", enum: EWorkspacePurpose })
   purpose: EWorkspacePurpose;
 
-  @Column({ type: "enum", enum: "EWorkspaceType" })
+  @Column({ type: "enum", enum: EWorkspaceType })
   type: EWorkspaceType;
 
   @CreateDateColumn()

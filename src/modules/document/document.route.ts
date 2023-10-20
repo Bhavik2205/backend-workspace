@@ -4,8 +4,6 @@ import { InjectCls, SFRouter, Validator } from "@helpers";
 import { isWorkspaceExist, AuthMiddleware } from "@middlewares";
 import { Constants } from "@configs";
 import { DocumentController } from "./document.controller";
-import { FilemimeValidator } from "./validators/filemime.validator";
-import { FilesizeValidator } from "./validators/filesize.validator";
 import { CreateDocumentDto } from "./dto";
 
 export class DocumentRouter extends SFRouter implements RouterDelegates {
@@ -21,8 +19,8 @@ export class DocumentRouter extends SFRouter implements RouterDelegates {
       fileUpload({
         limits: { fileSize: Constants.MAX_FILE_SIZE },
       }),
-      FilemimeValidator.validate,
-      FilesizeValidator.validate,
+      Validator.fileMimeValidate,
+      Validator.fileSizeValidate,
       Validator.validate(CreateDocumentDto),
       this.authMiddleware.auth,
       isWorkspaceExist(),

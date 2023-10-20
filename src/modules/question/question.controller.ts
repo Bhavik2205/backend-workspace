@@ -43,7 +43,7 @@ export class QuestionController {
 
     const questionData = await this.questionRepository.save(questionDetail);
 
-    const questionNumber = await Utils.generateRandomNumber(questionDetail.userId, workspaceId, questionDetail.id);
+    const questionNumber = Utils.generateRandomNumber(questionDetail.userId, workspaceId, questionDetail.id);
     questionDetail.queNum = parseInt(questionNumber, 10);
 
     await this.questionRepository.save(questionData);
@@ -119,13 +119,7 @@ export class QuestionController {
     if (!participateData) {
       return res.status(404).json({ error: "User is not a member of any team" });
     }
-
-    const teamData = await this.teamRepository.findOne({
-      where: {
-        id: participateData.teamId,
-      },
-    });
-
+    
     const questionDetail = await this.questionRepository
       .createQueryBuilder("question")
       .leftJoinAndSelect("question.user", "user")
@@ -160,8 +154,7 @@ export class QuestionController {
         "to.name",
         "document.file",
       ])
-      .where("(question.to = :teamId) OR (question.from = :teamId )", {
-        teamId: teamData.id,
+      .where({
         id: questionId,
         workspaceId,
       })

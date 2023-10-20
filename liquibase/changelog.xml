@@ -8,6 +8,8 @@
         <sql>
             DROP TYPE IF EXISTS "enum_workspace_purpose" CASCADE;
             DROP TYPE IF EXISTS "enum_workspace_type" CASCADE;
+            DROP TYPE IF EXISTS "enum_workflow_status" CASCADE;
+            DROP TYPE IF EXISTS "enum_logs_activity" CASCADE;
             <!-- CREATE EXTENSION IF NOT EXISTS "uuid-ossp"; -->
         </sql>
     </changeSet>
@@ -493,5 +495,121 @@
     </changeSet>
     <changeSet author="Dharmik Dalwadi" id="34">
         <addForeignKeyConstraint baseColumnNames="documentId" baseTableName="questions" constraintName="questions_documentId_fkey" deferrable="false" initiallyDeferred="false" onDelete="SET NULL" onUpdate="SET NULL" referencedColumnNames="id" referencedTableName="documents" validate="true"/>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="35">
+        <addColumn tableName="workspaces">
+            <column name="imageUrl" type="TEXT">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn> 
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="36">
+        <sql>CREATE TYPE enum_workflow_status AS ENUM ('Pending','In Process','Complete')</sql>
+        <createTable tableName="workflows">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="workspaceId" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="dueDate" type="date">
+                <constraints nullable="true"/>
+            </column>
+            <column name="userId" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="teamId" type="INTEGER">
+                <constraints nullable="true"/>
+            </column>
+            <column name="allocate" type="INTEGER">
+                <constraints nullable="true"/>
+            </column>
+            <column name="taskNum" type="INTEGER">
+                <constraints nullable="true"/>
+            </column>
+            <column name="status" type="enum_workflow_status">
+                <constraints nullable="true"/>
+            </column>
+            <column name="createdAt" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="now()" >
+                <constraints nullable="false"/>
+            </column>
+            <column name="updatedAt" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="now()">
+             <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createIndex indexName="idx_workflow_status" tableName="workflows">
+            <column name="status"/>
+        </createIndex>
+        <createIndex indexName="idx_workflow_dueDate" tableName="workflows">
+            <column name="dueDate"/>
+        </createIndex>
+        <createIndex indexName="idx_workflow_allocate" tableName="workflows">
+            <column name="allocate"/>
+        </createIndex>
+        <createIndex indexName="idx_workflow_teamId" tableName="workflows">
+            <column name="teamId"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="37">
+        <addForeignKeyConstraint baseColumnNames="workspaceId" baseTableName="workflows" constraintName="workflow_workspaceId_fkey" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="workspaces" validate="true"/>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="38">
+        <addForeignKeyConstraint baseColumnNames="userId" baseTableName="workflows" constraintName="workflow_userId_fkey" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="users" validate="true"/>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="39">
+        <addForeignKeyConstraint baseColumnNames="allocate" baseTableName="workflows" constraintName="workflow_allocate_fkey" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="participates" validate="true"/>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="40">
+        <addForeignKeyConstraint baseColumnNames="teamId" baseTableName="workflows" constraintName="workflow_teamId_fkey" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="participates" validate="true"/>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="41">
+        <sql>CREATE TYPE enum_logs_activity AS ENUM ('Login History','Document Upload','Participant and Team Add / Remove','Question Answer Summary','Others (TBC)')</sql>
+        <createTable tableName="logs">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="metadata" type="JSON">
+                <constraints nullable="false"/>
+            </column>
+            <column name="activity" type="enum_logs_activity">
+                <constraints nullable="true"/>
+            </column>
+            <column name="workspaceId" type="INTEGER">
+                <constraints nullable="true"/>
+            </column>
+            <column name="userId" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="createdAt" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="now()" >
+                <constraints nullable="false"/>
+            </column>
+            <column name="updatedAt" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="now()">
+             <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createIndex indexName="idx_logs_workspaceId" tableName="logs">
+            <column name="workspaceId"/>
+        </createIndex>
+        <createIndex indexName="idx_logs_userId" tableName="logs">
+            <column name="userId"/>
+        </createIndex>
+        <createIndex indexName="idx_logs_activity" tableName="logs">
+            <column name="activity"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="42">
+        <addForeignKeyConstraint baseColumnNames="userId" baseTableName="logs" constraintName="logs_userId_fkey" deferrable="false" initiallyDeferred="false" onDelete="SET NULL" onUpdate="SET NULL" referencedColumnNames="id" referencedTableName="users" validate="true"/>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="43">
+        <addForeignKeyConstraint baseColumnNames="workspaceId" baseTableName="logs" constraintName="logs_workspaceId_fkey" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="workspaces" validate="true"/>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="44">
+        <modifyDataType tableName="subscriptionPlans" columnName="planDetail" newDataType="JSON"/>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="45">
+        <modifyDataType tableName="roles" columnName="permission" newDataType="JSON"/>
     </changeSet>
 </databaseChangeLog>

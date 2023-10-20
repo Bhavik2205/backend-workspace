@@ -28,6 +28,7 @@
   "dependencies": {
     "@azure/storage-blob": "^12.16.0",
     "@types/express-fileupload": "^1.4.2",
+    "@types/json2csv": "^5.0.5",
     "axios": "^1.5.1",
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
@@ -44,6 +45,7 @@
     "express-fileupload": "^1.4.1",
     "helmet": "^7.0.0",
     "jm-ez-l10n": "^1.0.0",
+    "json2csv": "^6.0.0-alpha.2",
     "jsonwebtoken": "^9.0.1",
     "libphonenumber-js": "^1.10.46",
     "lint-staged": "^14.0.1",
