@@ -9,6 +9,7 @@
   "WORKSPACE_CREATE_SUCCESS": "Workspace created successfully.",
   "WORKSPACE_DELETE_SUCCESS": "Workspace deleted successfully.",
   "WORKSPACE_NOT_EXIST": "Workspace not exist.",
+  "USER_ALREADY_EXIST": "User already exists.",
   "USER_CREATED": "User created successfully.",
   "RESET_PASSWORD_LINK": "Reset password link sent in email, check it",
   "PASSWORD_UPDATE": "Password updated successfully.",
