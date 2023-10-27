@@ -1,5 +1,6 @@
 import { EWorkspacePurpose, EWorkspaceType } from "@types";
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { UserEntity } from "./user.entity";
 
 @Entity("workspaces")
 export class WorkspaceEntity {
@@ -29,4 +30,8 @@ export class WorkspaceEntity {
 
   @UpdateDateColumn()
   public updatedAt: Date;
+
+  @OneToOne(() => UserEntity, user => user.workspace)
+  @JoinColumn({ name: "userId" })
+  user: UserEntity;
 }

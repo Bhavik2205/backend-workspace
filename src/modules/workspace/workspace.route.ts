@@ -1,8 +1,9 @@
 import { RouterDelegates } from "@types";
 import { InjectCls, SFRouter, Validator } from "@helpers";
 import fileUpload from "express-fileupload";
-import { AuthMiddleware } from "@middlewares";
+import { AuthMiddleware, PermissionsMiddleware } from "@middlewares";
 import { Constants } from "@configs";
+import { Permissions } from "@acl";
 import { WorkspaceController } from "./workspace.controller";
 import { CreateWorkspaceDto, UpdateDescriptionDto, UpdateWorkspaceDto } from "./dto";
 
@@ -12,6 +13,9 @@ export class WorkspaceRouter extends SFRouter implements RouterDelegates {
 
   @InjectCls(AuthMiddleware)
   private authMiddleware: AuthMiddleware;
+
+  @InjectCls(PermissionsMiddleware)
+  permission: PermissionsMiddleware;
 
   initRoutes(): void {
     this.router.post("/", Validator.validate(CreateWorkspaceDto), this.authMiddleware.auth, this.workspaceController.create);
@@ -30,5 +34,6 @@ export class WorkspaceRouter extends SFRouter implements RouterDelegates {
       this.authMiddleware.auth,
       this.workspaceController.updateImage,
     );
+    this.router.get("/:workspaceId/workspace-profile", this.authMiddleware.auth, this.permission.acl(Permissions.EditSettings), this.workspaceController.workspaceSetting);
   }
 }

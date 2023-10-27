@@ -1,6 +1,7 @@
 import { RouterDelegates } from "@types";
 import { InjectCls, SFRouter, Validator } from "@helpers";
-import { AuthMiddleware, isWorkspaceExist } from "@middlewares";
+import { AuthMiddleware, PermissionsMiddleware, isWorkspaceExist } from "@middlewares";
+import { Permissions } from "@acl";
 import { QuestionController } from "./question.controller";
 import { CreateQuestionDto, CreateAnswerDto } from "./dto";
 
@@ -11,11 +12,21 @@ export class QuestionRouter extends SFRouter implements RouterDelegates {
   @InjectCls(AuthMiddleware)
   private authMiddleware: AuthMiddleware;
 
+  @InjectCls(PermissionsMiddleware)
+  permission: PermissionsMiddleware;
+
   initRoutes(): void {
-    this.router.post("/", Validator.validate(CreateQuestionDto), this.authMiddleware.auth, isWorkspaceExist(), this.workspaceController.create);
-    this.router.get("/", this.authMiddleware.auth, isWorkspaceExist(), this.workspaceController.read);
-    this.router.get("/:questionId", this.authMiddleware.auth, isWorkspaceExist(), this.workspaceController.readOne);
-    this.router.delete("/:questionId", this.authMiddleware.auth, this.workspaceController.delete);
+    this.router.post(
+      "/",
+      this.authMiddleware.auth,
+      this.permission.acl(Permissions.CreateNewQA),
+      Validator.validate(CreateQuestionDto),
+      isWorkspaceExist(),
+      this.workspaceController.create,
+    );
+    this.router.get("/", this.authMiddleware.auth, this.permission.acl(Permissions.ViewQA), isWorkspaceExist(), this.workspaceController.read);
+    this.router.get("/:questionId", this.authMiddleware.auth, this.permission.acl(Permissions.ViewQA), isWorkspaceExist(), this.workspaceController.readOne);
+    this.router.delete("/:questionId", this.authMiddleware.auth, this.permission.acl(Permissions.DeleteQA), this.workspaceController.delete);
     this.router.post("/answer/:questionId", Validator.validate(CreateAnswerDto), this.authMiddleware.auth, this.workspaceController.createAnswer);
   }
 }

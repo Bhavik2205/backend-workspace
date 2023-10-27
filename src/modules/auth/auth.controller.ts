@@ -2,8 +2,8 @@ import { MoreThanOrEqual, Repository } from "typeorm";
 import moment from "moment";
 import * as l10n from "jm-ez-l10n";
 import { v4 as uuidv4 } from "uuid";
-import { ELogsActivity, TRequest, TResponse } from "@types";
-import { LogEntity, ParticipateEntity, ResetPasswordRequestEntity, TwoFactorAuthRequestEntity, UserEntity } from "@entities";
+import { ELogsActivity, ERolesRole, TRequest, TResponse } from "@types";
+import { LogEntity, ParticipateEntity, ResetPasswordRequestEntity, TwoFactorAuthRequestEntity, UserEntity, SettingEntity, RolesEntity, UserRolesEntity } from "@entities";
 import { InitRepository, InjectRepositories, Bcrypt, JwtHelper, GenerateOTP, Notification, PhoneNumberValidator } from "@helpers";
 import { Constants, env } from "@configs";
 import { CreateUserDto, ForgotPasswordDto, ResetPasswordDto, SendTwoFactorDto, SignInDto, VerifyTwoFactorDto } from "./dto";
@@ -23,6 +23,15 @@ export class AuthController {
 
   @InitRepository(LogEntity)
   logRepository: Repository<LogEntity>;
+
+  @InitRepository(SettingEntity)
+  settingRepository: Repository<SettingEntity>;
+
+  @InitRepository(RolesEntity)
+  rolesRepository: Repository<RolesEntity>;
+
+  @InitRepository(UserRolesEntity)
+  userRolesRepository: Repository<UserRolesEntity>;
 
   constructor() {
     InjectRepositories(this);
@@ -45,6 +54,16 @@ export class AuthController {
     await this.userRepository.save(user);
     const token = JwtHelper.encode({ id: user.id });
 
+    const roles = await this.rolesRepository.findOne({
+      where: { role: ERolesRole.Super_Admin },
+    });
+
+    const userRole = await this.userRolesRepository.create({
+      userId: user.id,
+      roleId: roles.id,
+    });
+    await this.userRolesRepository.save(userRole);
+
     const participate = await this.participateRepository.findOne({
       where: {
         email: user.email,
@@ -56,6 +75,13 @@ export class AuthController {
         userId: user.id,
         isInvited: false,
       });
+
+      await this.userRolesRepository.update(
+        { participateId: participate.id },
+        {
+          userId: user.id,
+        },
+      );
     }
 
     return res.status(200).json({ msg: l10n.t("USER_CREATED"), token });
@@ -100,6 +126,13 @@ export class AuthController {
       userId: user.id,
     });
     await this.logRepository.save(log);
+
+    const setting = await this.settingRepository.create({
+      userId: user.id,
+      isQANotification: false,
+      isTeamSpecificQA: false,
+    });
+    await this.settingRepository.save(setting);
 
     return res.status(200).json({ token, data: userWithoutPassword });
   };
@@ -211,5 +244,12 @@ export class AuthController {
     }
 
     return res.status(200).json({ msg: l10n.t("2FA_VERIFY") });
+  };
+
+  public getRoles = async (req: TRequest, res: TResponse) => {
+    const roles = await this.rolesRepository.find({
+      select: ["id", "role", "permission"],
+    });
+    return res.status(200).json({ roles });
   };
 }

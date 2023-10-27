@@ -36,5 +36,6 @@
   "WORKFLOW_UPDATE_SUCCESS": "Workflow updated successfully.",
   "WORKFLOW_DELETE_SUCCESS": "Workflow deleted successfully.",
   "DUEDATE_UPDATED_SUCCESS": "Due date updated successfully.",
-  "DUEDATE_DELETE_SUCCESS": "Due date deleted successfully."
+  "DUEDATE_DELETE_SUCCESS": "Due date deleted successfully.",
+  "ERR_PERMISSION_DENIED": "Access denied"
 }

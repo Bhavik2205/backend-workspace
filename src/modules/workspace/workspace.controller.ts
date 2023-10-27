@@ -162,4 +162,30 @@ export class WorkspaceController {
 
     return res.sendStatus(200);
   };
+
+  public workspaceSetting = async (req: TRequest, res: TResponse) => {
+    const { workspaceId } = req.params;
+    const data = await this.workspaceRepository
+      .createQueryBuilder("workspace")
+      .leftJoinAndSelect("workspace.user", "user")
+      .leftJoinAndSelect("user.setting", "setting")
+      .select([
+        "workspace.id",
+        "workspace.name",
+        "workspace.imageUrl",
+        "workspace.description",
+        "workspace.purpose",
+        "workspace.type",
+        "user.email",
+        "user.mobile",
+        "setting.isQANotification",
+        "setting.isTeamSpecificQA",
+      ])
+      .where("workspace.id = :workspaceId", { workspaceId })
+      .getMany();
+
+    res.status(200).json({
+      data,
+    });
+  };
 }

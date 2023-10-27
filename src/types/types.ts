@@ -45,4 +45,9 @@ export enum EStatusYN {
   No = "No",
 }
 
-export enum Roles {}
+export enum Roles {
+  Super_Admin = "Super Admin",
+  Admin = "Admin",
+  QA = "QA",
+  Viewer = "Viewer",
+}

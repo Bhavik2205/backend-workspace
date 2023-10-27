@@ -1,4 +1,4 @@
-import { LogEntity, ParticipateEntity, TeamEntity, UserEntity } from "@entities";
+import { LogEntity, ParticipateEntity, TeamEntity, UserEntity, UserRolesEntity } from "@entities";
 import { InitRepository, InjectRepositories, Notification } from "@helpers";
 import { EActivityStatus, ELogsActivity, TRequest, TResponse } from "@types";
 import { Repository } from "typeorm";
@@ -18,6 +18,9 @@ export class TeamController {
 
   @InitRepository(LogEntity)
   logRepository: Repository<LogEntity>;
+
+  @InitRepository(UserRolesEntity)
+  userRolesRepository: Repository<UserRolesEntity>;
 
   constructor() {
     InjectRepositories(this);
@@ -118,6 +121,12 @@ export class TeamController {
           await this.logRepository.save(log);
 
           await this.participateRepository.save(participate);
+
+          const userRole = await this.userRolesRepository.create({
+            participateId: participate.id,
+            roleId,
+          });
+          await this.userRolesRepository.save(userRole);
         }
 
         await Notification.email("invitation", emailData, [email]);
@@ -155,6 +164,14 @@ export class TeamController {
           await this.logRepository.save(log);
 
           await this.participateRepository.save(participate);
+
+          const userRole = await this.userRolesRepository.create({
+            userId: user.id,
+            participateId: participate.id,
+            roleId,
+          });
+          await this.userRolesRepository.save(userRole);
+
           res.status(200).json({ msg: l10n.t("PARTICIPATE_CREATE_SUCCESS") });
         }
         res.status(200).json({ msg: l10n.t("PARTICIPATE_CREATE_SUCCESS") });

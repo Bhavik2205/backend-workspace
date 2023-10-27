@@ -21,6 +21,9 @@ import {
   DocumentEntity,
   WorkflowEntity,
   LogEntity,
+  SettingEntity,
+  UserRolesEntity,
+  RolesEntity,
 } from "@entities";
 import { destructPager } from "middlewares";
 import { Cors, EnvValidator, HandleUnhandledPromise, Log } from "./helpers";
@@ -58,6 +61,9 @@ export default class App {
         DocumentEntity,
         WorkflowEntity,
         LogEntity,
+        SettingEntity,
+        RolesEntity,
+        UserRolesEntity,
       ],
     });
 

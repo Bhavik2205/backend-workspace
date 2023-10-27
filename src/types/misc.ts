@@ -45,6 +45,13 @@ export enum EActivityStatus {
   Participant_Remove = "Participant Removed",
 }
 
+export enum ERolesRole {
+  Super_Admin = "Super Admin",
+  Admin = "Admin",
+  QA = "QA",
+  Viewer = "Viewer",
+}
+
 type EnumTypes = {
   workspace: {
     purpose: EWorkspacePurpose[];
@@ -55,6 +62,9 @@ type EnumTypes = {
   };
   logs: {
     activity: ELogsActivity[];
+  };
+  roles: {
+    role: ERolesRole[];
   };
 };
 
@@ -68,5 +78,8 @@ export const enums: EnumTypes = {
   },
   logs: {
     activity: Object.values(ELogsActivity),
+  },
+  roles: {
+    role: Object.values(ERolesRole),
   },
 };
