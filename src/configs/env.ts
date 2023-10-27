@@ -77,6 +77,12 @@ class Env {
 
   @IsString()
   public azureURL: string;
+
+  @IsString()
+  public stripeSecret: string;
+
+  @IsString()
+  public stripePublic: string;
 }
 
 export const env = new Env();
@@ -105,3 +111,5 @@ env.azureStorageAccountKey = process.env.AZURE_STORAGE_ACCOUNT_KEY;
 env.containerName = process.env.CONTAINER_NAME;
 env.connectionString = process.env.CONNECTION_STRING;
 env.azureURL = process.env.AZURE_URL;
+env.stripeSecret = process.env.STRIPE_SECRET;
+env.stripePublic = process.env.STRIPE_PUBLIC;

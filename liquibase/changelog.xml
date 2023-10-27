@@ -614,4 +614,164 @@
     <changeSet author="Dharmik Dalwadi" id="45">
         <modifyDataType tableName="roles" columnName="permission" newDataType="JSON"/>
     </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="46">
+        <dropColumn tableName="subscriptionPlans" columnName="discount"/>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="47">
+        <addColumn tableName="subscriptionPlans">
+            <column name="discount" type="INTEGER">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn> 
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="48">
+        <createTable tableName="userSubscriptions">
+            <column autoIncrement="true" name="id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="userSubscriptions_pkey"/>
+            </column>
+            <column name="userId" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="planId" type="INTEGER">
+                <constraints nullable="true"/>
+            </column>
+            <column name="startDate" type="date">
+                <constraints nullable="true"/>
+            </column>
+            <column name="endDate" type="date">
+                <constraints nullable="true"/>
+            </column>
+            <column name="customerId" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="subscriptionId" type="VARCHAR(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="productId" type="VARCHAR(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="isActive" type="BOOLEAN" defaultValueComputed="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="createdAt" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="now()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updatedAt" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="now()">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="49">
+        <addForeignKeyConstraint baseColumnNames="userId" baseTableName="userSubscriptions" constraintName="userSubscriptions_userId_fkey" deferrable="false" initiallyDeferred="false" onDelete="SET NULL" onUpdate="SET NULL" referencedColumnNames="id" referencedTableName="users" validate="true"/>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="50">
+        <addForeignKeyConstraint baseColumnNames="planId" baseTableName="userSubscriptions" constraintName="userSubscriptions_planId_fkey" deferrable="false" initiallyDeferred="false" onDelete="SET NULL" onUpdate="SET NULL" referencedColumnNames="id" referencedTableName="subscriptionPlans" validate="true"/>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="51">
+        <addColumn tableName="subscriptionPlans">
+            <column name="priceId" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn> 
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="52">
+        <dropColumn tableName="subscriptionPlans" columnName="planDetail"/>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="53">
+        <dropColumn tableName="subscriptionPlans" columnName="duration"/>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="54">
+        <addColumn tableName="subscriptionPlans">
+            <column name="metaData" type="JSON">
+                <constraints nullable="true"/>
+            </column>
+            <column name="feature" type="JSON">
+                <constraints nullable="true"/>
+            </column>
+            <column name="productId" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="images" type="TEXT []">
+                <constraints nullable="true"/>
+            </column>
+            <column name="duration" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn> 
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="55">
+        <comment>Pre-load subscription plans</comment>
+        <sql>
+        INSERT INTO public."subscriptionPlans"(name, description, price, duration, discount, "priceId", "metaData", feature, "productId", images)
+            VALUES
+            ('Workspace Tier 3',null,55,'1 month',null,'price_1O3Va5B4ZEWdjEySPrwS2SyX',null,'[
+      {
+             "name": "1 Workspace with up to 18 users"
+      },
+      {
+             "name": "10 GB of storage space (more purchasable)"
+      },
+      {
+             "name": "Upload, Download, Edit and View documents"
+      },
+      {
+             "name": "Q-A Enabled"
+      },
+      {
+            "name": "Able to create 4 teams per Workspace"
+      },
+      {
+            "name": "Download Audit logs and Q-A"
+      },
+      {
+            "name": "Access to Workflow tool"
+      },
+      {
+            "name": "Online Editor for documents (Zoho)"
+      }
+    ]','prod_OrE2rAerGFlWhd', null),
+     ('Workspace Tier 2',null,35,'1 month',null,'price_1O3VXJB4ZEWdjEySVPjsFiUr',null,'[
+      {
+             "name": "1 Workspace with up to 9 users"
+      },
+      {
+             "name": "5 GB of storage space (more purchasable)"
+      },
+      {
+             "name": "Upload, Download, Edit and View documents"
+      },
+      {
+             "name": "Q-A Enabled"
+      },
+      {
+            "name": "Create up to 3 teams per Workspace"
+      },
+      {
+            "name": "Download Audit logs and Q-A"
+      }
+    ]','prod_OrDzz0IZEs6NC1', null),
+    ('Workspace Base Tier',null,0,'1 month',null,'price_1O3VS1B4ZEWdjEyS9NTUz0GK',null,'[
+      {
+             "name": "1 Workspace with up to 2 users"
+      },
+      {
+             "name": "100 MB of storage space (+ more purchasable)"
+      },
+      {
+             "name": "Upload, Download and View documents"
+      },
+      {
+             "name": "Create only 2 teams"
+      }
+    ]','prod_OrDtBDUVnE7gF7', null),
+     ('Pro App Seats','Purchase Seats to invite Team Members',15,'1 month',null,'price_1O2pNEB4ZEWdjEySLt1nASXl',null,'[
+      {
+             "name": "Dashboard to track Deal inflow and other KPI’s"
+      },
+      {
+             "name": "Invite team member to help you manage application"
+      }
+    ]','prod_OqWQgSBtFJ4KMF','["https://files.stripe.com/links/MDB8YWNjdF8xTzFnSEVCNFpFV2RqRXlTfGZsX3Rlc3RfbVNqdmZyRFR6VDhyUVhmZWNaSXdMZWYw00l9l5n6wq"]')
+        </sql>
+    </changeSet>
 </databaseChangeLog>

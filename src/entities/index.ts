@@ -11,3 +11,5 @@ export * from "./participate.entity";
 export * from "./document.entity";
 export * from "./workflow.entity";
 export * from "./logs.entity";
+export * from "./subscriptionPlans.entity";
+export * from "./userSubscription.entity"
