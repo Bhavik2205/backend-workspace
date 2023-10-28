@@ -23,6 +23,9 @@ import {
   LogEntity,
   UserSubscriptionEntity,
   SubscriptionPlanEntity,
+  SettingEntity,
+  UserRolesEntity,
+  RolesEntity,
 } from "@entities";
 import { destructPager } from "middlewares";
 import { Cors, EnvValidator, HandleUnhandledPromise, Log } from "./helpers";
@@ -61,7 +64,10 @@ export default class App {
         WorkflowEntity,
         LogEntity,
         UserSubscriptionEntity,
-        SubscriptionPlanEntity
+        SubscriptionPlanEntity,
+        SettingEntity,
+        RolesEntity,
+        UserRolesEntity,
       ],
     });
 

@@ -19,5 +19,6 @@ export class AuthRouter extends SFRouter implements RouterDelegates {
     this.router.post("/send-two-factor", Validator.validate(SendTwoFactorDto), this.authMiddleware.auth, this.userController.sendTwoFactor);
     this.router.post("/enable-two-factor", Validator.validate(SendTwoFactorDto), this.authMiddleware.auth, this.userController.sendTwoFactor);
     this.router.post("/verify-two-factor", Validator.validate(VerifyTwoFactorDto), this.authMiddleware.auth, this.userController.verifyTwoFactor);
+    this.router.get("/roles", this.authMiddleware.auth, this.userController.getRoles);
   }
 }

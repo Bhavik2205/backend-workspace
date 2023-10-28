@@ -1,8 +1,9 @@
 import fileUpload from "express-fileupload";
 import { RouterDelegates } from "@types";
 import { InjectCls, SFRouter, Validator } from "@helpers";
-import { isWorkspaceExist, AuthMiddleware } from "@middlewares";
+import { isWorkspaceExist, AuthMiddleware, PermissionsMiddleware } from "@middlewares";
 import { Constants } from "@configs";
+import { Permissions } from "@acl";
 import { DocumentController } from "./document.controller";
 import { CreateDocumentDto } from "./dto";
 
@@ -13,6 +14,9 @@ export class DocumentRouter extends SFRouter implements RouterDelegates {
   @InjectCls(AuthMiddleware)
   private authMiddleware: AuthMiddleware;
 
+  @InjectCls(PermissionsMiddleware)
+  permission: PermissionsMiddleware;
+
   initRoutes(): void {
     this.router.post(
       "/",
@@ -21,13 +25,14 @@ export class DocumentRouter extends SFRouter implements RouterDelegates {
       }),
       Validator.fileMimeValidate,
       Validator.fileSizeValidate,
-      Validator.validate(CreateDocumentDto),
       this.authMiddleware.auth,
+      this.permission.acl(Permissions.DocumentUpload),
+      Validator.validate(CreateDocumentDto),
       isWorkspaceExist(),
       this.documentController.create,
     );
     this.router.get("/", this.authMiddleware.auth, isWorkspaceExist(), this.documentController.read);
-    this.router.delete("/:documentId", this.authMiddleware.auth, this.documentController.delete);
-    this.router.get("/search", this.authMiddleware.auth, isWorkspaceExist(), this.documentController.search);
+    this.router.delete("/:documentId", this.authMiddleware.auth, this.permission.acl(Permissions.DocumentDownload), this.documentController.delete);
+    this.router.get("/search", this.authMiddleware.auth, this.permission.acl(Permissions.DocumentSearch), isWorkspaceExist(), this.documentController.search);
   }
 }

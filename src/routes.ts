@@ -12,6 +12,7 @@ import { ProfileRouter } from "@modules/profile";
 import { WorkflowRouter } from "@modules/workflow";
 import { LogRouter } from "@modules/log";
 import { UserSubscriptionRouter } from "@modules/user-subscription";
+import { SettingRouter } from "@modules/setting";
 
 export default class Routes {
   public configure() {
@@ -28,6 +29,7 @@ export default class Routes {
     router.use("/workflows", new WorkflowRouter().router);
     router.use("/logs", new LogRouter().router);
     router.use("/subscriptions", new UserSubscriptionRouter().router);
+    router.use("/settings", new SettingRouter().router);
     router.all("/*", (req, res) =>
       res.status(404).json({
         error: l10n.t("ERR_URL_NOT_FOUND"),
