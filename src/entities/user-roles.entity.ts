@@ -5,7 +5,7 @@ export class UserRolesEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: "integer" })
+  @Column({ type: "integer", nullable: true })
   userId: number;
 
   @Column({ type: "integer" })

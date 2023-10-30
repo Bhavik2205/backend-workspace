@@ -848,4 +848,15 @@
             UPDATE public.roles SET permission='["DocumentSearch","ViewQA"]' WHERE role='Viewer';
         </sql>
     </changeSet>
+   <changeSet author="Dharmik Dalwadi" id="61">
+        <dropColumn tableName="userRoles" columnName="userId"/>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="62">
+        <addColumn tableName="userRoles">
+            <column name="userId" type="INTEGER">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn> 
+        <addForeignKeyConstraint baseColumnNames="userId" baseTableName="userRoles" constraintName="userRoles_userId_fkey" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="users" validate="true"/>
+    </changeSet>
 </databaseChangeLog>

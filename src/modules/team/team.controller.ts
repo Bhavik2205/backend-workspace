@@ -127,11 +127,11 @@ export class TeamController {
             roleId,
           });
           await this.userRolesRepository.save(userRole);
+          
+          await Notification.email("invitation", emailData, [email]);
+       
         }
 
-        await Notification.email("invitation", emailData, [email]);
-
-        res.status(200).json({ msg: l10n.t("PARTICIPATE_CREATE_SUCCESS") });
       } else {
         const userExists = await this.participateRepository.findOne({
           where: {
@@ -172,13 +172,12 @@ export class TeamController {
           });
           await this.userRolesRepository.save(userRole);
 
-          res.status(200).json({ msg: l10n.t("PARTICIPATE_CREATE_SUCCESS") });
         }
-        res.status(200).json({ msg: l10n.t("PARTICIPATE_CREATE_SUCCESS") });
       }
     });
-
+    
     await Promise.all(promises);
+    res.status(200).json({ msg: l10n.t("PARTICIPATE_CREATE_SUCCESS") });
   };
 
   public readParticipate = async (req: TRequest, res: TResponse) => {
