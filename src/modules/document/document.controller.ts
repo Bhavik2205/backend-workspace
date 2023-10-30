@@ -64,7 +64,7 @@ export class DocumentController {
 
     const log = await this.logRepository.create({
       metadata: documentDetail,
-      workspaceId: 1,
+      workspaceId,
       activity: ELogsActivity.Document_Upload,
       userId: me.id,
     });
