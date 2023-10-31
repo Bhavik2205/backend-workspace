@@ -31,5 +31,6 @@ export class ProfileRouter extends SFRouter implements RouterDelegates {
       this.authMiddleware.auth,
       this.profileController.uploadImage,
     );
+    this.router.post("/2FA", this.authMiddleware.auth, this.profileController.update2fa);
   }
 }

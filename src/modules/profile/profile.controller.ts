@@ -196,6 +196,27 @@ export class ProfileController {
       imageUrl: blobUrl,
     });
 
-    return res.sendStatus(200);
+    const image = `${env.azureURL}${blobUrl}`
+
+    return res.status(200).json({ data: image});
   };
+
+  public update2fa = async (req: TRequest, res: TResponse) => {
+    const { me } = req;
+
+    const userData = await this.userRepository.findOne({
+      where: {
+        id: me.id
+      }
+    });
+
+    const updatedStatus = !userData.is2FAEnabled;
+
+    await this.userRepository.update({ id: me.id }, {
+      is2FAEnabled: updatedStatus,
+    },
+    );
+    res.status(200).json({ msg: l10n.t("TWO_FACTOR_AUTHENTICATION_STATUS_UPDATED_SUCCESS") });
+  };
+
 }
