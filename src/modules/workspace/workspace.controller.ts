@@ -160,7 +160,9 @@ export class WorkspaceController {
       imageUrl: blobUrl,
     });
 
-    return res.sendStatus(200);
+    const image = `${env.azureURL}${blobUrl}`
+
+    return res.status(200).json({ data: image});
   };
 
   public workspaceSetting = async (req: TRequest, res: TResponse) => {
