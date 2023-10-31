@@ -52,9 +52,9 @@ export class CreateUserDto {
   @IsUrl()
   imageUrl?: string;
 
-  @IsOptional()
+  @IsNotEmpty()
   @IsBoolean()
-  is2FAEnabled?: boolean;
+  is2FAEnabled: boolean = false;
 
   @IsOptional()
   @IsInt()

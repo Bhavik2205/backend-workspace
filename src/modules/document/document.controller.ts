@@ -102,6 +102,7 @@ export class DocumentController {
         "question.id",
         "participates.teamId",
         "teams.name",
+        "document.size"
       ])
       .where({ workspaceId })
       .getMany();
