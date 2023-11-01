@@ -1,6 +1,6 @@
-import { TeamEntity, UserEntity, WorkspaceEntity } from "@entities";
+import { ParticipateEntity, RolesEntity, TeamEntity, UserEntity, WorkspaceEntity } from "@entities";
 import { AzureUtils, Bcrypt, InitRepository, InjectRepositories } from "@helpers";
-import { EAzureFolder, TRequest, TResponse } from "@types";
+import { EAzureFolder, ERolesRole, TRequest, TResponse } from "@types";
 import { Repository } from "typeorm";
 import * as l10n from "jm-ez-l10n";
 import { env } from "@configs";
@@ -16,6 +16,12 @@ export class WorkspaceController {
 
   @InitRepository(UserEntity)
   userRepository: Repository<UserEntity>;
+
+  @InitRepository(ParticipateEntity)
+  participateRepository: Repository<ParticipateEntity>;
+
+  @InitRepository(RolesEntity)
+  rolesRepository: Repository<RolesEntity>;
 
   constructor() {
     InjectRepositories(this);
@@ -33,7 +39,7 @@ export class WorkspaceController {
       userId: me.id,
     });
 
-    await this.workspaceRepository.save(workspace);
+    const workspaceData = await this.workspaceRepository.save(workspace);
 
     const internalTeam = await this.teamRepository.create({
       name: "Internal Team",
@@ -45,8 +51,27 @@ export class WorkspaceController {
       workspaceId: workspace.id,
     });
 
-    await this.teamRepository.save([internalTeam, externalTeam]);
+    const team = await this.teamRepository.save([internalTeam, externalTeam]);
 
+    const userData = await this.userRepository.findOne({
+      where: {
+        id: me.id,
+      },
+    });
+
+    const roles = await this.rolesRepository.findOne({
+      where: { role: ERolesRole.Super_Admin },
+    });
+
+    const participate = await this.participateRepository.create({
+      teamId: team[0].id,
+      userId: me.id,
+      email: userData.email,
+      roleId: roles.id,
+      isInvited: false,
+      workspaceId: workspaceData.id,
+    });
+    await this.participateRepository.save(participate);
     res.status(200).json({ msg: l10n.t("WORKSPACE_CREATE_SUCCESS"), data: workspace });
   };
 
@@ -160,9 +185,9 @@ export class WorkspaceController {
       imageUrl: blobUrl,
     });
 
-    const image = `${env.azureURL}${blobUrl}`
+    const image = `${env.azureURL}${blobUrl}`;
 
-    return res.status(200).json({ data: image});
+    return res.status(200).json({ data: image });
   };
 
   public workspaceSetting = async (req: TRequest, res: TResponse) => {
@@ -185,10 +210,10 @@ export class WorkspaceController {
       ])
       .where("workspace.id = :workspaceId", { workspaceId })
       .getMany();
-    
+
     const modifiedData = data.map(workspace => ({
       ...workspace,
-      imageUrl: `${env.azureURL}${workspace.imageUrl}`
+      imageUrl: `${env.azureURL}${workspace.imageUrl}`,
     }));
 
     res.status(200).json({

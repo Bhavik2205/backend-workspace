@@ -14,7 +14,7 @@ export class SubscriptionPlanEntity {
 
   @Column({ type: "json", nullable: true })
   metaData: Record<string, string | number | Date | boolean>;
-  
+
   @Column({ type: "integer" })
   price: number;
 
@@ -23,10 +23,10 @@ export class SubscriptionPlanEntity {
 
   @Column({ type: "varchar", length: 255 })
   productId: string;
-    
+
   @Column({ type: "integer", nullable: true })
   discount: number;
-    
+
   @Column({ type: "varchar", length: 255 })
   duration: string;
 

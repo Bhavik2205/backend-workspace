@@ -94,6 +94,7 @@ export class TeamController {
         const invitedParticipate = await this.participateRepository.findOne({
           where: {
             email,
+            workspaceId,
           },
         });
 
@@ -127,15 +128,14 @@ export class TeamController {
             roleId,
           });
           await this.userRolesRepository.save(userRole);
-          
-          await Notification.email("invitation", emailData, [email]);
-       
-        }
 
+          await Notification.email("invitation", emailData, [email]);
+        }
       } else {
         const userExists = await this.participateRepository.findOne({
           where: {
             userId: user.id,
+            workspaceId,
           },
         });
 
@@ -171,11 +171,10 @@ export class TeamController {
             roleId,
           });
           await this.userRolesRepository.save(userRole);
-
         }
       }
     });
-    
+
     await Promise.all(promises);
     res.status(200).json({ msg: l10n.t("PARTICIPATE_CREATE_SUCCESS") });
   };

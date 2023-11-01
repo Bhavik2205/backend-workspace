@@ -12,7 +12,7 @@ export * from "./document.entity";
 export * from "./workflow.entity";
 export * from "./logs.entity";
 export * from "./subscriptionPlans.entity";
-export * from "./userSubscription.entity"
+export * from "./userSubscription.entity";
 export * from "./setting.entity";
 export * from "./roles.entity";
 export * from "./user-roles.entity";
