@@ -196,9 +196,9 @@ export class ProfileController {
       imageUrl: blobUrl,
     });
 
-    const image = `${env.azureURL}${blobUrl}`
+    const image = `${env.azureURL}${blobUrl}`;
 
-    return res.status(200).json({ data: image});
+    return res.status(200).json({ data: image });
   };
 
   public update2fa = async (req: TRequest, res: TResponse) => {

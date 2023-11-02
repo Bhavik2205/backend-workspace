@@ -1,5 +1,6 @@
+import { ParticipateEntity } from "@entities";
 import { ERolesRole } from "@types";
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity("roles")
 export class RolesEntity {
@@ -17,4 +18,7 @@ export class RolesEntity {
 
   @UpdateDateColumn()
   public updatedAt: Date;
+
+  @ManyToMany(() => ParticipateEntity, participates => participates.roles)
+  participates: ParticipateEntity[];
 }

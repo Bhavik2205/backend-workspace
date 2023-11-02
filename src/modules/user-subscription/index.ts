@@ -1,2 +1,2 @@
-export * from "./user-subscription.controller"
-export * from "./user-subscription.route"
+export * from "./user-subscription.controller";
+export * from "./user-subscription.route";

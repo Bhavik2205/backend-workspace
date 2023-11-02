@@ -52,24 +52,30 @@ export class UserSubscriptionController {
   private async updateSubscriptionDetails(customerId: string, planId: number, subscriptionId: string, productId: string) {
     const mostRecentSubscription = await this.userSubscriptionRepository.findOne({
       where: { customerId },
-      order: { createdAt: 'DESC' },
+      order: { createdAt: "DESC" },
     });
-  
+
     if (mostRecentSubscription) {
       await this.userSubscriptionRepository.update(mostRecentSubscription.id, {
         planId,
         subscriptionId,
-        productId
+        productId,
       });
     }
   }
-  
+
   private async customerDetails(customerId: string, userId: number) {
     const customerDetail = await this.userSubscriptionRepository.create({
       customerId,
-      userId
+      userId,
     });
     await this.userSubscriptionRepository.save(customerDetail);
+  }
+
+  private async userPlan(planId: number, userId: number) {
+    await this.userRepository.update(userId, {
+      planId,
+    });
   }
 
   public create = async (req: TRequest<CreateSubscriptionDto>, res: TResponse) => {
@@ -89,34 +95,34 @@ export class UserSubscriptionController {
         },
       });
 
-
       const existingCustomer = await stripe.customers.list({ email: user.email, limit: 1 });
 
       if (existingCustomer.data.length > 0) {
-        
         await this.customerDetails(existingCustomer.data[0].id, me.id);
-        
+
         const subscription = await this.createSubscription(existingCustomer.data[0].id, plan.priceId);
 
         await this.updateSubscriptionDetails(existingCustomer.data[0].id, plan.id, subscription.id, subscription.items.data[0].plan.product);
 
+        await this.userPlan(planId, user.id);
+
         res.status(200).json({ data: subscription.id });
-        
       } else {
         const customer = await stripe.customers.create({
           email: user.email,
           source: token,
         });
-        
+
         await this.customerDetails(customer.id, me.id);
 
         const subscription = await this.createSubscription(customer.id, plan.priceId);
-        
+
         await this.updateSubscriptionDetails(customer.id, plan.id, subscription.id, subscription.items.data[0].plan.product);
-        
+
+        await this.userPlan(planId, user.id);
+
         res.status(200).json({ data: subscription.id });
       }
-
     } catch (error) {
       res.status(400).json({ error: error.message });
     }
@@ -131,13 +137,13 @@ export class UserSubscriptionController {
         where: {
           userId: me.id,
           planId: +planId,
-        }
-      })
+        },
+      });
 
       const deleted = await stripe.subscriptions.cancel(subscriptionDetail.subscriptionId);
 
       await this.userSubscriptionRepository.update(subscriptionDetail.id, {
-        isActive: false
+        isActive: false,
       });
 
       res.status(200).json({ data: deleted.id });
@@ -148,40 +154,40 @@ export class UserSubscriptionController {
 
   public read = async (req: TRequest, res: TResponse) => {
     try {
-      const { me } = req; 
+      const { me } = req;
       const userData = await this.userSubscriptionRepository.findOne({
         where: {
-          userId: me.id
+          userId: me.id,
         },
-      }) 
+      });
       const stripeSubscription = await stripe.subscriptions.list({
-        customer: userData.customerId
-      }); 
+        customer: userData.customerId,
+      });
       const subscriptions = await this.userSubscriptionRepository.findOne({
         where: {
-          subscriptionId: stripeSubscription.data[0].id
+          subscriptionId: stripeSubscription.data[0].id,
         },
-        relations: ['plan']
-      }) 
+        relations: ["plan"],
+      });
       res.status(200).json({ data: subscriptions });
     } catch (error) {
       res.status(200).json({ error: error.msg });
-    }   
-  }
-  
+    }
+  };
+
   public readInvoice = async (req: TRequest, res: TResponse) => {
     try {
       const { me } = req;
 
       const subscribedData = await this.userSubscriptionRepository.findOne({
         where: {
-          userId: me.id
-        }
-      })
+          userId: me.id,
+        },
+      });
 
       const invoiceData = await stripe.invoices.list({
-        customer: subscribedData.customerId
-      })
+        customer: subscribedData.customerId,
+      });
 
       const invoices = invoiceData.data.map((invoice: any) => ({
         id: invoice.id,
@@ -190,29 +196,27 @@ export class UserSubscriptionController {
         interval: invoice.lines.data[0].plan.interval,
         invoice_pdf: invoice.invoice_pdf,
         hosted_invoice_url: invoice.hosted_invoice_url,
-        created: invoice.created
+        created: invoice.created,
       }));
 
       res.status(200).json({ data: invoices });
     } catch (error) {
       res.status(400).json({ error: error.msg });
     }
-  } 
+  };
 
   public readOneInvoice = async (req: TRequest, res: TResponse) => {
     try {
       const { invoiceId } = req.params;
 
-      const invoiceData = await stripe.invoices.retrieve(
-        invoiceId
-      );
+      const invoiceData = await stripe.invoices.retrieve(invoiceId);
 
       const subscriptions = await this.userSubscriptionRepository.findOne({
         where: {
-          subscriptionId: invoiceData.subscription
+          subscriptionId: invoiceData.subscription,
         },
-        relations: ['plan']
-      }) 
+        relations: ["plan"],
+      });
 
       const invoice = {
         id: invoiceData.id,
@@ -226,14 +230,14 @@ export class UserSubscriptionController {
         invoice_pdf: invoiceData.invoice_pdf,
         hosted_invoice_url: invoiceData.hosted_invoice_url,
         created: invoiceData.created,
-        planDetail: subscriptions.plan
-      }
- 
+        planDetail: subscriptions.plan,
+      };
+
       res.status(200).json({ data: invoice });
     } catch (error) {
       res.status(400).json({ error: error.msg });
     }
-  } 
+  };
 
   public readSubscriptionPlans = async (req: TRequest, res: TResponse) => {
     try {
@@ -242,14 +246,14 @@ export class UserSubscriptionController {
         take: limit,
         skip: (page - 1) * limit,
       });
-  
+
       res.status(200).json({
         data,
         count,
         limit,
-      }); 
+      });
     } catch (error) {
       res.status(200).json({ error: error.msg });
     }
-  }
+  };
 }
