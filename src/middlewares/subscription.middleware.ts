@@ -121,7 +121,7 @@ export class Subscription {
         3: 104857600,
       };
 
-      const hasReachedMaxDocSize = user && totalSize === maxDocSizeByPlanId[user.planId];
+      const hasReachedMaxDocSize = user && totalSize >= maxDocSizeByPlanId[user.planId];
 
       if (hasReachedMaxDocSize) {
         return res.status(400).json({ error: "Maximum storage space reached for this workspace" });
