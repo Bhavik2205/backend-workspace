@@ -12,8 +12,8 @@ export class DocumentEntity {
   @Column({ type: "integer", nullable: true })
   docNum: number;
 
-  @Column({ type: "varchar", length: 255 })
-  size: string;
+  @Column({ type: "integer"})
+  size: number;
 
   @Column({ type: "text", nullable: false })
   file: string;

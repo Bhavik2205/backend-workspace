@@ -232,11 +232,6 @@ export class WorkspaceController {
       imageUrl: `${env.azureURL}${workspace.imageUrl}`
     }));
 
-    const modifiedData = data.map(workspace => ({
-      ...workspace,
-      imageUrl: `${env.azureURL}${workspace.imageUrl}`,
-    }));
-
     res.status(200).json({
       data: modifiedData,
     });

@@ -109,9 +109,9 @@ export class Subscription {
         where: {
           workspaceId,
         },
-      });
+      });      
 
-      const totalSize = documentCount.reduce((acc, document) => acc + parseInt(document.size, 10), 0);
+      const totalSize = documentCount.reduce((acc, document) => acc + Number(document.size), 0);
 
       const maxDocSizeByPlanId: {
         [key: number]: number;
