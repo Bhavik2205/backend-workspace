@@ -206,18 +206,17 @@ export class ProfileController {
 
     const userData = await this.userRepository.findOne({
       where: {
-        id: me.id,
-      },
+        id: me.id
+      }
     });
 
     const updatedStatus = !userData.is2FAEnabled;
 
-    await this.userRepository.update(
-      { id: me.id },
-      {
-        is2FAEnabled: updatedStatus,
-      },
+    await this.userRepository.update({ id: me.id }, {
+      is2FAEnabled: updatedStatus,
+    },
     );
     res.status(200).json({ msg: l10n.t("TWO_FACTOR_AUTHENTICATION_STATUS_UPDATED_SUCCESS") });
   };
+
 }

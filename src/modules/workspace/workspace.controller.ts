@@ -226,6 +226,11 @@ export class WorkspaceController {
       ])
       .where("workspace.id = :workspaceId", { workspaceId })
       .getMany();
+    
+    const modifiedData = data.map(workspace => ({
+      ...workspace,
+      imageUrl: `${env.azureURL}${workspace.imageUrl}`
+    }));
 
     const modifiedData = data.map(workspace => ({
       ...workspace,
