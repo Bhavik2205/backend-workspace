@@ -186,6 +186,7 @@ export class TeamController {
       .createQueryBuilder("teams")
       .leftJoinAndSelect("teams.participates", "participates")
       .leftJoinAndSelect("participates.user", "user")
+      .leftJoinAndSelect("participates.roles", "roles")
       .select([
         "teams.id",
         "teams.name",
@@ -198,6 +199,7 @@ export class TeamController {
         "user.firstName",
         "user.lastName",
         "user.email",
+        "roles.role",
       ])
       .where({ workspaceId })
       .getMany();

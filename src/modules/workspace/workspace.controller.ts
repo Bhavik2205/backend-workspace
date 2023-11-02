@@ -1,4 +1,4 @@
-import { ParticipateEntity, RolesEntity, TeamEntity, UserEntity, WorkspaceEntity } from "@entities";
+import { ParticipateEntity, RolesEntity, TeamEntity, UserEntity, UserRolesEntity, WorkspaceEntity } from "@entities";
 import { AzureUtils, Bcrypt, InitRepository, InjectRepositories } from "@helpers";
 import { EAzureFolder, ERolesRole, TRequest, TResponse } from "@types";
 import { Repository } from "typeorm";
@@ -22,6 +22,9 @@ export class WorkspaceController {
 
   @InitRepository(RolesEntity)
   rolesRepository: Repository<RolesEntity>;
+
+  @InitRepository(UserRolesEntity)
+  userRolesRepository: Repository<UserRolesEntity>;
 
   constructor() {
     InjectRepositories(this);
@@ -71,7 +74,20 @@ export class WorkspaceController {
       isInvited: false,
       workspaceId: workspaceData.id,
     });
-    await this.participateRepository.save(participate);
+
+    const defaultParticipate = await this.participateRepository.save(participate);
+
+    const data = await this.userRolesRepository.findOne({
+      where: {
+        userId: me.id,
+        roleId: roles.id
+      }
+    })
+
+    await this.userRolesRepository.update(data.id, {
+      participateId: defaultParticipate.id
+    });
+
     res.status(200).json({ msg: l10n.t("WORKSPACE_CREATE_SUCCESS"), data: workspace });
   };
 

@@ -195,6 +195,7 @@ export class QuestionController {
         "from.name",
         "to.name",
         "document.file",
+        "document.name",
       ])
       .where({
         id: questionId,
