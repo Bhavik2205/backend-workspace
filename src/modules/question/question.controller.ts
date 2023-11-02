@@ -3,6 +3,7 @@ import { InitRepository, InjectRepositories, Utils } from "@helpers";
 import { TRequest, TResponse } from "@types";
 import { Repository } from "typeorm";
 import * as l10n from "jm-ez-l10n";
+import { env } from "@configs";
 import { CreateAnswerDto, CreateQuestionDto } from "./dto";
 
 export class QuestionController {
@@ -202,6 +203,18 @@ export class QuestionController {
         workspaceId,
       })
       .getMany();
+    
+    questionDetail.map(data => {
+      const modifiedData = { ...data };
+      const file = modifiedData?.document?.file;
+  
+      if (file) {
+        modifiedData.document.file = `${env.azureURL}${file}`;
+      }
+  
+      return modifiedData;
+    });
+
 
     return res.status(200).json({ data: questionDetail });
   };
