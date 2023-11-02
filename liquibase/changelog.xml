@@ -859,4 +859,7 @@
         </addColumn> 
         <addForeignKeyConstraint baseColumnNames="userId" baseTableName="userRoles" constraintName="userRoles_userId_fkey" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="users" validate="true"/>
     </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="63">
+        <modifyDataType tableName="documents" columnName="size" newDataType="BIGINT"/>
+    </changeSet>
 </databaseChangeLog>

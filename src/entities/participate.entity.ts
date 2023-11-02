@@ -1,5 +1,5 @@
-import { TeamEntity, UserEntity, WorkflowEntity } from "@entities";
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { TeamEntity, UserEntity, WorkflowEntity, RolesEntity, UserRolesEntity } from "@entities";
+import { Column, CreateDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity("participates")
 export class ParticipateEntity {
@@ -40,4 +40,12 @@ export class ParticipateEntity {
 
   @OneToMany(() => WorkflowEntity, workflow => workflow.participates)
   workflow: WorkflowEntity[];
+
+  @ManyToMany(() => RolesEntity, role => role.participates)
+  @JoinTable({
+    name: "userRoles",
+    joinColumn: { name: "participateId", referencedColumnName: "id" },
+    inverseJoinColumn: { name: "roleId", referencedColumnName: "id" },
+  })
+  roles: RolesEntity[];
 }

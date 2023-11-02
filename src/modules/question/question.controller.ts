@@ -1,8 +1,9 @@
-import { QuestionEntity, AnswersEntity, TeamEntity, ParticipateEntity } from "@entities";
+import { QuestionEntity, AnswersEntity, TeamEntity, ParticipateEntity, SettingEntity } from "@entities";
 import { InitRepository, InjectRepositories, Utils } from "@helpers";
 import { TRequest, TResponse } from "@types";
 import { Repository } from "typeorm";
 import * as l10n from "jm-ez-l10n";
+import { env } from "@configs";
 import { CreateAnswerDto, CreateQuestionDto } from "./dto";
 
 export class QuestionController {
@@ -17,6 +18,9 @@ export class QuestionController {
 
   @InitRepository(ParticipateEntity)
   participateRepository: Repository<ParticipateEntity>;
+
+  @InitRepository(SettingEntity)
+  settingRepository: Repository<SettingEntity>;
 
   constructor() {
     InjectRepositories(this);
@@ -70,6 +74,47 @@ export class QuestionController {
       },
     });
 
+    const settings = await this.settingRepository.findOne({
+      where: {
+        userId: me.id,
+      },
+    });
+
+    if (settings.isTeamSpecificQA === true) {
+      const questionDetail = await this.questionRepository
+        .createQueryBuilder("question")
+        .leftJoinAndSelect("question.user", "user")
+        .leftJoinAndSelect("question.queFrom", "from")
+        .leftJoinAndSelect("question.queTo", "to")
+        .select([
+          "question.id",
+          "question.topic",
+          "question.to",
+          "question.from",
+          "question.question",
+          "question.documentId",
+          "question.sendForApproval",
+          "question.isHighPriority",
+          "question.isClosed",
+          "question.isNew",
+          "question.workspaceId",
+          "question.queNum",
+          "question.userId",
+          "question.createdAt",
+          "question.updatedAt",
+          "user.firstName",
+          "user.lastName",
+          "from.name",
+          "to.name",
+        ])
+        .where("(question.to = :teamId OR question.from = :teamId) AND (question.workspaceId = :workspaceId)", {
+          teamId: teamData.id,
+          workspaceId,
+        })
+        .getMany();
+
+      return res.status(200).json({ data: questionDetail });
+    }
     const questionDetail = await this.questionRepository
       .createQueryBuilder("question")
       .leftJoinAndSelect("question.user", "user")
@@ -96,8 +141,7 @@ export class QuestionController {
         "from.name",
         "to.name",
       ])
-      .where("(question.to = :teamId) OR (question.from = :teamId )", {
-        teamId: teamData.id,
+      .where({
         workspaceId,
       })
       .getMany();
@@ -152,12 +196,25 @@ export class QuestionController {
         "from.name",
         "to.name",
         "document.file",
+        "document.name",
       ])
       .where({
         id: questionId,
         workspaceId,
       })
       .getMany();
+    
+    questionDetail.map(data => {
+      const modifiedData = { ...data };
+      const file = modifiedData?.document?.file;
+  
+      if (file) {
+        modifiedData.document.file = `${env.azureURL}${file}`;
+      }
+  
+      return modifiedData;
+    });
+
 
     return res.status(200).json({ data: questionDetail });
   };
