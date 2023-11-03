@@ -1,11 +1,11 @@
-import { DocumentEntity, FolderEntity, LogEntity } from "@entities";
+import { DocumentEntity, FolderEntity, LogEntity, UserEntity } from "@entities";
 import * as l10n from "jm-ez-l10n";
 import { TResponse, TRequest, EAzureFolder, ELogsActivity } from "@types";
 import { Repository } from "typeorm";
 import { AzureUtils, InitRepository, InjectRepositories, Utils } from "@helpers";
 import { env } from "@configs";
 import moment from "moment";
-import { CreateDocumentDto } from "./dto";
+import { CreateDocumentDto, UpdateDocumentDto } from "./dto";
 
 export class DocumentController {
   @InitRepository(DocumentEntity)
@@ -17,6 +17,9 @@ export class DocumentController {
   @InitRepository(LogEntity)
   logRepository: Repository<LogEntity>;
 
+  @InitRepository(UserEntity)
+  userRepository: Repository<UserEntity>;
+
   constructor() {
     InjectRepositories(this);
   }
@@ -26,6 +29,35 @@ export class DocumentController {
     const { me } = req;
     const { workspaceid: workspaceId } = req.headers;
     const { file } = req.files;
+
+    const user = await this.userRepository.findOne({
+      where: {
+        id: me.id,
+      },
+    });
+
+    const documentCount = await this.documentRepository.find({
+      where: {
+        workspaceId,
+      },
+    });      
+
+    const totalSize = documentCount.reduce((acc, document) => acc + Number(document.size), 0);
+    const size = totalSize + file.size;
+    
+    const maxDocSizeByPlanId: {
+      [key: number]: number;
+    } = {
+      1: 10737418240,
+      2: 5368709120,
+      3: 104857600,
+    };
+
+    const hasReachedMaxDocSize = user && size > maxDocSizeByPlanId[user.planId];
+
+    if (hasReachedMaxDocSize) {
+      return res.status(400).json({ error: "Maximum storage space reached for this workspace" });
+    }
 
     AzureUtils.initialize();
 
@@ -103,6 +135,8 @@ export class DocumentController {
         "participates.teamId",
         "teams.name",
         "document.size",
+        "document.isEditable",
+        "document.isDownloadable"
       ])
       .where({ workspaceId })
       .getMany();
@@ -177,4 +211,117 @@ export class DocumentController {
 
     res.status(200).json({ data: documents });
   };
+
+  public edit = async (req: TRequest<UpdateDocumentDto>, res: TResponse) => {
+    const { categoryId, folderId } = req.dto;
+    const { me } = req;
+    const { workspaceid: workspaceId } = req.headers;
+    const file = req?.files?.file;
+    const { documentId } = req.params;
+
+    const user = await this.userRepository.findOne({
+      where: {
+        id: me.id,
+      },
+    });
+
+    const documentData = await this.documentRepository.findOne({
+      where: {
+        id: +documentId,
+        workspaceId
+      }
+    }) 
+  
+    if (documentData.isEditable === true) {
+      const documentCount = await this.documentRepository.find({
+        where: {
+          workspaceId,
+        },
+      });      
+  
+      const totalSize = documentCount.reduce((acc, document) => acc + Number(document.size), 0);
+      
+      let size;
+      if (file) {
+        const remainingSize = totalSize - documentData.size;
+        size = remainingSize + file.size;
+  
+        const maxDocSizeByPlanId: {
+          [key: number]: number;
+        } = {
+          1: 10737418240,
+          2: 5368709120,
+          3: 104857600,
+        };
+    
+        const hasReachedMaxDocSize = user && size > maxDocSizeByPlanId[user.planId];
+    
+        if (hasReachedMaxDocSize) {
+          return res.status(400).json({ error: "Maximum storage space reached for this workspace" });
+        }
+    
+        AzureUtils.initialize();
+    
+        const blobName = `${EAzureFolder.Workspace}/${workspaceId}/${moment().format("YYYYMMDDHHmmss")}`;
+        const containerClient = AzureUtils.getContainerClient(env.containerName);
+        const blockBlobClient = AzureUtils.getBlockBlobClient(blobName, containerClient);
+        await blockBlobClient.uploadData(file?.data, file?.size);
+    
+        const blobUrl = `${env.containerName}/${blobName}`;
+    
+        await this.documentRepository.update({ id: documentData.id }, {
+          categoryId,
+          folderId,
+          file: blobUrl,
+          name: file?.name,
+          size: file?.size,
+        });
+    
+        const documentDetail = {
+          file: blobUrl,
+          size,
+          workspaceId,
+          fileName: file?.name,
+          categoryId,
+          folderId,
+        };
+    
+        const log = await this.logRepository.create({
+          metadata: documentDetail,
+          workspaceId,
+          activity: ELogsActivity.Document_Upload,
+          userId: me.id,
+        });
+        await this.logRepository.save(log);
+    
+      } else {
+    
+        await this.documentRepository.update({ id: documentData.id }, {
+          categoryId,
+          folderId,
+        });
+    
+        const documentDetail = {
+          file: documentData.file,
+          size: documentData.size,
+          workspaceId,
+          fileName: documentData.name,
+          categoryId,
+          folderId,
+        };
+    
+        const log = await this.logRepository.create({
+          metadata: documentDetail,
+          workspaceId,
+          activity: ELogsActivity.Document_Upload,
+          userId: me.id,
+        });
+        await this.logRepository.save(log);  
+      }
+      res.status(200).json({ msg: l10n.t("DOCUMENT_UPDATE_SUCCESS") }); 
+    } else {
+      res.status(400).json({ msg: l10n.t("ERR_PERMISSION_DENIED") }); 
+    }
+    return res.status(200)
+  }
 }
