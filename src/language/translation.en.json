@@ -38,5 +38,6 @@
   "DUEDATE_UPDATED_SUCCESS": "Due date updated successfully.",
   "DUEDATE_DELETE_SUCCESS": "Due date deleted successfully.",
   "ERR_PERMISSION_DENIED": "Access denied",
-  "TWO_FACTOR_AUTHENTICATION_STATUS_UPDATED_SUCCESS": "2 Factor Authentication status updated successfully."
+  "TWO_FACTOR_AUTHENTICATION_STATUS_UPDATED_SUCCESS": "2 Factor Authentication status updated successfully.",
+  "DOCUMENT_UPDATE_SUCCESS": "Document updated successfully."
 }
