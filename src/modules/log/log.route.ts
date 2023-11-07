@@ -1,9 +1,8 @@
 import { RouterDelegates } from "@types";
-import { InjectCls, SFRouter, Validator } from "@helpers";
+import { InjectCls, SFRouter } from "@helpers";
 import { AuthMiddleware, PermissionsMiddleware } from "@middlewares";
 import { Permissions } from "@acl";
 import { LogController } from "./log.controller";
-import { DownloadDto } from "./dto";
 
 export class LogRouter extends SFRouter implements RouterDelegates {
   @InjectCls(LogController)
@@ -16,6 +15,6 @@ export class LogRouter extends SFRouter implements RouterDelegates {
   permission: PermissionsMiddleware;
 
   initRoutes(): void {
-    this.router.get("/download", this.authMiddleware.auth, this.permission.acl(Permissions.DownloadLog), Validator.validate(DownloadDto), this.logController.download);
+    this.router.get("/download", this.authMiddleware.auth, this.permission.acl(Permissions.DownloadLog), this.logController.download);
   }
 }
