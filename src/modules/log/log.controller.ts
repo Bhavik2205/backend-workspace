@@ -1,9 +1,12 @@
 import { LogEntity } from "@entities";
 import { InitRepository, InjectRepositories } from "@helpers";
-import { TRequest, TResponse } from "@types";
+import { ELogsActivity, TRequest, TResponse } from "@types";
 import { Repository } from "typeorm";
 import { Parser } from "json2csv";
-import { DownloadDto } from "./dto";
+
+function getActivityEnumValue(activity: string): ELogsActivity {
+  return Object.values(ELogsActivity).find(value => value === activity);
+}
 
 export class LogController {
   @InitRepository(LogEntity)
@@ -13,29 +16,32 @@ export class LogController {
     InjectRepositories(this);
   }
 
-  public download = async (req: TRequest<DownloadDto>, res: TResponse) => {
+  public download = async (req: TRequest, res: TResponse) => {
     try {
-      const { activity: activities } = req.dto;
-
+      const { activity } = req.query;
+      const data = (activity as string).split(',');      
       const json2csvParser = new Parser();
 
-      const logsPromises = activities.map(act =>
-        this.logRepository.find({
+      const logsPromises = data.map(act => {
+        const activityEnumValue = getActivityEnumValue(act);
+        return this.logRepository.find({
           where: {
-            activity: act,
+            activity: activityEnumValue,
           },
-        }),
-      );
+        });
+      });
 
       const logsResults = await Promise.all(logsPromises);
-
-      const csv = logsResults.map(logs => json2csvParser.parse(logs));
-
       let combinedCsv = "";
 
-      activities.forEach((act, index) => {
-        combinedCsv += `Activity: ${act}\n`;
-        combinedCsv += `${csv[index]}\n\n`;
+      data.forEach((act, index) => {
+        const logs = logsResults[index];
+  
+        if (logs && logs.length > 0) {
+          combinedCsv += `Activity: ${act}\n`;
+          const csv = json2csvParser.parse(logs);
+          combinedCsv += `${csv}\n\n`;
+        }
       });
 
       const filename = `log.csv`;
