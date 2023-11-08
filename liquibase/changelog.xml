@@ -862,4 +862,26 @@
     <changeSet author="Dharmik Dalwadi" id="63">
         <modifyDataType tableName="documents" columnName="size" newDataType="BIGINT"/>
     </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="64">
+        <createTable tableName="transactions">
+            <column autoIncrement="true" name="id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="transactions_pkey"/>
+            </column>
+            <column name="metaData" type="JSON">
+                <constraints nullable="true"/>
+            </column>
+            <column name="status" type="VARCHAR(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="customerId" type="VARCHAR(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="createdAt" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="now()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updatedAt" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="now()">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
 </databaseChangeLog>

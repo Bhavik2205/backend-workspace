@@ -16,3 +16,4 @@ export * from "./userSubscription.entity";
 export * from "./setting.entity";
 export * from "./roles.entity";
 export * from "./user-roles.entity";
+export * from "./transaction.entity";
