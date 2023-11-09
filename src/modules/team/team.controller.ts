@@ -4,7 +4,7 @@ import { EActivityStatus, ELogsActivity, TRequest, TResponse } from "@types";
 import { Repository } from "typeorm";
 import * as l10n from "jm-ez-l10n";
 import { env } from "@configs";
-import { CreateMultipleParticipateDto, CreateTeamDto } from "./dto";
+import { CreateMultipleParticipateDto, CreateTeamDto, UpdateTeamDto } from "./dto";
 
 export class TeamController {
   @InitRepository(TeamEntity)
@@ -200,12 +200,24 @@ export class TeamController {
         "user.lastName",
         "user.email",
         "roles.role",
+        "user.imageUrl"
       ])
       .where({ workspaceId })
       .getMany();
+    
+    const modifiedData = data.map(e => ({
+      ...e,
+      participates: e.participates.map(user => ({
+        ...user,
+        user: {
+          ...user.user,
+          imageUrl: `${env.azureURL}${user.user.imageUrl}`
+        }
+      }))
+    }));
 
     res.status(200).json({
-      data,
+      data: modifiedData,
     });
   };
 
@@ -270,4 +282,62 @@ export class TeamController {
       data,
     });
   };
+
+  public updateTeam = async (req: TRequest<UpdateTeamDto>, res: TResponse) => {
+    const { name } = req.dto;
+    const { workspaceid: workspaceId } = req.headers;
+    const { me } = req;
+    const { teamId } = req.params;
+
+    const updateTeamData = await this.teamRepository.findOne({
+      where: {
+        id: +teamId,
+        workspaceId
+      }
+    })
+
+    await this.teamRepository.update({id: updateTeamData.id} ,{
+      name,
+      workspaceId,
+    });
+
+    const teamData = {
+      name,
+      Status: EActivityStatus.Team_Remove,
+    };
+
+    const log = this.logRepository.create({
+      metadata: teamData,
+      workspaceId,
+      activity: ELogsActivity.Participant_And_Team_Add_Remove,
+      userId: me.id,
+    });
+    await this.logRepository.save(log);
+
+    const updatedData = await this.teamRepository.findOne({
+      where: {
+        id: +teamId,
+        workspaceId
+      }
+    })    
+
+    res.status(200).json({ msg: l10n.t("TEAM_UPDATE_SUCCESS"), data: updatedData });
+  }
+
+  public DeleteTeam = async (req: TRequest, res: TResponse) => {
+    const { workspaceid: workspaceId } = req.headers;
+    const { teamId } = req.params;
+
+    const team = await this.teamRepository.findOne({
+      where: {
+        id: +teamId,
+        workspaceId
+      }
+    })
+
+    await this.teamRepository.remove(team);
+    
+    res.status(200).json({ msg: l10n.t("TEAM_DELETE_SUCCESS") });
+
+  }
 }

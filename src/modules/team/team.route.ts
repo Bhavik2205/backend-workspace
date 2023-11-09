@@ -3,7 +3,7 @@ import { InjectCls, SFRouter, Validator } from "@helpers";
 import { AuthMiddleware, PermissionsMiddleware, Subscription, isWorkspaceExist } from "@middlewares";
 import { Permissions } from "@acl";
 import { TeamController } from "./team.controller";
-import { CreateTeamDto, CreateMultipleParticipateDto } from "./dto";
+import { CreateTeamDto, CreateMultipleParticipateDto, UpdateTeamDto } from "./dto";
 
 export class TeamRouter extends SFRouter implements RouterDelegates {
   @InjectCls(TeamController)
@@ -48,5 +48,7 @@ export class TeamRouter extends SFRouter implements RouterDelegates {
     );
     this.router.get("/user", this.authMiddleware.auth, this.teamController.readUserTeam);
     this.router.get("/all-participate", this.authMiddleware.auth, isWorkspaceExist(), this.teamController.readAllParticipate);
+    this.router.put("/team/:teamId", this.authMiddleware.auth, this.permission.acl(Permissions.AddDeleteTeam), this.subscription.team, Validator.validate(UpdateTeamDto), isWorkspaceExist(), this.teamController.updateTeam);
+    this.router.delete("/team/:teamId", this.authMiddleware.auth, this.permission.acl(Permissions.AddDeleteTeam), this.subscription.team, isWorkspaceExist(), this.teamController.DeleteTeam);
   }
 }

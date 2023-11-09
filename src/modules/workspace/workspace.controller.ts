@@ -5,7 +5,7 @@ import { Repository } from "typeorm";
 import * as l10n from "jm-ez-l10n";
 import { env } from "@configs";
 import moment from "moment";
-import { CreateWorkspaceDto, UpdateDescriptionDto, UpdateWorkspaceDto } from "./dto";
+import { CreateWorkspaceDto, UpdateDescriptionDto, UpdatePurposeDto, UpdateTypeDto, UpdateWorkspaceDto } from "./dto";
 
 export class WorkspaceController {
   @InitRepository(WorkspaceEntity)
@@ -236,4 +236,39 @@ export class WorkspaceController {
       data: modifiedData,
     });
   };
+
+  public updatePurpose = async (req: TRequest<UpdatePurposeDto>, res: TResponse) => {
+    const { purpose } = req.dto;
+    const { workspaceid: workspaceId } = req.headers;
+
+    await this.workspaceRepository.update(workspaceId, {
+      purpose,
+    });
+
+    const workspace = await this.workspaceRepository.findOne({
+      where: {
+        id: +workspaceId,
+      },
+    });
+
+    res.status(200).json({ msg: l10n.t("PURPOSE_UPDATE_SUCCESS"), data: workspace })
+  }
+
+  public updateType = async (req: TRequest<UpdateTypeDto>, res: TResponse) => {
+    const { type } = req.dto;
+    const { workspaceid: workspaceId } = req.headers;
+
+    await this.workspaceRepository.update(workspaceId, {
+      type,
+    });
+
+    const workspace = await this.workspaceRepository.findOne({
+      where: {
+        id: +workspaceId,
+      },
+    });
+
+    res.status(200).json({ msg: l10n.t("TYPE_UPDATE_SUCCESS"), data: workspace })
+  }
+
 }

@@ -884,4 +884,30 @@
             </column>
         </createTable>
     </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="65">
+        <dropColumn tableName="questions" columnName="to"/>
+        <dropColumn tableName="questions" columnName="from"/>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="66">
+        <addColumn tableName="questions">
+            <column name="to" type="INTEGER">
+                <constraints nullable="true"/>
+            </column>
+            <column name="from" type="INTEGER">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn> 
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="67">
+        <addForeignKeyConstraint baseColumnNames="to" baseTableName="questions" constraintName="questions_to_fkey" deferrable="false" initiallyDeferred="false" onDelete="SET NULL" onUpdate="SET NULL" referencedColumnNames="id" referencedTableName="teams" validate="true"/>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="68">
+        <addForeignKeyConstraint baseColumnNames="from" baseTableName="questions" constraintName="questions_from_fkey" deferrable="false" initiallyDeferred="false" onDelete="SET NULL" onUpdate="SET NULL" referencedColumnNames="id" referencedTableName="teams" validate="true"/>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="69">
+        <dropForeignKeyConstraint baseTableName="participates" baseTableSchemaName="public" constraintName="participates_teamId_fkey" />
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="70">
+        <addForeignKeyConstraint baseColumnNames="teamId" baseTableName="participates" constraintName="participates_teamId_fkey" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="teams" validate="true"/>
+    </changeSet>
 </databaseChangeLog>
