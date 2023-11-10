@@ -3,7 +3,7 @@ import { InjectCls, SFRouter, Validator } from "@helpers";
 import { AuthMiddleware, PermissionsMiddleware, isWorkspaceExist } from "@middlewares";
 import { Permissions } from "@acl";
 import { QuestionController } from "./question.controller";
-import { CreateQuestionDto, CreateAnswerDto } from "./dto";
+import { CreateQuestionDto, CreateAnswerDto, UpdateQuestionDto } from "./dto";
 
 export class QuestionRouter extends SFRouter implements RouterDelegates {
   @InjectCls(QuestionController)
@@ -28,5 +28,6 @@ export class QuestionRouter extends SFRouter implements RouterDelegates {
     this.router.get("/:questionId", this.authMiddleware.auth, this.permission.acl(Permissions.ViewQA), isWorkspaceExist(), this.workspaceController.readOne);
     this.router.delete("/:questionId", this.authMiddleware.auth, this.permission.acl(Permissions.DeleteQA), this.workspaceController.delete);
     this.router.post("/answer/:questionId", Validator.validate(CreateAnswerDto), this.authMiddleware.auth, this.workspaceController.createAnswer);
+    this.router.put("/:questionId", this.authMiddleware.auth, this.permission.acl(Permissions.EditQA), Validator.validate(UpdateQuestionDto), isWorkspaceExist(), this.workspaceController.update);
   }
 }

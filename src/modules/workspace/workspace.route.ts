@@ -1,11 +1,10 @@
 import { RouterDelegates } from "@types";
 import { InjectCls, SFRouter, Validator } from "@helpers";
 import fileUpload from "express-fileupload";
-import { AuthMiddleware, PermissionsMiddleware } from "@middlewares";
-import { Constants } from "@configs";
+import { AuthMiddleware, PermissionsMiddleware, isWorkspaceExist } from "@middlewares";
 import { Permissions } from "@acl";
 import { WorkspaceController } from "./workspace.controller";
-import { CreateWorkspaceDto, UpdateDescriptionDto, UpdateWorkspaceDto } from "./dto";
+import { CreateWorkspaceDto, UpdateDescriptionDto, UpdatePurposeDto, UpdateTypeDto, UpdateWorkspaceDto } from "./dto";
 
 export class WorkspaceRouter extends SFRouter implements RouterDelegates {
   @InjectCls(WorkspaceController)
@@ -26,14 +25,13 @@ export class WorkspaceRouter extends SFRouter implements RouterDelegates {
     this.router.put("/update-description", Validator.validate(UpdateDescriptionDto), this.authMiddleware.auth, this.workspaceController.updateDescriptoin);
     this.router.post(
       "/image",
-      fileUpload({
-        limits: { fileSize: Constants.MAX_FILE_SIZE },
-      }),
+      fileUpload(),
       Validator.fileMimeValidate,
-      Validator.fileSizeValidate,
       this.authMiddleware.auth,
       this.workspaceController.updateImage,
     );
     this.router.get("/:workspaceId/workspace-profile", this.authMiddleware.auth, this.permission.acl(Permissions.EditSettings), this.workspaceController.workspaceSetting);
+    this.router.put("/update-purpose", Validator.validate(UpdatePurposeDto), this.authMiddleware.auth, isWorkspaceExist(), this.workspaceController.updatePurpose);
+    this.router.put("/update-type", Validator.validate(UpdateTypeDto), this.authMiddleware.auth, isWorkspaceExist(), this.workspaceController.updateType);
   }
 }

@@ -42,7 +42,5 @@ export class Constants {
 
   public static readonly OTP_LENGTH = 6;
 
-  public static readonly MAX_FILE_SIZE = 20 * 1024 * 1024;
-
-  public static readonly VALID_MIMETYPES = ["image/jpeg", "image/png", "application/pdf"];
+  public static readonly VALID_MIMETYPES = ["image/jpeg", "image/png", "image/jpg", "image/tiff", "image/vnd.adobe.photoshop", "application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "message/rfc822", "application/vnd.ms-outlook", "application/vnd.oasis.opendocument.text", "application/vnd.apple.pages", "text/plain", "text/csv", "application/vnd.ms-powerpoint",  "application/vnd.openxmlformats-officedocument.presentationml.presentation", "application/xml",  "audio/mp4", "audio/mpeg",  "audio/x-ms-wma", "video/3gpp", "video/x-ms-asf","video/x-msvideo", "video/x-flv", "video/x-m4v", "video/quicktime", "video/mp4", "video/mpeg", "application/x-shockwave-flash", "video/mp2t", "video/x-ms-wmv", "application/vnd.oasis.opendocument.spreadsheet", "application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",  "application/zip", "application/vnd.wordperfect", "video/x-ms-vob", "image/x-tga", "application/vnd.apple.keynote", "application/x-subrip", "application/vnd.apple.numbers", "application/x-xfig", "application/vnd.ms-project", "application/vnd.ms-works", "application/zipx"];
 }

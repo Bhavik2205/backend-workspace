@@ -4,7 +4,7 @@ import { TRequest, TResponse } from "@types";
 import { Repository } from "typeorm";
 import * as l10n from "jm-ez-l10n";
 import { env } from "@configs";
-import { CreateAnswerDto, CreateQuestionDto } from "./dto";
+import { CreateAnswerDto, CreateQuestionDto, UpdateQuestionDto } from "./dto";
 
 export class QuestionController {
   @InitRepository(QuestionEntity)
@@ -245,4 +245,41 @@ export class QuestionController {
     await this.answerRepository.save(answerDetail);
     res.status(200).json({ msg: l10n.t("ANSWER_SUBMITTED_SUCCESS"), data: answerDetail });
   };
+
+  public update = async (req: TRequest<UpdateQuestionDto>, res: TResponse) => {
+    const { topic, to, from, question, documentId, sendForApproval, isHighPriority, isClosed } = req.dto;
+    const { workspaceid: workspaceId } = req.headers;
+    const { me } = req;
+    const { questionId } = req.params;
+
+    const updateQuestionData = await this.questionRepository.findOne({
+      where: {
+        id: +questionId,
+        workspaceId
+      }
+    })
+
+    await this.questionRepository.update({ id: updateQuestionData.id } ,{
+      topic,
+      to,
+      from,
+      question,
+      documentId,
+      userId: me.id,
+      sendForApproval,
+      isHighPriority,
+      isClosed,
+      isNew: true,
+      workspaceId,
+    });
+
+    const updatedData = await this.questionRepository.findOne({
+      where: {
+        id: +questionId,
+        workspaceId
+      }
+    })
+
+    res.status(200).json({ msg: l10n.t("QUESTION_UPDATE_SUCCESS"), data: updatedData });
+  }
 }

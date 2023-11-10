@@ -23,11 +23,8 @@ export class ProfileRouter extends SFRouter implements RouterDelegates {
     this.router.delete("/", this.authMiddleware.auth, this.profileController.delete);
     this.router.post(
       "/image",
-      fileUpload({
-        limits: { fileSize: Constants.MAX_FILE_SIZE },
-      }),
+      fileUpload(),
       Validator.fileMimeValidate,
-      Validator.fileSizeValidate,
       this.authMiddleware.auth,
       this.profileController.uploadImage,
     );
