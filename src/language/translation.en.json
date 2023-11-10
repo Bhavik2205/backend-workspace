@@ -39,5 +39,10 @@
   "DUEDATE_DELETE_SUCCESS": "Due date deleted successfully.",
   "ERR_PERMISSION_DENIED": "Access denied",
   "TWO_FACTOR_AUTHENTICATION_STATUS_UPDATED_SUCCESS": "2 Factor Authentication status updated successfully.",
-  "DOCUMENT_UPDATE_SUCCESS": "Document updated successfully."
+  "DOCUMENT_UPDATE_SUCCESS": "Document updated successfully.",
+  "PURPOSE_UPDATE_SUCCESS": "Purpose updated successfully.",
+  "TYPE_UPDATE_SUCCESS": "Type updated successfully.",
+  "QUESTION_UPDATE_SUCCESS": "Question updated successfully.",
+  "TEAM_UPDATE_SUCCESS": "Team updated successfully.",
+  "TEAM_DELETE_SUCCESS": "Team deleted successfully."
 }

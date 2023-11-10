@@ -26,6 +26,7 @@ import {
   SettingEntity,
   UserRolesEntity,
   RolesEntity,
+  TransactionEntity,
 } from "@entities";
 import { destructPager } from "middlewares";
 import { Cors, EnvValidator, HandleUnhandledPromise, Log } from "./helpers";
@@ -68,6 +69,7 @@ export default class App {
         SettingEntity,
         RolesEntity,
         UserRolesEntity,
+        TransactionEntity,
       ],
     });
 

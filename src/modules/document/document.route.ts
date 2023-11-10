@@ -23,11 +23,8 @@ export class DocumentRouter extends SFRouter implements RouterDelegates {
   initRoutes(): void {
     this.router.post(
       "/",
-      fileUpload({
-        limits: { fileSize: Constants.MAX_FILE_SIZE },
-      }),
+      fileUpload(),
       Validator.fileMimeValidate,
-      Validator.fileSizeValidate,
       this.authMiddleware.auth,
       this.permission.acl(Permissions.DocumentUpload),
       this.subscription.document,
@@ -40,11 +37,8 @@ export class DocumentRouter extends SFRouter implements RouterDelegates {
     this.router.get("/search", this.authMiddleware.auth, this.permission.acl(Permissions.DocumentSearch), isWorkspaceExist(), this.documentController.search);
     this.router.put(
       "/:documentId",
-      fileUpload({
-        limits: { fileSize: Constants.MAX_FILE_SIZE },
-      }),
+      fileUpload(),
       Validator.fileMimeValidate,
-      Validator.fileSizeValidate,
       this.authMiddleware.auth,
       this.permission.acl(Permissions.DocumentUpload),
       Validator.validate(UpdateDocumentDto),

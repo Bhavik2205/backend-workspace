@@ -13,6 +13,7 @@ import { WorkflowRouter } from "@modules/workflow";
 import { LogRouter } from "@modules/log";
 import { UserSubscriptionRouter } from "@modules/user-subscription";
 import { SettingRouter } from "@modules/setting";
+import { SubscriptionWebhookRouter } from "@modules/subscription-webhook";
 
 export default class Routes {
   public configure() {
@@ -30,6 +31,7 @@ export default class Routes {
     router.use("/logs", new LogRouter().router);
     router.use("/subscriptions", new UserSubscriptionRouter().router);
     router.use("/settings", new SettingRouter().router);
+    router.use("/webhook", new SubscriptionWebhookRouter().router);
     router.all("/*", (req, res) =>
       res.status(404).json({
         error: l10n.t("ERR_URL_NOT_FOUND"),
