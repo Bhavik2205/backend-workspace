@@ -204,15 +204,15 @@ export class TeamController {
       ])
       .where({ workspaceId })
       .getMany();
-    
+
     const modifiedData = data.map(e => ({
       ...e,
       participates: e.participates.map(user => ({
         ...user,
-        user: {
+        user: user.user ? {
           ...user.user,
-          imageUrl: `${env.azureURL}${user.user.imageUrl}`
-        }
+          imageUrl: user.user.imageUrl ? `${env.azureURL}${user.user.imageUrl}` : null
+        } : null
       }))
     }));
 

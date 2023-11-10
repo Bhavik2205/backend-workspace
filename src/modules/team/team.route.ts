@@ -48,7 +48,7 @@ export class TeamRouter extends SFRouter implements RouterDelegates {
     );
     this.router.get("/user", this.authMiddleware.auth, this.teamController.readUserTeam);
     this.router.get("/all-participate", this.authMiddleware.auth, isWorkspaceExist(), this.teamController.readAllParticipate);
-    this.router.put("/team/:teamId", this.authMiddleware.auth, this.permission.acl(Permissions.AddDeleteTeam), this.subscription.team, Validator.validate(UpdateTeamDto), isWorkspaceExist(), this.teamController.updateTeam);
-    this.router.delete("/team/:teamId", this.authMiddleware.auth, this.permission.acl(Permissions.AddDeleteTeam), this.subscription.team, isWorkspaceExist(), this.teamController.DeleteTeam);
+    this.router.put("/team/:teamId", this.authMiddleware.auth, this.permission.acl(Permissions.AddDeleteTeam), Validator.validate(UpdateTeamDto), isWorkspaceExist(), this.teamController.updateTeam);
+    this.router.delete("/team/:teamId", this.authMiddleware.auth, this.permission.acl(Permissions.AddDeleteTeam), isWorkspaceExist(), this.teamController.DeleteTeam);
   }
 }
