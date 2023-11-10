@@ -231,6 +231,18 @@ export class QuestionController {
     const { questionId } = req.params;
     const { answer } = req.dto;
     const { me } = req;
+    const { workspaceid: workspaceId } = req.headers;
+
+    const currentThread = await this.questionRepository.findOne({
+      where: {
+        id: +questionId,
+        workspaceId
+      }
+    });
+
+    if (currentThread.isClosed) {
+      return res.status(400).json({ error: l10n.t("THREAD_CLOSED") });
+    }
 
     const answerDetail = await this.answerRepository.create({
       questionId: +questionId,
@@ -243,7 +255,7 @@ export class QuestionController {
     });
 
     await this.answerRepository.save(answerDetail);
-    res.status(200).json({ msg: l10n.t("ANSWER_SUBMITTED_SUCCESS"), data: answerDetail });
+    return res.status(200).json({ msg: l10n.t("ANSWER_SUBMITTED_SUCCESS"), data: answerDetail });
   };
 
   public update = async (req: TRequest<UpdateQuestionDto>, res: TResponse) => {
@@ -281,5 +293,28 @@ export class QuestionController {
     })
 
     res.status(200).json({ msg: l10n.t("QUESTION_UPDATE_SUCCESS"), data: updatedData });
+  }
+
+  public closeThread = async (req: TRequest, res: TResponse) => {
+    const { workspaceid: workspaceId } = req.headers;
+    const { questionId } = req.params;
+
+    const currentThread = await this.questionRepository.findOne({
+      where: {
+        id: +questionId,
+        workspaceId
+      }
+    });
+
+    const updatedThread = !currentThread.isClosed;
+
+    await this.questionRepository.update(
+      { id: currentThread.id },
+      {
+        isClosed: updatedThread,
+      },
+    );
+
+    res.sendStatus(200);
   }
 }
