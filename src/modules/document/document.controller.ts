@@ -141,10 +141,16 @@ export class DocumentController {
       .where({ workspaceId })
       .getMany();
 
+
     documents.forEach(folder => {
+      let folderSize: bigint = BigInt(0);
+      
       folder.document.forEach(e => {
         e.file = `${env.azureURL}${e.file}`;
+        folderSize += BigInt(e.size);
       });
+      
+      Object.assign(folder, { totalSize: Number(folderSize) });
     });
 
     res.status(200).json({ data: documents });
