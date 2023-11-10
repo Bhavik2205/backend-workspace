@@ -44,5 +44,6 @@
   "TYPE_UPDATE_SUCCESS": "Type updated successfully.",
   "QUESTION_UPDATE_SUCCESS": "Question updated successfully.",
   "TEAM_UPDATE_SUCCESS": "Team updated successfully.",
-  "TEAM_DELETE_SUCCESS": "Team deleted successfully."
+  "TEAM_DELETE_SUCCESS": "Team deleted successfully.",
+  "THREAD_CLOSED": "Thread is closed. Cannot submit the answer."
 }
