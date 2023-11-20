@@ -1,7 +1,7 @@
-import { ParticipateEntity, RolesEntity, TeamEntity, UserEntity, UserRolesEntity, WorkspaceEntity } from "@entities";
+import { DocumentEntity, ParticipateEntity, RolesEntity, TeamEntity, UserEntity, UserRolesEntity, WorkspaceEntity } from "@entities";
 import { AzureUtils, Bcrypt, InitRepository, InjectRepositories } from "@helpers";
 import { EAzureFolder, ERolesRole, TRequest, TResponse } from "@types";
-import { Repository } from "typeorm";
+import { In, Repository } from "typeorm";
 import * as l10n from "jm-ez-l10n";
 import { env } from "@configs";
 import moment from "moment";
@@ -25,6 +25,9 @@ export class WorkspaceController {
 
   @InitRepository(UserRolesEntity)
   userRolesRepository: Repository<UserRolesEntity>;
+
+  @InitRepository(DocumentEntity)
+  documentRepository: Repository<DocumentEntity>;
 
   constructor() {
     InjectRepositories(this);
@@ -92,21 +95,24 @@ export class WorkspaceController {
   };
 
   public read = async (req: TRequest, res: TResponse) => {
-    const { page, limit } = req.pager;
     const { me } = req;
 
-    const [data, count] = await this.workspaceRepository.findAndCount({
+    const workspaceAccess = await this.participateRepository.find({
       where: {
-        userId: me.id,
-      },
-      take: limit,
-      skip: (page - 1) * limit,
+        userId: me.id
+      }
+    })
+
+    const workspaceIds = workspaceAccess.map(access => access.workspaceId);    
+
+    const workspace = await this.workspaceRepository.find({
+      where: {
+        id: In(workspaceIds),
+      }
     });
 
     res.status(200).json({
-      data,
-      count,
-      limit,
+      data: workspace
     });
   };
 
@@ -271,4 +277,22 @@ export class WorkspaceController {
     res.status(200).json({ msg: l10n.t("TYPE_UPDATE_SUCCESS"), data: workspace })
   }
 
+  public storage = async (req: TRequest, res: TResponse) => {
+    const { workspaceid: workspaceId } = req.headers;
+
+    try {
+
+      const documentCount = await this.documentRepository.find({
+        where: {
+          workspaceId,
+        },
+      });   
+      
+      const size = documentCount.reduce((acc, document) => acc + Number(document.size), 0);
+
+      return res.status(200).json({ data: size})
+    } catch (error) {
+      return res.status(400).json({ error: error.msg });
+    }
+  }
 }
