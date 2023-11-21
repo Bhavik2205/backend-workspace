@@ -910,4 +910,20 @@
     <changeSet author="Dharmik Dalwadi" id="70">
         <addForeignKeyConstraint baseColumnNames="teamId" baseTableName="participates" constraintName="participates_teamId_fkey" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="teams" validate="true"/>
     </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="71">
+        <dropForeignKeyConstraint baseTableName="workflows" baseTableSchemaName="public" constraintName="workflow_teamId_fkey" />
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="72">
+        <addForeignKeyConstraint baseColumnNames="teamId" baseTableName="workflows" constraintName="workflow_teamId_fkey" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="participates" validate="true"/>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="73">
+        <dropColumn tableName="logs" columnName="userId"/>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="74">
+        <addColumn tableName="logs">
+            <column name="userId" type="INTEGER">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn> 
+    </changeSet>
 </databaseChangeLog>

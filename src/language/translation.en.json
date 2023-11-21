@@ -19,7 +19,7 @@
   "QUESTION_DELETE_SUCCESS": "Question deleted successfully.",
   "ANSWER_SUBMITTED_SUCCESS": "Answer submitted successfully.",
   "TEAM_CREATE_SUCCESS": "Team created successfully.",
-  "PARTICIPATE_CREATE_SUCCESS": "Participate created successfully.",
+  "PARTICIPATE_CREATE_SUCCESS": "Participate added successfully.",
   "PARTICIPATE_DELETE_SUCCESS": "Participate deleted successfully.",
   "DOCUMENT_UPLOAD_SUCCESS": "Document uploaded successfully.",
   "DOCUMENT_DELETE_SUCCESS": "Document deleted successfully.",
@@ -45,5 +45,7 @@
   "QUESTION_UPDATE_SUCCESS": "Question updated successfully.",
   "TEAM_UPDATE_SUCCESS": "Team updated successfully.",
   "TEAM_DELETE_SUCCESS": "Team deleted successfully.",
-  "THREAD_CLOSED": "Thread is closed. Cannot submit the answer."
+  "THREAD_CLOSED": "Thread is closed. Cannot submit the answer.",
+  "PARTICIPATE_EXISTS": "Participate with the provided email already exists.",
+  "NO_SUBSCRIPTION": "Purchase a Ssubscription."
 }

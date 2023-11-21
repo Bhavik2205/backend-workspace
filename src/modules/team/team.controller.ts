@@ -1,7 +1,7 @@
 import { LogEntity, ParticipateEntity, TeamEntity, UserEntity, UserRolesEntity } from "@entities";
 import { InitRepository, InjectRepositories, Notification } from "@helpers";
 import { EActivityStatus, ELogsActivity, TRequest, TResponse } from "@types";
-import { Repository } from "typeorm";
+import { In, Repository } from "typeorm";
 import * as l10n from "jm-ez-l10n";
 import { env } from "@configs";
 import { CreateMultipleParticipateDto, CreateTeamDto, UpdateTeamDto } from "./dto";
@@ -79,6 +79,21 @@ export class TeamController {
 
     const participantsData = req.dto.participatesData;
 
+    const dataPromises = participantsData.map(async participants => participants.email);
+    const data = await Promise.all(dataPromises);
+
+    const existData = await this.participateRepository.find({
+      where: {
+        email: In(data),
+        workspaceId
+      }
+    })
+    const existingEmail = existData.map(e => e.email)
+
+    if (existingEmail.length > 0) {
+      return res.status(400).json({ msg: l10n.t("PARTICIPATE_EXISTS"), data: existingEmail });
+    }
+
     const promises = participantsData.map(async participantData => {
       const { email, roleId } = participantData;
 
@@ -88,7 +103,7 @@ export class TeamController {
 
       if (!user) {
         const emailData = {
-          link: `${env.domain}/sign-up`,
+          link: `${env.domain}sign-up`,
         };
 
         const invitedParticipate = await this.participateRepository.findOne({
@@ -176,7 +191,7 @@ export class TeamController {
     });
 
     await Promise.all(promises);
-    res.status(200).json({ msg: l10n.t("PARTICIPATE_CREATE_SUCCESS") });
+    return res.status(200).json({ msg: l10n.t("PARTICIPATE_CREATE_SUCCESS") });
   };
 
   public readParticipate = async (req: TRequest, res: TResponse) => {

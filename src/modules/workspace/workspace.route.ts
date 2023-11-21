@@ -17,6 +17,7 @@ export class WorkspaceRouter extends SFRouter implements RouterDelegates {
   permission: PermissionsMiddleware;
 
   initRoutes(): void {
+    this.router.get("/storage", this.authMiddleware.auth, isWorkspaceExist(), this.workspaceController.storage);
     this.router.post("/", Validator.validate(CreateWorkspaceDto), this.authMiddleware.auth, this.workspaceController.create);
     this.router.get("/", this.authMiddleware.auth, this.workspaceController.read);
     this.router.get("/:workspaceId", this.authMiddleware.auth, this.workspaceController.readOne);

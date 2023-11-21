@@ -40,71 +40,73 @@ export class DocumentController {
       where: {
         workspaceId,
       },
-    });      
+    }); 
 
-    const totalSize = documentCount.reduce((acc, document) => acc + Number(document.size), 0);
-    const size = totalSize + file.size;
-    
-    const maxDocSizeByPlanId: {
-      [key: number]: number;
-    } = {
-      1: 10737418240,
-      2: 5368709120,
-      3: 104857600,
-    };
-
-    const hasReachedMaxDocSize = user && size > maxDocSizeByPlanId[user.planId];
-
-    if (hasReachedMaxDocSize) {
-      return res.status(400).json({ error: "Maximum storage space reached for this workspace" });
-    }
-
-    AzureUtils.initialize();
-
-    const blobName = `${EAzureFolder.Workspace}/${workspaceId}/${moment().format("YYYYMMDDHHmmss")}`;
-    const containerClient = AzureUtils.getContainerClient(env.containerName);
-    const blockBlobClient = AzureUtils.getBlockBlobClient(blobName, containerClient);
-    await blockBlobClient.uploadData(file.data, file.size);
-
-    const blobUrl = `${env.containerName}/${blobName}`;
-
-    const updatedDocument = await this.documentRepository.create({
-      categoryId,
-      folderId,
-      file: blobUrl,
-      name: file.name,
-      size: file.size,
-      isEditable,
-      isDownloadable,
-      userId: me.id,
-      workspaceId,
-    });
-
-    const document = await this.documentRepository.save(updatedDocument);
-
-    const documentNumber = Utils.generateRandomNumber(document.userId, workspaceId, document.id);
-    document.docNum = parseInt(documentNumber, 10);
-
-    const documentDetail = {
-      file: updatedDocument.file,
-      size: updatedDocument.size,
-      workspaceId: updatedDocument.workspaceId,
-      fileName: updatedDocument.name,
-      categoryId: updatedDocument.categoryId,
-      folderId: updatedDocument.folderId,
-    };
-
-    const log = await this.logRepository.create({
-      metadata: documentDetail,
-      workspaceId,
-      activity: ELogsActivity.Document_Upload,
-      userId: me.id,
-    });
-    await this.logRepository.save(log);
-
-    await this.documentRepository.save(document);
-
-    return res.status(200).json({ msg: l10n.t("DOCUMENT_UPLOAD_SUCCESS"), data: document });
+    const promises = file.map(async (e: any) => {
+      const totalSize = documentCount.reduce((acc, document) => acc + Number(document.size), 0);
+      const size = totalSize + e.size;
+      
+      const maxDocSizeByPlanId: {
+        [key: number]: number;
+      } = {
+        1: 10737418240,
+        2: 5368709120,
+        3: 104857600,
+      };
+  
+      const hasReachedMaxDocSize = user && size > maxDocSizeByPlanId[user.planId];
+  
+      if (hasReachedMaxDocSize) {
+        res.status(400).json({ error: "Maximum storage space reached for this workspace" });
+        return;
+      }
+  
+      AzureUtils.initialize();
+  
+      const blobName = `${EAzureFolder.Workspace}/${workspaceId}/${moment().format("YYYYMMDDHHmmssSSS")}`;
+      const containerClient = AzureUtils.getContainerClient(env.containerName);
+      const blockBlobClient = AzureUtils.getBlockBlobClient(blobName, containerClient);
+      await blockBlobClient.uploadData(e.data, e.size);
+      const blobUrl = `${env.containerName}/${blobName}`;
+  
+      const updatedDocument = await this.documentRepository.create({
+        categoryId,
+        folderId,
+        file: blobUrl,
+        name: e.name,
+        size: e.size,
+        isEditable,
+        isDownloadable,
+        userId: me.id,
+        workspaceId,
+      });
+  
+      const document = await this.documentRepository.save(updatedDocument);
+  
+      const documentNumber = Utils.generateRandomNumber(document.userId, workspaceId, document.id);
+      document.docNum = parseInt(documentNumber, 10);
+  
+      const documentDetail = {
+        file: updatedDocument.file,
+        size: updatedDocument.size,
+        workspaceId: updatedDocument.workspaceId,
+        fileName: updatedDocument.name,
+        categoryId: updatedDocument.categoryId,
+        folderId: updatedDocument.folderId,
+      };
+  
+      const log = await this.logRepository.create({
+        metadata: documentDetail,
+        workspaceId,
+        activity: ELogsActivity.Document_Upload,
+        userId: me.id,
+      });
+      await this.logRepository.save(log);
+  
+      await this.documentRepository.save(document);
+    })
+    await Promise.all(promises);
+    return res.status(200).json({ msg: l10n.t("DOCUMENT_UPLOAD_SUCCESS") });
   };
 
   public read = async (req: TRequest, res: TResponse) => {
