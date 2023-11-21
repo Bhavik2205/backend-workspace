@@ -103,7 +103,7 @@ export class TeamController {
 
       if (!user) {
         const emailData = {
-          link: `${env.domain}sign-up`,
+          link: `${env.domain}/sign-up`,
         };
 
         const invitedParticipate = await this.participateRepository.findOne({
