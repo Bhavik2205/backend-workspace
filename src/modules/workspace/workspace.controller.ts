@@ -150,7 +150,7 @@ export class WorkspaceController {
       return res.status(400).json({ error: "Invalid Credentials!!" });
     }
 
-    await this.workspaceRepository.update(workspaceId, {
+    await this.workspaceRepository.update({ id: workspaceId }, {
       name,
     });
 
@@ -176,7 +176,7 @@ export class WorkspaceController {
     const { description } = req.dto;
     const { workspaceid: workspaceId } = req.headers;
 
-    await this.workspaceRepository.update(workspaceId, {
+    await this.workspaceRepository.update({ id: workspaceId }, {
       description,
     });
 
@@ -203,7 +203,7 @@ export class WorkspaceController {
 
     const blobUrl = `${env.containerName}/${blobName}`;
 
-    await this.workspaceRepository.update(workspaceId, {
+    await this.workspaceRepository.update({ id: workspaceId }, {
       imageUrl: blobUrl,
     });
 
@@ -247,7 +247,7 @@ export class WorkspaceController {
     const { purpose } = req.dto;
     const { workspaceid: workspaceId } = req.headers;
 
-    await this.workspaceRepository.update(workspaceId, {
+    await this.workspaceRepository.update({ id: workspaceId }, {
       purpose,
     });
 
@@ -264,7 +264,7 @@ export class WorkspaceController {
     const { type } = req.dto;
     const { workspaceid: workspaceId } = req.headers;
 
-    await this.workspaceRepository.update(workspaceId, {
+    await this.workspaceRepository.update({ id: workspaceId }, {
       type,
     });
 
