@@ -926,4 +926,10 @@
             </column>
         </addColumn> 
     </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="75">
+        <dropForeignKeyConstraint baseTableName="workflows" baseTableSchemaName="public" constraintName="workflow_teamId_fkey" />
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="76">
+        <addForeignKeyConstraint baseColumnNames="teamId" baseTableName="workflows" constraintName="workflow_teamId_fkey" deferrable="false" initiallyDeferred="false" onDelete="SET NULL" onUpdate="SET NULL" referencedColumnNames="id" referencedTableName="participates" validate="true"/>
+    </changeSet>
 </databaseChangeLog>
