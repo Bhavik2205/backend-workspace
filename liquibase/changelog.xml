@@ -932,4 +932,43 @@
     <changeSet author="Dharmik Dalwadi" id="76">
         <addForeignKeyConstraint baseColumnNames="teamId" baseTableName="workflows" constraintName="workflow_teamId_fkey" deferrable="false" initiallyDeferred="false" onDelete="SET NULL" onUpdate="SET NULL" referencedColumnNames="id" referencedTableName="participates" validate="true"/>
     </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="77">
+        <dropForeignKeyConstraint baseTableName="workflows" baseTableSchemaName="public" constraintName="workflow_teamId_fkey" />
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="78">
+        <addForeignKeyConstraint baseColumnNames="teamId" baseTableName="workflows" constraintName="workflow_teamId_fkey" deferrable="false" initiallyDeferred="false" onDelete="SET NULL" onUpdate="SET NULL" referencedColumnNames="id" referencedTableName="teams" validate="true"/>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="79">
+        <dropForeignKeyConstraint baseTableName="participates" baseTableSchemaName="public" constraintName="participates_userId_fkey" />
+    </changeSet>
+     <changeSet author="Dharmik Dalwadi" id="80">
+        <addForeignKeyConstraint baseColumnNames="userId" baseTableName="participates" constraintName="participates_userId_fkey" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="users" validate="true"/>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="81">
+        <dropForeignKeyConstraint baseTableName="questions" baseTableSchemaName="public" constraintName="questions_userId_fkey" />
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="82">
+        <addForeignKeyConstraint baseColumnNames="userId" baseTableName="questions" constraintName="questions_userId_fkey" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="users" validate="true"/>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="83">
+        <dropForeignKeyConstraint baseTableName="answers" baseTableSchemaName="public" constraintName="answers_userId_fkey" />
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="84">
+        <addForeignKeyConstraint baseColumnNames="userId" baseTableName="answers" constraintName="answers_userId_fkey" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="users" validate="true"/>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="85">
+        <dropForeignKeyConstraint baseTableName="workspaces" baseTableSchemaName="public" constraintName="workspaces_userId_fkey" />
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="86">
+        <addForeignKeyConstraint baseColumnNames="userId" baseTableName="workspaces" constraintName="workspaces_userId_fkey" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="users" validate="true"/>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="87">
+        <addForeignKeyConstraint baseColumnNames="userId" baseTableName="logs" constraintName="logs_userId_fkey" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="users" validate="true"/>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="88">
+        <dropForeignKeyConstraint baseTableName="userSubscriptions" baseTableSchemaName="public" constraintName="userSubscriptions_userId_fkey" />
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="89">
+        <addForeignKeyConstraint baseColumnNames="userId" baseTableName="userSubscriptions" constraintName="userSubscriptions_userId_fkey" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="users" validate="true"/>
+    </changeSet> 
 </databaseChangeLog>
