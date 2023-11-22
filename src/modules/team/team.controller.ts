@@ -85,10 +85,10 @@ export class TeamController {
     const existData = await this.participateRepository.find({
       where: {
         email: In(data),
-        workspaceId
-      }
-    })
-    const existingEmail = existData.map(e => e.email)
+        workspaceId,
+      },
+    });
+    const existingEmail = existData.map(e => e.email);
 
     if (existingEmail.length > 0) {
       return res.status(400).json({ msg: l10n.t("PARTICIPATE_EXISTS"), data: existingEmail });
@@ -215,7 +215,7 @@ export class TeamController {
         "user.lastName",
         "user.email",
         "roles.role",
-        "user.imageUrl"
+        "user.imageUrl",
       ])
       .where({ workspaceId })
       .getMany();
@@ -224,11 +224,13 @@ export class TeamController {
       ...e,
       participates: e.participates.map(user => ({
         ...user,
-        user: user.user ? {
-          ...user.user,
-          imageUrl: user.user.imageUrl ? `${env.azureURL}${user.user.imageUrl}` : null
-        } : null
-      }))
+        user: user.user
+          ? {
+            ...user.user,
+            imageUrl: user.user.imageUrl ? `${env.azureURL}${user.user.imageUrl}` : null,
+          }
+          : null,
+      })),
     }));
 
     res.status(200).json({
@@ -307,14 +309,17 @@ export class TeamController {
     const updateTeamData = await this.teamRepository.findOne({
       where: {
         id: +teamId,
-        workspaceId
-      }
-    })
-
-    await this.teamRepository.update({id: updateTeamData.id} ,{
-      name,
-      workspaceId,
+        workspaceId,
+      },
     });
+
+    await this.teamRepository.update(
+      { id: updateTeamData.id },
+      {
+        name,
+        workspaceId,
+      },
+    );
 
     const teamData = {
       name,
@@ -332,12 +337,12 @@ export class TeamController {
     const updatedData = await this.teamRepository.findOne({
       where: {
         id: +teamId,
-        workspaceId
-      }
-    })    
+        workspaceId,
+      },
+    });
 
     res.status(200).json({ msg: l10n.t("TEAM_UPDATE_SUCCESS"), data: updatedData });
-  }
+  };
 
   public DeleteTeam = async (req: TRequest, res: TResponse) => {
     const { workspaceid: workspaceId } = req.headers;
@@ -346,13 +351,12 @@ export class TeamController {
     const team = await this.teamRepository.findOne({
       where: {
         id: +teamId,
-        workspaceId
-      }
-    })
+        workspaceId,
+      },
+    });
 
     await this.teamRepository.remove(team);
-    
-    res.status(200).json({ msg: l10n.t("TEAM_DELETE_SUCCESS") });
 
-  }
+    res.status(200).json({ msg: l10n.t("TEAM_DELETE_SUCCESS") });
+  };
 }

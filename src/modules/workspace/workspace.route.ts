@@ -24,13 +24,7 @@ export class WorkspaceRouter extends SFRouter implements RouterDelegates {
     this.router.put("/update-name", Validator.validate(UpdateWorkspaceDto), this.authMiddleware.auth, this.workspaceController.update);
     this.router.delete("/:workspaceId", this.authMiddleware.auth, this.workspaceController.delete);
     this.router.put("/update-description", Validator.validate(UpdateDescriptionDto), this.authMiddleware.auth, this.workspaceController.updateDescriptoin);
-    this.router.post(
-      "/image",
-      fileUpload(),
-      Validator.fileMimeValidate,
-      this.authMiddleware.auth,
-      this.workspaceController.updateImage,
-    );
+    this.router.post("/image", fileUpload(), Validator.fileMimeValidateImage, this.authMiddleware.auth, this.workspaceController.updateImage);
     this.router.get("/:workspaceId/workspace-profile", this.authMiddleware.auth, this.permission.acl(Permissions.EditSettings), this.workspaceController.workspaceSetting);
     this.router.put("/update-purpose", Validator.validate(UpdatePurposeDto), this.authMiddleware.auth, isWorkspaceExist(), this.workspaceController.updatePurpose);
     this.router.put("/update-type", Validator.validate(UpdateTypeDto), this.authMiddleware.auth, isWorkspaceExist(), this.workspaceController.updateType);

@@ -19,7 +19,7 @@ export class LogController {
   public download = async (req: TRequest, res: TResponse) => {
     try {
       const { activity } = req.query;
-      const data = (activity as string).split(',');      
+      const data = (activity as string).split(",");
       const json2csvParser = new Parser();
 
       const logsPromises = data.map(act => {
@@ -36,7 +36,7 @@ export class LogController {
 
       data.forEach((act, index) => {
         const logs = logsResults[index];
-  
+
         if (logs && logs.length > 0) {
           combinedCsv += `Activity: ${act}\n`;
           const csv = json2csvParser.parse(logs);

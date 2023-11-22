@@ -28,7 +28,14 @@ export class QuestionRouter extends SFRouter implements RouterDelegates {
     this.router.get("/:questionId", this.authMiddleware.auth, this.permission.acl(Permissions.ViewQA), isWorkspaceExist(), this.workspaceController.readOne);
     this.router.delete("/:questionId", this.authMiddleware.auth, this.permission.acl(Permissions.DeleteQA), this.workspaceController.delete);
     this.router.post("/answer/:questionId", Validator.validate(CreateAnswerDto), this.authMiddleware.auth, this.workspaceController.createAnswer);
-    this.router.put("/:questionId", this.authMiddleware.auth, this.permission.acl(Permissions.EditQA), Validator.validate(UpdateQuestionDto), isWorkspaceExist(), this.workspaceController.update);
-    this.router.post("/:questionId/close-thread", this.authMiddleware.auth,  this.permission.acl(Permissions.CreateNewQA), isWorkspaceExist(), this.workspaceController.closeThread);
+    this.router.put(
+      "/:questionId",
+      this.authMiddleware.auth,
+      this.permission.acl(Permissions.EditQA),
+      Validator.validate(UpdateQuestionDto),
+      isWorkspaceExist(),
+      this.workspaceController.update,
+    );
+    this.router.post("/:questionId/close-thread", this.authMiddleware.auth, this.permission.acl(Permissions.CreateNewQA), isWorkspaceExist(), this.workspaceController.closeThread);
   }
 }

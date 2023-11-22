@@ -9,7 +9,7 @@ export class QuestionEntity {
   @Column({ type: "varchar", length: 100 })
   topic: string;
 
-  @Column({ type: "integer", nullable : true })
+  @Column({ type: "integer", nullable: true })
   to: number;
 
   @Column({ type: "integer", nullable: true })

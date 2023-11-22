@@ -36,7 +36,7 @@ export class DocumentRouter extends SFRouter implements RouterDelegates {
       this.documentController.create,
     );
     this.router.get("/", this.authMiddleware.auth, isWorkspaceExist(), this.documentController.read);
-    this.router.delete("/:documentId", this.authMiddleware.auth, this.permission.acl(Permissions.DocumentDownload),  this.workspaceType.document, this.documentController.delete);
+    this.router.delete("/:documentId", this.authMiddleware.auth, this.permission.acl(Permissions.DocumentDownload), this.workspaceType.document, this.documentController.delete);
     this.router.get("/search", this.authMiddleware.auth, this.permission.acl(Permissions.DocumentSearch), isWorkspaceExist(), this.documentController.search);
     this.router.put(
       "/:documentId",

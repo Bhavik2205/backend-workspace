@@ -41,11 +41,22 @@ export class Validator {
 
   public static fileMimeValidate(req: TRequest, res: TResponse, next: () => void) {
     if (req.files) {
-      const { file } = req.files;      
+      const { file } = req.files;
       const validMimes = Constants.VALID_MIMETYPES;
       const isValid = file.every((e: any) => validMimes.includes(e.mimetype));
 
       if (!isValid) {
+        return res.status(400).json({ error: `Invalid file, allowed file types are [${Constants.VALID_MIMETYPES.join(", ")}]` });
+      }
+    }
+    return next();
+  }
+
+  public static fileMimeValidateImage(req: TRequest, res: TResponse, next: () => void) {
+    if (req.files) {
+      const { file } = req.files;
+      const validMimes = Constants.VALID_MIMETYPES;
+      if (!validMimes.includes(file.mimetype)) {
         return res.status(400).json({ error: `Invalid file, allowed file types are [${Constants.VALID_MIMETYPES.join(", ")}]` });
       }
     }
