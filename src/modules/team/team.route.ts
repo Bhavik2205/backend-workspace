@@ -1,6 +1,6 @@
 import { RouterDelegates } from "@types";
 import { InjectCls, SFRouter, Validator } from "@helpers";
-import { AuthMiddleware, PermissionsMiddleware, Subscription, isWorkspaceExist } from "@middlewares";
+import { AuthMiddleware, Participate, PermissionsMiddleware, Subscription, isWorkspaceExist } from "@middlewares";
 import { Permissions } from "@acl";
 import { TeamController } from "./team.controller";
 import { CreateTeamDto, CreateMultipleParticipateDto, UpdateTeamDto } from "./dto";
@@ -17,6 +17,9 @@ export class TeamRouter extends SFRouter implements RouterDelegates {
 
   @InjectCls(Subscription)
   subscription: Subscription;
+
+  @InjectCls(Participate)
+  participate: Participate;
 
   initRoutes(): void {
     this.router.post(
@@ -44,6 +47,7 @@ export class TeamRouter extends SFRouter implements RouterDelegates {
       this.authMiddleware.auth,
       this.permission.acl(Permissions.RemoveParticipate),
       this.permission.acl(Permissions.RemoveParticipatesGlobally),
+      this.participate.delete,
       this.teamController.deleteParticipate,
     );
     this.router.get("/user", this.authMiddleware.auth, this.teamController.readUserTeam);
