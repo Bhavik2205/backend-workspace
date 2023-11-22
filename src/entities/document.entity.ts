@@ -12,7 +12,7 @@ export class DocumentEntity {
   @Column({ type: "integer", nullable: true })
   docNum: number;
 
-  @Column({ type: "integer"})
+  @Column({ type: "integer" })
   size: number;
 
   @Column({ type: "text", nullable: false })

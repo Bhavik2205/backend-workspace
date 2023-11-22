@@ -10,10 +10,10 @@ export class WorkspaceType {
 
   @InitRepository(DocumentEntity)
   documentRepository: Repository<DocumentEntity>;
-    
+
   @InitRepository(TeamEntity)
   teamRepository: Repository<TeamEntity>;
-    
+
   @InitRepository(ParticipateEntity)
   participateRepository: Repository<ParticipateEntity>;
 
@@ -28,22 +28,22 @@ export class WorkspaceType {
     try {
       const workspace = await this.workspaceRepository.findOne({
         where: {
-          id: workspaceId
-        }
-      })
-        
+          id: workspaceId,
+        },
+      });
+
       const data = await this.participateRepository.findOne({
         where: {
           userId: me.id,
         },
       });
-        
+
       const team = await this.teamRepository.findOne({
         where: {
-          id: data.teamId
-        }
-      })
-               
+          id: data.teamId,
+        },
+      });
+
       if (workspace.type === "One Way" && team.name === "External Team") {
         return res.status(400).json({ msg: l10n.t("ERR_PERMISSION_DENIED") });
       }
@@ -53,5 +53,4 @@ export class WorkspaceType {
       return res.status(400).json({ error: error.msg });
     }
   };
-
 }

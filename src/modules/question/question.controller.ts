@@ -203,18 +203,17 @@ export class QuestionController {
         workspaceId,
       })
       .getMany();
-    
+
     questionDetail.map(data => {
       const modifiedData = { ...data };
       const file = modifiedData?.document?.file;
-  
+
       if (file) {
         modifiedData.document.file = `${env.azureURL}${file}`;
       }
-  
+
       return modifiedData;
     });
-
 
     return res.status(200).json({ data: questionDetail });
   };
@@ -236,8 +235,8 @@ export class QuestionController {
     const currentThread = await this.questionRepository.findOne({
       where: {
         id: +questionId,
-        workspaceId
-      }
+        workspaceId,
+      },
     });
 
     if (currentThread.isClosed) {
@@ -267,33 +266,36 @@ export class QuestionController {
     const updateQuestionData = await this.questionRepository.findOne({
       where: {
         id: +questionId,
-        workspaceId
-      }
-    })
-
-    await this.questionRepository.update({ id: updateQuestionData.id } ,{
-      topic,
-      to,
-      from,
-      question,
-      documentId,
-      userId: me.id,
-      sendForApproval,
-      isHighPriority,
-      isClosed,
-      isNew: true,
-      workspaceId,
+        workspaceId,
+      },
     });
+
+    await this.questionRepository.update(
+      { id: updateQuestionData.id },
+      {
+        topic,
+        to,
+        from,
+        question,
+        documentId,
+        userId: me.id,
+        sendForApproval,
+        isHighPriority,
+        isClosed,
+        isNew: true,
+        workspaceId,
+      },
+    );
 
     const updatedData = await this.questionRepository.findOne({
       where: {
         id: +questionId,
-        workspaceId
-      }
-    })
+        workspaceId,
+      },
+    });
 
     res.status(200).json({ msg: l10n.t("QUESTION_UPDATE_SUCCESS"), data: updatedData });
-  }
+  };
 
   public closeThread = async (req: TRequest, res: TResponse) => {
     const { workspaceid: workspaceId } = req.headers;
@@ -302,8 +304,8 @@ export class QuestionController {
     const currentThread = await this.questionRepository.findOne({
       where: {
         id: +questionId,
-        workspaceId
-      }
+        workspaceId,
+      },
     });
 
     const updatedThread = !currentThread.isClosed;
@@ -316,5 +318,5 @@ export class QuestionController {
     );
 
     res.sendStatus(200);
-  }
+  };
 }

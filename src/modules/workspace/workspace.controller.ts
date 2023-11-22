@@ -83,12 +83,12 @@ export class WorkspaceController {
     const data = await this.userRolesRepository.findOne({
       where: {
         userId: me.id,
-        roleId: roles.id
-      }
-    })
+        roleId: roles.id,
+      },
+    });
 
     await this.userRolesRepository.update(data.id, {
-      participateId: defaultParticipate.id
+      participateId: defaultParticipate.id,
     });
 
     res.status(200).json({ msg: l10n.t("WORKSPACE_CREATE_SUCCESS"), data: workspace });
@@ -99,20 +99,20 @@ export class WorkspaceController {
 
     const workspaceAccess = await this.participateRepository.find({
       where: {
-        userId: me.id
-      }
-    })
+        userId: me.id,
+      },
+    });
 
-    const workspaceIds = workspaceAccess.map(access => access.workspaceId);    
+    const workspaceIds = workspaceAccess.map(access => access.workspaceId);
 
     const workspace = await this.workspaceRepository.find({
       where: {
         id: In(workspaceIds),
-      }
+      },
     });
 
     res.status(200).json({
-      data: workspace
+      data: workspace,
     });
   };
 
@@ -150,9 +150,12 @@ export class WorkspaceController {
       return res.status(400).json({ error: "Invalid Credentials!!" });
     }
 
-    await this.workspaceRepository.update({ id: workspaceId }, {
-      name,
-    });
+    await this.workspaceRepository.update(
+      { id: workspaceId },
+      {
+        name,
+      },
+    );
 
     const workspace = await this.workspaceRepository.findOne({
       where: {
@@ -176,9 +179,12 @@ export class WorkspaceController {
     const { description } = req.dto;
     const { workspaceid: workspaceId } = req.headers;
 
-    await this.workspaceRepository.update({ id: workspaceId }, {
-      description,
-    });
+    await this.workspaceRepository.update(
+      { id: workspaceId },
+      {
+        description,
+      },
+    );
 
     const workspace = await this.workspaceRepository.findOne({
       where: {
@@ -203,9 +209,12 @@ export class WorkspaceController {
 
     const blobUrl = `${env.containerName}/${blobName}`;
 
-    await this.workspaceRepository.update({ id: workspaceId }, {
-      imageUrl: blobUrl,
-    });
+    await this.workspaceRepository.update(
+      { id: workspaceId },
+      {
+        imageUrl: blobUrl,
+      },
+    );
 
     const image = `${env.azureURL}${blobUrl}`;
 
@@ -232,10 +241,10 @@ export class WorkspaceController {
       ])
       .where("workspace.id = :workspaceId", { workspaceId })
       .getMany();
-    
+
     const modifiedData = data.map(workspace => ({
       ...workspace,
-      imageUrl: `${env.azureURL}${workspace.imageUrl}`
+      imageUrl: `${env.azureURL}${workspace.imageUrl}`,
     }));
 
     res.status(200).json({
@@ -247,9 +256,12 @@ export class WorkspaceController {
     const { purpose } = req.dto;
     const { workspaceid: workspaceId } = req.headers;
 
-    await this.workspaceRepository.update({ id: workspaceId }, {
-      purpose,
-    });
+    await this.workspaceRepository.update(
+      { id: workspaceId },
+      {
+        purpose,
+      },
+    );
 
     const workspace = await this.workspaceRepository.findOne({
       where: {
@@ -257,16 +269,19 @@ export class WorkspaceController {
       },
     });
 
-    res.status(200).json({ msg: l10n.t("PURPOSE_UPDATE_SUCCESS"), data: workspace })
-  }
+    res.status(200).json({ msg: l10n.t("PURPOSE_UPDATE_SUCCESS"), data: workspace });
+  };
 
   public updateType = async (req: TRequest<UpdateTypeDto>, res: TResponse) => {
     const { type } = req.dto;
     const { workspaceid: workspaceId } = req.headers;
 
-    await this.workspaceRepository.update({ id: workspaceId }, {
-      type,
-    });
+    await this.workspaceRepository.update(
+      { id: workspaceId },
+      {
+        type,
+      },
+    );
 
     const workspace = await this.workspaceRepository.findOne({
       where: {
@@ -274,25 +289,24 @@ export class WorkspaceController {
       },
     });
 
-    res.status(200).json({ msg: l10n.t("TYPE_UPDATE_SUCCESS"), data: workspace })
-  }
+    res.status(200).json({ msg: l10n.t("TYPE_UPDATE_SUCCESS"), data: workspace });
+  };
 
   public storage = async (req: TRequest, res: TResponse) => {
     const { workspaceid: workspaceId } = req.headers;
 
     try {
-
       const documentCount = await this.documentRepository.find({
         where: {
           workspaceId,
         },
-      });   
-      
+      });
+
       const size = documentCount.reduce((acc, document) => acc + Number(document.size), 0);
 
-      return res.status(200).json({ data: size})
+      return res.status(200).json({ data: size });
     } catch (error) {
       return res.status(400).json({ error: error.msg });
     }
-  }
+  };
 }
