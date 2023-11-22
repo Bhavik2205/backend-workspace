@@ -35,6 +35,7 @@ export class WorkspaceType {
       const data = await this.participateRepository.findOne({
         where: {
           userId: me.id,
+          workspaceId
         },
       });
 
@@ -44,11 +45,11 @@ export class WorkspaceType {
         },
       });
 
-      if (workspace.type === "One Way" && team.name === "External Team") {
-        return res.status(400).json({ msg: l10n.t("ERR_PERMISSION_DENIED") });
+      if (workspace.type === "One Way" && team.name === "Internal Team") {
+        return next();
       }
 
-      return next();
+      return res.status(400).json({ msg: l10n.t("ERR_PERMISSION_DENIED") });
     } catch (error) {
       return res.status(400).json({ error: error.msg });
     }
