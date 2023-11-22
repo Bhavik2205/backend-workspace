@@ -32,20 +32,24 @@ export class WorkspaceType {
         },
       });
 
-      const data = await this.participateRepository.findOne({
-        where: {
-          userId: me.id,
-          workspaceId
-        },
-      });
+      if (workspace.type === "One Way") {
+        const data = await this.participateRepository.findOne({
+          where: {
+            userId: me.id,
+            workspaceId,
+          },
+        });
 
-      const team = await this.teamRepository.findOne({
-        where: {
-          id: data.teamId,
-        },
-      });
+        const team = await this.teamRepository.findOne({
+          where: {
+            id: data.teamId,
+          },
+        });
 
-      if (workspace.type === "One Way" && team.name === "Internal Team") {
+        if (team.name === "Internal Team") {
+          return next();
+        }
+      } else {
         return next();
       }
 
