@@ -26,6 +26,7 @@ export const getRolePermissions = () => {
     [Permissions.RemoveParticipatesGlobally]: [Roles.Super_Admin],
     [Permissions.RemoveParticipate]: [Roles.Super_Admin, Roles.Admin],
     [Permissions.AddDeleteTeam]: [Roles.Super_Admin],
+    [Permissions.Billing]: [Roles.Super_Admin],
   };
 
   return migratePermissionsMapToRolePermissionsMap(permissions);
