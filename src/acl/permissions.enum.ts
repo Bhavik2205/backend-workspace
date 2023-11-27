@@ -17,4 +17,5 @@ export enum Permissions {
   AddDeleteTeam = "AddDeleteTeam",
   RemoveParticipatesGlobally = "RemoveParticipatesGlobally",
   RemoveParticipate = "RemoveParticipate",
+  Billing = "Billing",
 }

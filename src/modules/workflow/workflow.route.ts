@@ -34,8 +34,22 @@ export class WorkflowRouter extends SFRouter implements RouterDelegates {
       this.workflowController.update,
     );
     this.router.delete("/:workflowId", this.authMiddleware.auth, this.permission.acl(Permissions.DeleteTask), isWorkspaceExist(), this.workflowController.delete);
-    this.router.put("/duedate/:workflowId", Validator.validate(SetDueDateDto), this.authMiddleware.auth, isWorkspaceExist(), this.workflowController.setDueDate);
-    this.router.delete("/duedate/:workflowId", this.authMiddleware.auth, isWorkspaceExist(), this.workflowController.deleteDueDate);
+    this.router.put(
+      "/duedate/:workflowId",
+      this.authMiddleware.auth,
+      this.permission.acl(Permissions.AddTaskAndDueDate),
+      Validator.validate(SetDueDateDto),
+      isWorkspaceExist(),
+      this.workflowController.setDueDate,
+    );
+    this.router.delete(
+      "/duedate/:workflowId",
+      this.authMiddleware.auth,
+      this.permission.acl(Permissions.AddTaskAndDueDate),
+      Validator.validate(SetDueDateDto),
+      isWorkspaceExist(),
+      this.workflowController.deleteDueDate,
+    );
     this.router.get("/download/:workflowId", this.authMiddleware.auth, isWorkspaceExist(), this.workflowController.download);
   }
 }

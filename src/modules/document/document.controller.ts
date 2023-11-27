@@ -28,7 +28,7 @@ export class DocumentController {
     const { categoryId, folderId, isEditable, isDownloadable } = req.dto;
     const { me } = req;
     const { workspaceid: workspaceId } = req.headers;
-    const { file } = req.files;
+    const file = Array.isArray(req.files.file) ? req.files.file : [req.files.file];
 
     const user = await this.userRepository.findOne({
       where: {

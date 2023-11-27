@@ -41,9 +41,9 @@ export class Validator {
 
   public static fileMimeValidate(req: TRequest, res: TResponse, next: () => void) {
     if (req.files) {
-      const { file } = req.files;
+      const files = Array.isArray(req.files.file) ? req.files.file : [req.files.file];
       const validMimes = Constants.VALID_MIMETYPES;
-      const isValid = file.every((e: any) => validMimes.includes(e.mimetype));
+      const isValid = files.every((file: any) => validMimes.includes(file.mimetype));
 
       if (!isValid) {
         return res.status(400).json({ error: `Invalid file, allowed file types are [${Constants.VALID_MIMETYPES.join(", ")}]` });
