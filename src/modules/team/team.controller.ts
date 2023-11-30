@@ -323,7 +323,7 @@ export class TeamController {
 
     const teamData = {
       name,
-      Status: EActivityStatus.Team_Remove,
+      Status: EActivityStatus.Team_Update,
     };
 
     const log = this.logRepository.create({
@@ -347,6 +347,7 @@ export class TeamController {
   public DeleteTeam = async (req: TRequest, res: TResponse) => {
     const { workspaceid: workspaceId } = req.headers;
     const { teamId } = req.params;
+    const { me } = req;
 
     const team = await this.teamRepository.findOne({
       where: {
@@ -356,6 +357,19 @@ export class TeamController {
     });
 
     await this.teamRepository.remove(team);
+
+    const teamData = {
+      name: team.name,
+      Status: EActivityStatus.Team_Remove,
+    };
+
+    const log = this.logRepository.create({
+      metadata: teamData,
+      workspaceId,
+      activity: ELogsActivity.Participant_And_Team_Add_Remove,
+      userId: me.id,
+    });
+    await this.logRepository.save(log);
 
     res.status(200).json({ msg: l10n.t("TEAM_DELETE_SUCCESS") });
   };

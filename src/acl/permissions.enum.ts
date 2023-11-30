@@ -18,4 +18,5 @@ export enum Permissions {
   RemoveParticipatesGlobally = "RemoveParticipatesGlobally",
   RemoveParticipate = "RemoveParticipate",
   Billing = "Billing",
+  AnswerQA = "AnswerQA",
 }

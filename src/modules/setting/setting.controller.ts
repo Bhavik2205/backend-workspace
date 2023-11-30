@@ -13,13 +13,14 @@ export class SettingController {
 
   public updateQANotification = async (req: TRequest, res: TResponse) => {
     const { me } = req;
+    const { workspaceid: workspaceId } = req.headers;
 
-    const currentSetting = await this.settingRepository.findOne({ where: { userId: me.id } });
+    const currentSetting = await this.settingRepository.findOne({ where: { userId: me.id, workspaceId } });
 
     const updatedStatus = !currentSetting.isQANotification;
 
     await this.settingRepository.update(
-      { userId: me.id },
+      { userId: me.id, workspaceId },
       {
         isQANotification: updatedStatus,
       },
@@ -30,13 +31,14 @@ export class SettingController {
 
   public isTeamSpecificQA = async (req: TRequest, res: TResponse) => {
     const { me } = req;
+    const { workspaceid: workspaceId } = req.headers;
 
-    const currentSetting = await this.settingRepository.findOne({ where: { userId: me.id } });
+    const currentSetting = await this.settingRepository.findOne({ where: { userId: me.id, workspaceId } });
 
     const updatedStatus = !currentSetting.isTeamSpecificQA;
 
     await this.settingRepository.update(
-      { userId: me.id },
+      { userId: me.id, workspaceId },
       {
         isTeamSpecificQA: updatedStatus,
       },

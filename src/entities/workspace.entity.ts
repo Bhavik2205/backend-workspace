@@ -1,6 +1,7 @@
 import { EWorkspacePurpose, EWorkspaceType } from "@types";
 import { Column, CreateDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { UserEntity } from "./user.entity";
+import { SettingEntity } from "./setting.entity";
 
 @Entity("workspaces")
 export class WorkspaceEntity {
@@ -34,4 +35,7 @@ export class WorkspaceEntity {
   @OneToOne(() => UserEntity, user => user.workspace)
   @JoinColumn({ name: "userId" })
   user: UserEntity;
+
+  @OneToOne(() => SettingEntity, setting => setting.workspace)
+  setting: SettingEntity;
 }

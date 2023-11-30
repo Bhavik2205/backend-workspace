@@ -1,4 +1,4 @@
-import { DocumentEntity, ParticipateEntity, RolesEntity, TeamEntity, UserEntity, UserRolesEntity, WorkspaceEntity } from "@entities";
+import { DocumentEntity, ParticipateEntity, RolesEntity, SettingEntity, TeamEntity, UserEntity, UserRolesEntity, WorkspaceEntity } from "@entities";
 import { AzureUtils, Bcrypt, InitRepository, InjectRepositories } from "@helpers";
 import { EAzureFolder, ERolesRole, TRequest, TResponse } from "@types";
 import { In, Repository } from "typeorm";
@@ -28,6 +28,9 @@ export class WorkspaceController {
 
   @InitRepository(DocumentEntity)
   documentRepository: Repository<DocumentEntity>;
+
+  @InitRepository(SettingEntity)
+  settingRepository: Repository<SettingEntity>;
 
   constructor() {
     InjectRepositories(this);
@@ -90,6 +93,14 @@ export class WorkspaceController {
     await this.userRolesRepository.update(data.id, {
       participateId: defaultParticipate.id,
     });
+
+    const setting = await this.settingRepository.create({
+      userId: me.id,
+      workspaceId: workspaceData.id,
+      isQANotification: false,
+      isTeamSpecificQA: false,
+    });
+    await this.settingRepository.save(setting);
 
     res.status(200).json({ msg: l10n.t("WORKSPACE_CREATE_SUCCESS"), data: workspace });
   };
@@ -226,7 +237,7 @@ export class WorkspaceController {
     const data = await this.workspaceRepository
       .createQueryBuilder("workspace")
       .leftJoinAndSelect("workspace.user", "user")
-      .leftJoinAndSelect("user.setting", "setting")
+      .leftJoinAndSelect("workspace.setting", "setting")
       .select([
         "workspace.id",
         "workspace.name",
@@ -238,6 +249,7 @@ export class WorkspaceController {
         "user.mobile",
         "setting.isQANotification",
         "setting.isTeamSpecificQA",
+        "setting.workspaceId",
       ])
       .where("workspace.id = :workspaceId", { workspaceId })
       .getMany();
