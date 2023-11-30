@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany, OneToOne } from "typeorm";
-import { ParticipateEntity, AnswersEntity, QuestionEntity, DocumentEntity, WorkflowEntity, WorkspaceEntity, SettingEntity } from "@entities";
+import { ParticipateEntity, AnswersEntity, QuestionEntity, DocumentEntity, WorkflowEntity, WorkspaceEntity } from "@entities";
 
 @Entity("users")
 export class UserEntity {
@@ -68,7 +68,4 @@ export class UserEntity {
 
   @OneToOne(() => WorkspaceEntity, workspace => workspace.user)
   workspace: WorkspaceEntity;
-
-  @OneToOne(() => SettingEntity, setting => setting.user)
-  setting: SettingEntity;
 }

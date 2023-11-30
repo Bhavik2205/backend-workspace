@@ -76,7 +76,7 @@ export class QuestionController {
 
     const settings = await this.settingRepository.findOne({
       where: {
-        userId: me.id,
+        workspaceId,
       },
     });
 

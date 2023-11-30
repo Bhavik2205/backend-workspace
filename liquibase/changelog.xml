@@ -970,5 +970,24 @@
     </changeSet>
     <changeSet author="Dharmik Dalwadi" id="89">
         <addForeignKeyConstraint baseColumnNames="userId" baseTableName="userSubscriptions" constraintName="userSubscriptions_userId_fkey" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="users" validate="true"/>
-    </changeSet> 
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="90">
+        <comment>Update default roles permissions</comment>
+        <sql>
+            UPDATE public.roles SET permission='["DocumentUpload","DocumentDownload","DocumentSearch","CreateNewFolder","CreateNewQA","DeleteQA","EditQA","DownloadLog","EditSettings","AddTaskAndDueDate","DeleteTask","EditTask","InviteParticipatesGlobally","InviteParticipates","RemoveParticipatesGlobally","RemoveParticipate","AddDeleteTeam","ViewQA","AnswerQA"]' WHERE role='Super Admin';
+            UPDATE public.roles SET permission='["DocumentUpload","DocumentDownload","DocumentSearch","CreateNewFolder","CreateNewQA","DeleteQA","EditQA","DownloadLog","AddTaskAndDueDate","DeleteTask","EditTask","InviteParticipates","RemoveParticipate","ViewQA","AnswerQA"]' WHERE role='Admin';
+            UPDATE public.roles SET permission='["DocumentUpload","DocumentDownload","DocumentSearch","CreateNewFolder","CreateNewQA","DeleteQA","EditQA","AddTaskAndDueDate","DeleteTask","EditTask","ViewQA","AnswerQA"]' WHERE role='QA';
+            UPDATE public.roles SET permission='["DocumentSearch","ViewQA"]' WHERE role='Viewer';
+        </sql>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="91">
+        <addColumn tableName="settings">
+            <column name="workspaceId" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn> 
+    </changeSet>     
+    <changeSet author="Dharmik Dalwadi" id="92">
+        <addForeignKeyConstraint baseColumnNames="workspaceId" baseTableName="settings" constraintName="settings_workspaceId_fkey" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="workspaces" validate="true"/>
+    </changeSet>
 </databaseChangeLog>

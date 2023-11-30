@@ -15,7 +15,7 @@ export const getRolePermissions = () => {
     [Permissions.CreateNewQA]: [Roles.Super_Admin, Roles.Admin, Roles.QA],
     [Permissions.DeleteQA]: [Roles.Super_Admin, Roles.Admin, Roles.QA],
     [Permissions.EditQA]: [Roles.Super_Admin, Roles.Admin, Roles.QA],
-    [Permissions.ViewQA]: [Roles.Viewer],
+    [Permissions.ViewQA]: [Roles.Super_Admin, Roles.Admin, Roles.QA, Roles.Viewer],
     [Permissions.DownloadLog]: [Roles.Super_Admin, Roles.Admin],
     [Permissions.EditSettings]: [Roles.Super_Admin],
     [Permissions.AddTaskAndDueDate]: [Roles.Super_Admin, Roles.Admin, Roles.QA],
@@ -27,6 +27,7 @@ export const getRolePermissions = () => {
     [Permissions.RemoveParticipate]: [Roles.Super_Admin, Roles.Admin],
     [Permissions.AddDeleteTeam]: [Roles.Super_Admin],
     [Permissions.Billing]: [Roles.Super_Admin],
+    [Permissions.AnswerQA]: [Roles.Super_Admin, Roles.Admin, Roles.QA],
   };
 
   return migratePermissionsMapToRolePermissionsMap(permissions);

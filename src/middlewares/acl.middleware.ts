@@ -58,7 +58,7 @@ export class PermissionsMiddleware {
         const canAccess = userPermissions.includes(permission);
 
         if (!canAccess) {
-          res.status(403).json({ error: l10n.t("ERR_PERMISSION_DENIED") });
+          return res.status(403).json({ error: l10n.t("ERR_PERMISSION_DENIED") });
         }
         req.me = user;
         return next();

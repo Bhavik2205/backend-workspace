@@ -3,7 +3,7 @@ import moment from "moment";
 import * as l10n from "jm-ez-l10n";
 import { v4 as uuidv4 } from "uuid";
 import { ELogsActivity, ERolesRole, TRequest, TResponse } from "@types";
-import { LogEntity, ParticipateEntity, ResetPasswordRequestEntity, TwoFactorAuthRequestEntity, UserEntity, SettingEntity, RolesEntity, UserRolesEntity } from "@entities";
+import { LogEntity, ParticipateEntity, ResetPasswordRequestEntity, TwoFactorAuthRequestEntity, UserEntity, RolesEntity, UserRolesEntity } from "@entities";
 import { InitRepository, InjectRepositories, Bcrypt, JwtHelper, GenerateOTP, Notification, PhoneNumberValidator } from "@helpers";
 import { Constants, env } from "@configs";
 import { CreateUserDto, ForgotPasswordDto, ResetPasswordDto, SendTwoFactorDto, SignInDto, VerifyTwoFactorDto } from "./dto";
@@ -23,9 +23,6 @@ export class AuthController {
 
   @InitRepository(LogEntity)
   logRepository: Repository<LogEntity>;
-
-  @InitRepository(SettingEntity)
-  settingRepository: Repository<SettingEntity>;
 
   @InitRepository(RolesEntity)
   rolesRepository: Repository<RolesEntity>;
@@ -92,7 +89,7 @@ export class AuthController {
 
     const user = await this.userRepository.findOne({
       where: { email },
-      select: ["email", "id", "firstName", "lastName", "isAdmin", "password", "isActive"],
+      select: ["email", "id", "firstName", "lastName", "isAdmin", "password", "isActive", "mobile", "is2FAEnabled"],
     });
 
     if (!user) {
@@ -126,13 +123,6 @@ export class AuthController {
       userId: user.id,
     });
     await this.logRepository.save(log);
-
-    const setting = await this.settingRepository.create({
-      userId: user.id,
-      isQANotification: false,
-      isTeamSpecificQA: false,
-    });
-    await this.settingRepository.save(setting);
 
     return res.status(200).json({ token, data: userWithoutPassword });
   };

@@ -1,6 +1,6 @@
 import { RouterDelegates } from "@types";
 import { InjectCls, SFRouter } from "@helpers";
-import { AuthMiddleware, PermissionsMiddleware } from "@middlewares";
+import { AuthMiddleware, PermissionsMiddleware, isWorkspaceExist } from "@middlewares";
 import { Permissions } from "@acl";
 import { SettingController } from "./setting.controller";
 
@@ -15,7 +15,7 @@ export class SettingRouter extends SFRouter implements RouterDelegates {
   permission: PermissionsMiddleware;
 
   initRoutes(): void {
-    this.router.post("/notification", this.authMiddleware.auth, this.permission.acl(Permissions.EditSettings), this.settingController.updateQANotification);
-    this.router.post("/teamQA", this.authMiddleware.auth, this.permission.acl(Permissions.EditSettings), this.settingController.isTeamSpecificQA);
+    this.router.post("/notification", this.authMiddleware.auth, this.permission.acl(Permissions.EditSettings), isWorkspaceExist(), this.settingController.updateQANotification);
+    this.router.post("/teamQA", this.authMiddleware.auth, this.permission.acl(Permissions.EditSettings), isWorkspaceExist(), this.settingController.isTeamSpecificQA);
   }
 }

@@ -41,6 +41,7 @@ export enum ELogsActivity {
 
 export enum EActivityStatus {
   Team_Created = "Team Created",
+  Team_Update = "Team Updated",
   Team_Remove = "Team Removed",
   Participant_Created = "Participant Created",
   Participant_Remove = "Participant Removed",
