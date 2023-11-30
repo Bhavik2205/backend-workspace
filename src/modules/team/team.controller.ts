@@ -263,10 +263,12 @@ export class TeamController {
 
   public readUserTeam = async (req: TRequest, res: TResponse) => {
     const { me } = req;
+    const { workspaceid: workspaceId } = req.headers; 
 
     const data = await this.participateRepository.findOne({
       where: {
         userId: me.id,
+        workspaceId
       },
     });
 
