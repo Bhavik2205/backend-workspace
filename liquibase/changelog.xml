@@ -983,7 +983,7 @@
     <changeSet author="Dharmik Dalwadi" id="91">
         <addColumn tableName="settings">
             <column name="workspaceId" type="INTEGER">
-                <constraints nullable="false"/>
+                <constraints nullable="true"/>
             </column>
         </addColumn> 
     </changeSet>     
