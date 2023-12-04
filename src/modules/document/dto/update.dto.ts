@@ -8,4 +8,12 @@ export class UpdateDocumentDto {
   @IsOptional()
   @IsString()
   public folderId: number;
+
+  @IsOptional()
+  @IsString()
+  isEditable?: boolean;
+
+  @IsOptional()
+  @IsString()
+  isDownloadable?: boolean;
 }

@@ -44,7 +44,7 @@ export class TeamController {
     const log = this.logRepository.create({
       metadata: teamData,
       workspaceId,
-      activity: ELogsActivity.Participant_And_Team_Add_Remove,
+      activity: ELogsActivity.Team_Add_Remove,
       userId: me.id,
     });
     await this.logRepository.save(log);
@@ -131,7 +131,7 @@ export class TeamController {
           const log = await this.logRepository.create({
             metadata: participantsDetail,
             workspaceId,
-            activity: ELogsActivity.Participant_And_Team_Add_Remove,
+            activity: ELogsActivity.Participant_Add_Remove,
             userId: me.id,
           });
           await this.logRepository.save(log);
@@ -173,7 +173,7 @@ export class TeamController {
           const log = await this.logRepository.create({
             metadata: participantsDetail,
             workspaceId,
-            activity: ELogsActivity.Participant_And_Team_Add_Remove,
+            activity: ELogsActivity.Participant_Add_Remove,
             userId: me.id,
           });
           await this.logRepository.save(log);
@@ -253,7 +253,7 @@ export class TeamController {
     const log = await this.logRepository.create({
       metadata: participantsDetail,
       workspaceId,
-      activity: ELogsActivity.Participant_And_Team_Add_Remove,
+      activity: ELogsActivity.Participant_Add_Remove,
       userId: me.id,
     });
     await this.logRepository.save(log);
@@ -331,7 +331,7 @@ export class TeamController {
     const log = this.logRepository.create({
       metadata: teamData,
       workspaceId,
-      activity: ELogsActivity.Participant_And_Team_Add_Remove,
+      activity: ELogsActivity.Team_Add_Remove,
       userId: me.id,
     });
     await this.logRepository.save(log);
@@ -368,7 +368,7 @@ export class TeamController {
     const log = this.logRepository.create({
       metadata: teamData,
       workspaceId,
-      activity: ELogsActivity.Participant_And_Team_Add_Remove,
+      activity: ELogsActivity.Team_Add_Remove,
       userId: me.id,
     });
     await this.logRepository.save(log);

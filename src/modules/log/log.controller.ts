@@ -56,12 +56,14 @@ export class LogController {
     try {
       const { activity } = req.query;
       const data = (activity as string).split(",");
+      const { workspaceid: workspaceId } = req.headers;
 
       const logsPromises = data.map(async act => {
         const activityEnumValue = getActivityEnumValue(act);
         const logs = await this.logRepository.find({
           where: {
             activity: activityEnumValue,
+            workspaceId: +workspaceId
           },
         });
 

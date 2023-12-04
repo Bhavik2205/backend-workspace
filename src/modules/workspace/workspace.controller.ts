@@ -1,6 +1,6 @@
-import { DocumentEntity, ParticipateEntity, RolesEntity, SettingEntity, TeamEntity, UserEntity, UserRolesEntity, WorkspaceEntity } from "@entities";
+import { DocumentEntity, LogEntity, ParticipateEntity, RolesEntity, SettingEntity, TeamEntity, UserEntity, UserRolesEntity, WorkspaceEntity } from "@entities";
 import { AzureUtils, Bcrypt, InitRepository, InjectRepositories } from "@helpers";
-import { EAzureFolder, ERolesRole, TRequest, TResponse } from "@types";
+import { EActivityStatus, EAzureFolder, ELogsActivity, ERolesRole, TRequest, TResponse } from "@types";
 import { In, Repository } from "typeorm";
 import * as l10n from "jm-ez-l10n";
 import { env } from "@configs";
@@ -32,6 +32,9 @@ export class WorkspaceController {
   @InitRepository(SettingEntity)
   settingRepository: Repository<SettingEntity>;
 
+  @InitRepository(LogEntity)
+  logRepository: Repository<LogEntity>;
+
   constructor() {
     InjectRepositories(this);
   }
@@ -62,6 +65,32 @@ export class WorkspaceController {
 
     const team = await this.teamRepository.save([internalTeam, externalTeam]);
 
+    const internalTeamData = {
+      name: internalTeam.name,
+      Status: EActivityStatus.Team_Created,
+    };
+
+    const internalTeamLog = this.logRepository.create({
+      metadata: internalTeamData,
+      workspaceId: workspace.id,
+      activity: ELogsActivity.Team_Add_Remove,
+      userId: me.id,
+    });
+
+    const externalTeamData = {
+      name: externalTeam.name,
+      Status: EActivityStatus.Team_Created,
+    };
+
+    const externalTeamLog = this.logRepository.create({
+      metadata: externalTeamData,
+      workspaceId: workspace.id,
+      activity: ELogsActivity.Team_Add_Remove,
+      userId: me.id,
+    });
+
+    await this.logRepository.save([internalTeamLog, externalTeamLog]);
+
     const userData = await this.userRepository.findOne({
       where: {
         id: me.id,
@@ -82,6 +111,20 @@ export class WorkspaceController {
     });
 
     const defaultParticipate = await this.participateRepository.save(participate);
+
+    const participantsDetail = {
+      name: team[0].name,
+      isInvited: false,
+      Status: EActivityStatus.Participant_Created,
+    };
+
+    const participateLog = await this.logRepository.create({
+      metadata: participantsDetail,
+      workspaceId: workspace.id,
+      activity: ELogsActivity.Participant_Add_Remove,
+      userId: me.id,
+    });
+    await this.logRepository.save(participateLog);
 
     const data = await this.userRolesRepository.findOne({
       where: {
