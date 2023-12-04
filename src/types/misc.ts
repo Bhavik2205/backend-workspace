@@ -34,7 +34,8 @@ export enum EWorkflowStatus {
 export enum ELogsActivity {
   Login_History = "Login History",
   Document_Upload = "Document Upload",
-  Participant_And_Team_Add_Remove = "Participant and Team Add / Remove",
+  Participant_Add_Remove = "Participant Add / Remove",
+  Team_Add_Remove = "Team Add / Remove",
   Q_A_Summary = "Question Answer Summary",
   Others_TBC = "Others (TBC)",
 }
@@ -45,6 +46,10 @@ export enum EActivityStatus {
   Team_Remove = "Team Removed",
   Participant_Created = "Participant Created",
   Participant_Remove = "Participant Removed",
+  Question_Created = "Question Created",
+  Question_Updated = "Question Updated",
+  Question_Deleted = "Question Deleted",
+  Answer_Submitted = "Answer Submitted"
 }
 
 export enum ERolesRole {

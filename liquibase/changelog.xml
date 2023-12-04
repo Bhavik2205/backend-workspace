@@ -990,4 +990,21 @@
     <changeSet author="Dharmik Dalwadi" id="92">
         <addForeignKeyConstraint baseColumnNames="workspaceId" baseTableName="settings" constraintName="settings_workspaceId_fkey" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="workspaces" validate="true"/>
     </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="93">
+        <sql>
+            DROP TYPE IF EXISTS "enum_logs_activity" CASCADE;
+            CREATE TYPE enum_logs_activity AS ENUM ('Login History','Document Upload','Participant Add / Remove','Team Add / Remove','Question Answer Summary','Others (TBC)')
+        </sql>
+        <modifyDataType tableName="roles" columnName="role" newDataType="enum_roles_role"/>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="94">
+        <addColumn tableName="logs">
+            <column name="activity" type="enum_logs_activity">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn> 
+        <createIndex indexName="idx_logs_activity" tableName="logs">
+            <column name="activity"/>
+        </createIndex>
+    </changeSet>
 </databaseChangeLog>

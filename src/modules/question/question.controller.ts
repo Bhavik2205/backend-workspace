@@ -1,6 +1,6 @@
-import { QuestionEntity, AnswersEntity, TeamEntity, ParticipateEntity, SettingEntity } from "@entities";
+import { QuestionEntity, AnswersEntity, TeamEntity, ParticipateEntity, SettingEntity, LogEntity } from "@entities";
 import { InitRepository, InjectRepositories, Utils } from "@helpers";
-import { TRequest, TResponse } from "@types";
+import { EActivityStatus, ELogsActivity, TRequest, TResponse } from "@types";
 import { Repository } from "typeorm";
 import * as l10n from "jm-ez-l10n";
 import { env } from "@configs";
@@ -21,6 +21,9 @@ export class QuestionController {
 
   @InitRepository(SettingEntity)
   settingRepository: Repository<SettingEntity>;
+
+  @InitRepository(LogEntity)
+  logRepository: Repository<LogEntity>;
 
   constructor() {
     InjectRepositories(this);
@@ -51,6 +54,29 @@ export class QuestionController {
     questionDetail.queNum = parseInt(questionNumber, 10);
 
     await this.questionRepository.save(questionData);
+
+    const logData = {
+      topic,
+      to,
+      from,
+      question,
+      documentId,
+      sendForApproval,
+      isHighPriority,
+      isClosed,
+      isNew: true,
+      Status: EActivityStatus.Question_Created,
+    };
+
+    const log = this.logRepository.create({
+      metadata: logData,
+      workspaceId,
+      activity: ELogsActivity.Q_A_Summary,
+      userId: me.id,
+    });
+
+    await this.logRepository.save(log);
+
     res.status(200).json({ msg: l10n.t("QUESTION_CREATE_SUCCESS"), data: questionDetail });
   };
 
@@ -220,8 +246,39 @@ export class QuestionController {
 
   public delete = async (req: TRequest, res: TResponse) => {
     const { questionId } = req.params;
+    const { workspaceid: workspaceId } = req.headers;
+    const { me } = req;
+
+    const question = await this.questionRepository.findOne({
+      where: {
+        id: +questionId,
+        workspaceId
+      }
+    })
 
     await this.questionRepository.delete(questionId);
+
+    const logData = {
+      question: question.question,
+      topic: question.topic,
+      isNew: question.isNew,
+      sendForApproval: question.sendForApproval,
+      queNum: question.queNum,
+      to: question.to,
+      from: question.from,
+      documentId: question.documentId,
+      isClosed: question.isClosed,
+      Status: EActivityStatus.Question_Deleted,
+    };
+
+    const log = this.logRepository.create({
+      metadata: logData,
+      workspaceId,
+      activity: ELogsActivity.Q_A_Summary,
+      userId: me.id,
+    });
+
+    await this.logRepository.save(log);
 
     res.status(200).json({ msg: l10n.t("QUESTION_DELETE_SUCCESS") });
   };
@@ -254,6 +311,22 @@ export class QuestionController {
     });
 
     await this.answerRepository.save(answerDetail);
+
+    const logData = {
+      question: currentThread.question,
+      topic: currentThread.topic,
+      Status: EActivityStatus.Answer_Submitted,
+    };
+
+    const log = this.logRepository.create({
+      metadata: logData,
+      workspaceId,
+      activity: ELogsActivity.Q_A_Summary,
+      userId: me.id,
+    });
+
+    await this.logRepository.save(log);
+
     return res.status(200).json({ msg: l10n.t("ANSWER_SUBMITTED_SUCCESS"), data: answerDetail });
   };
 
@@ -293,6 +366,28 @@ export class QuestionController {
         workspaceId,
       },
     });
+
+    const logData = {
+      topic,
+      to,
+      from,
+      question,
+      documentId,
+      sendForApproval,
+      isHighPriority,
+      isClosed,
+      isNew: true,
+      Status: EActivityStatus.Question_Updated,
+    };
+
+    const log = this.logRepository.create({
+      metadata: logData,
+      workspaceId,
+      activity: ELogsActivity.Q_A_Summary,
+      userId: me.id,
+    });
+
+    await this.logRepository.save(log);
 
     res.status(200).json({ msg: l10n.t("QUESTION_UPDATE_SUCCESS"), data: updatedData });
   };
