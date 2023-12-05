@@ -1,10 +1,10 @@
-import { DocumentEntity, FolderEntity, LogEntity, UserEntity } from "@entities";
-import * as l10n from "jm-ez-l10n";
-import { TResponse, TRequest, EAzureFolder, ELogsActivity } from "@types";
-import { Repository } from "typeorm";
-import { AzureUtils, InitRepository, InjectRepositories, Utils } from "@helpers";
 import { env } from "@configs";
+import { DocumentEntity, FolderEntity, LogEntity, UserEntity } from "@entities";
+import { AzureUtils, InitRepository, InjectRepositories, Utils } from "@helpers";
+import { EAzureFolder, ELogsActivity, TRequest, TResponse } from "@types";
+import * as l10n from "jm-ez-l10n";
 import moment from "moment";
+import { Repository } from "typeorm";
 import { CreateDocumentDto, UpdateDocumentDto } from "./dto";
 
 export class DocumentController {
@@ -67,7 +67,11 @@ export class DocumentController {
       const blobName = `${EAzureFolder.Workspace}/${workspaceId}/${moment().format("YYYYMMDDHHmmssSSS")}`;
       const containerClient = AzureUtils.getContainerClient(env.containerName);
       const blockBlobClient = AzureUtils.getBlockBlobClient(blobName, containerClient);
-      await blockBlobClient.uploadData(e.data, e.size);
+      await blockBlobClient.uploadData(e.data, {
+        blobHTTPHeaders: {
+          blobContentType: e.mimetype || "application/octet-stream"
+        }
+      });
       const blobUrl = `${env.containerName}/${blobName}`;
 
       const updatedDocument = await this.documentRepository.create({
@@ -155,6 +159,7 @@ export class DocumentController {
         "document.size",
         "document.isEditable",
         "document.isDownloadable",
+        "document.folderId"
       ])
       .where({ workspaceId })
       .getMany();
