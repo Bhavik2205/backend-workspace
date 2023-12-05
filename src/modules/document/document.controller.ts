@@ -292,7 +292,11 @@ export class DocumentController {
       const blobName = `${EAzureFolder.Workspace}/${workspaceId}/${moment().format("YYYYMMDDHHmmss")}`;
       const containerClient = AzureUtils.getContainerClient(env.containerName);
       const blockBlobClient = AzureUtils.getBlockBlobClient(blobName, containerClient);
-      await blockBlobClient.uploadData(file?.data, file?.size);
+      await blockBlobClient.uploadData(file?.data,  {
+        blobHTTPHeaders: {
+          blobContentType: file.mimetype || "application/octet-stream"
+        }
+      });
 
       const blobUrl = `${env.containerName}/${blobName}`;
 
