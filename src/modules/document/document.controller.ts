@@ -29,6 +29,7 @@ export class DocumentController {
     const { me } = req;
     const { workspaceid: workspaceId } = req.headers;
     const file = Array.isArray(req.files.file) ? req.files.file : [req.files.file];
+    const savedDocuments: any[] = [];
 
     const user = await this.userRepository.findOne({
       where: {
@@ -103,10 +104,25 @@ export class DocumentController {
       });
       await this.logRepository.save(log);
 
+      savedDocuments.push({
+        id: document.id,
+        size: document.size,
+        file:document.file,
+        folderId: document.folderId,
+        categoryId: document.categoryId,
+        userId: document.userId,
+        workspaceId: document.workspaceId,
+        isEditable: document.isEditable,
+        isDownloadable: document.isDownloadable,
+        docNum: document.docNum,
+        createdAt: document.createdAt,
+        updatedAt: document.updatedAt
+      });
+
       await this.documentRepository.save(document);
     });
     await Promise.all(promises);
-    return res.status(200).json({ msg: l10n.t("DOCUMENT_UPLOAD_SUCCESS") });
+    return res.status(200).json({ msg: l10n.t("DOCUMENT_UPLOAD_SUCCESS"), data: savedDocuments });
   };
 
   public read = async (req: TRequest, res: TResponse) => {
