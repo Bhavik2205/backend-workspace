@@ -1007,4 +1007,21 @@
             <column name="activity"/>
         </createIndex>
     </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="95">
+        <sql>
+            DROP TYPE IF EXISTS "enum_logs_activity" CASCADE;
+            CREATE TYPE enum_logs_activity AS ENUM ('Login History','Document Upload','Participant Add Remove','Team Add Remove','Q A Summary','Others TBC')
+        </sql>
+        <modifyDataType tableName="roles" columnName="role" newDataType="enum_roles_role"/>
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="96">
+        <addColumn tableName="logs">
+            <column name="activity" type="enum_logs_activity">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn> 
+        <createIndex indexName="idx_logs_activity" tableName="logs">
+            <column name="activity"/>
+        </createIndex>
+    </changeSet>
 </databaseChangeLog>

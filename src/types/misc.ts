@@ -34,10 +34,10 @@ export enum EWorkflowStatus {
 export enum ELogsActivity {
   Login_History = "Login History",
   Document_Upload = "Document Upload",
-  Participant_Add_Remove = "Participant Add / Remove",
-  Team_Add_Remove = "Team Add / Remove",
-  Q_A_Summary = "Question Answer Summary",
-  Others_TBC = "Others (TBC)",
+  Participant_Add_Remove = "Participant Add Remove",
+  Team_Add_Remove = "Team Add Remove",
+  Q_A_Summary = "Q A Summary",
+  Others_TBC = "Others TBC",
 }
 
 export enum EActivityStatus {
