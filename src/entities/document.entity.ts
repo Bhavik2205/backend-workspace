@@ -36,6 +36,9 @@ export class DocumentEntity {
   @Column({ type: "boolean", nullable: false, default: false })
   isDownloadable: boolean;
 
+  @Column({ type: "text", nullable: true })
+  mimeType: string;
+
   @CreateDateColumn()
   public createdAt: Date;
 

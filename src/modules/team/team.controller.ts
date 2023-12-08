@@ -38,7 +38,7 @@ export class TeamController {
 
     const teamData = {
       name,
-      Status: EActivityStatus.Team_Created,
+      status: EActivityStatus.Team_Created,
     };
 
     const log = this.logRepository.create({
@@ -122,10 +122,19 @@ export class TeamController {
             isInvited: true,
           });
 
+          await this.participateRepository.save(participate);
+
+          const teamData = await this.teamRepository.findOne({
+            where: {
+              workspaceId,
+              id: +teamId
+            }
+          })
+
           const participantsDetail = {
-            teamId: +teamId,
+            name: teamData.name,
             isInvited: true,
-            Status: EActivityStatus.Participant_Created,
+            status: EActivityStatus.Participant_Created,
           };
 
           const log = await this.logRepository.create({
@@ -135,8 +144,6 @@ export class TeamController {
             userId: me.id,
           });
           await this.logRepository.save(log);
-
-          await this.participateRepository.save(participate);
 
           const userRole = await this.userRolesRepository.create({
             participateId: participate.id,
@@ -164,10 +171,17 @@ export class TeamController {
             isInvited: false,
           });
 
+          const teamData = await this.teamRepository.findOne({
+            where: {
+              workspaceId,
+              id: +teamId
+            }
+          })
+
           const participantsDetail = {
-            teamId: +teamId,
+            name: teamData.name,
             isInvited: false,
-            Status: EActivityStatus.Participant_Created,
+            status: EActivityStatus.Participant_Created,
           };
 
           const log = await this.logRepository.create({
@@ -243,10 +257,25 @@ export class TeamController {
     const { me } = req;
     const { workspaceid: workspaceId } = req.headers;
 
+    const participantData = await this.participateRepository.findOne({
+      where: {
+        workspaceId,
+        id: +participateId
+      }
+    })
+
+    const teamdata = await this.teamRepository.findOne({
+      where: {
+        workspaceId,
+        id: participantData.teamId
+      }
+    })
+
     await this.participateRepository.delete(participateId);
 
     const participantsDetail = {
-      participateId: +participateId,
+      email: participantData.email,
+      teamName: teamdata.name,
       status: EActivityStatus.Participant_Remove,
     };
 
@@ -325,7 +354,7 @@ export class TeamController {
 
     const teamData = {
       name,
-      Status: EActivityStatus.Team_Update,
+      status: EActivityStatus.Team_Update,
     };
 
     const log = this.logRepository.create({
@@ -362,7 +391,7 @@ export class TeamController {
 
     const teamData = {
       name: team.name,
-      Status: EActivityStatus.Team_Remove,
+      status: EActivityStatus.Team_Remove,
     };
 
     const log = this.logRepository.create({

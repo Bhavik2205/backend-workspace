@@ -30,7 +30,7 @@ export class SettingMiddleware {
 
       return res.status(400).json({ msg: l10n.t("ERR_PERMISSION_DENIED") });
     } catch (error) {
-      return res.status(400).json({ error: error.msg });
+      return res.status(400).json({ error: error.message });
     }
   };
 }

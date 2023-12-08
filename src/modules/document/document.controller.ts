@@ -1,7 +1,7 @@
 import { env } from "@configs";
-import { DocumentEntity, FolderEntity, LogEntity, UserEntity } from "@entities";
+import { CategoryEntity, DocumentEntity, FolderEntity, LogEntity, UserEntity } from "@entities";
 import { AzureUtils, InitRepository, InjectRepositories, Utils } from "@helpers";
-import { EAzureFolder, ELogsActivity, TRequest, TResponse } from "@types";
+import { EActivityStatus, EAzureFolder, ELogsActivity, TRequest, TResponse } from "@types";
 import * as l10n from "jm-ez-l10n";
 import moment from "moment";
 import { Repository } from "typeorm";
@@ -19,6 +19,9 @@ export class DocumentController {
 
   @InitRepository(UserEntity)
   userRepository: Repository<UserEntity>;
+
+  @InitRepository(CategoryEntity)
+  categoryRepository: Repository<CategoryEntity>;
 
   constructor() {
     InjectRepositories(this);
@@ -84,6 +87,7 @@ export class DocumentController {
         isDownloadable,
         userId: me.id,
         workspaceId,
+        mimeType: e.mimetype
       });
 
       const document = await this.documentRepository.save(updatedDocument);
@@ -91,13 +95,28 @@ export class DocumentController {
       const documentNumber = Utils.generateRandomNumber(document.userId, workspaceId, document.id);
       document.docNum = parseInt(documentNumber, 10);
 
+      const folder = await this.folderRepository.findOne({
+        where: {
+          workspaceId,
+          id: +folderId
+        }
+      })
+
+      const category = await this.categoryRepository.findOne({
+        where: {
+          workspaceId,
+          id: +categoryId
+        }
+      })
+
       const documentDetail = {
         file: updatedDocument.file,
         size: updatedDocument.size,
         workspaceId: updatedDocument.workspaceId,
         fileName: updatedDocument.name,
-        categoryId: updatedDocument.categoryId,
-        folderId: updatedDocument.folderId,
+        category: category.name,
+        folder: folder.name,
+        status: EActivityStatus.Document_Created
       };
 
       const log = await this.logRepository.create({
@@ -309,19 +328,35 @@ export class DocumentController {
           name: file?.name,
           size: file?.size,
           isEditable,
-          isDownloadable
+          isDownloadable,
+          mimeType: file.mimetype
         },
       );
+
+      const folder = await this.folderRepository.findOne({
+        where: {
+          workspaceId,
+          id: +folderId
+        }
+      })
+
+      const category = await this.categoryRepository.findOne({
+        where: {
+          workspaceId,
+          id: +categoryId
+        }
+      })
 
       const documentDetail = {
         file: blobUrl,
         size,
         workspaceId,
         fileName: file?.name,
-        categoryId,
-        folderId,
+        category: category.name,
+        folder: folder.name,
         isEditable,
-        isDownloadable
+        isDownloadable,
+        status: EActivityStatus.Document_Updated
       };
 
       const log = await this.logRepository.create({
@@ -342,15 +377,31 @@ export class DocumentController {
         },
       );
 
+      const folder = await this.folderRepository.findOne({
+        where: {
+          workspaceId,
+          id: +folderId
+        }
+      })
+
+      const category = await this.categoryRepository.findOne({
+        where: {
+          workspaceId,
+          id: +categoryId
+        }
+      })
+
+
       const documentDetail = {
         file: documentData.file,
         size: documentData.size,
         workspaceId,
         fileName: documentData.name,
-        categoryId,
-        folderId,
+        category: category.name,
+        folder: folder.name,
         isEditable,
-        isDownloadable
+        isDownloadable,
+        status: EActivityStatus.Document_Updated
       };
 
       const log = await this.logRepository.create({

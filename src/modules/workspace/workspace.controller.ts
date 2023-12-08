@@ -67,7 +67,7 @@ export class WorkspaceController {
 
     const internalTeamData = {
       name: internalTeam.name,
-      Status: EActivityStatus.Team_Created,
+      status: EActivityStatus.Team_Created,
     };
 
     const internalTeamLog = this.logRepository.create({
@@ -79,7 +79,7 @@ export class WorkspaceController {
 
     const externalTeamData = {
       name: externalTeam.name,
-      Status: EActivityStatus.Team_Created,
+      status: EActivityStatus.Team_Created,
     };
 
     const externalTeamLog = this.logRepository.create({
@@ -115,7 +115,7 @@ export class WorkspaceController {
     const participantsDetail = {
       name: team[0].name,
       isInvited: false,
-      Status: EActivityStatus.Participant_Created,
+      status: EActivityStatus.Participant_Created,
     };
 
     const participateLog = await this.logRepository.create({
@@ -362,7 +362,7 @@ export class WorkspaceController {
 
       return res.status(200).json({ data: size });
     } catch (error) {
-      return res.status(400).json({ error: error.msg });
+      return res.status(400).json({ error: error.message });
     }
   };
 }

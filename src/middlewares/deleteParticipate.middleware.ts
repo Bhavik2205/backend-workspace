@@ -44,7 +44,7 @@ export class Participate {
 
       return next();
     } catch (error) {
-      return res.status(400).json({ error: error.msg });
+      return res.status(400).json({ error: error.message });
     }
   };
 }
