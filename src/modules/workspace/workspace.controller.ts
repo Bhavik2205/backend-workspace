@@ -298,8 +298,9 @@ export class WorkspaceController {
       .getMany();
 
     const modifiedData = data.map(workspace => ({
+      
       ...workspace,
-      imageUrl: `${env.azureURL}${workspace.imageUrl}`,
+      imageUrl: workspace.imageUrl ? `${env.azureURL}${workspace.imageUrl}` : null,
     }));
 
     res.status(200).json({

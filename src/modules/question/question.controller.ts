@@ -87,6 +87,7 @@ export class QuestionController {
     const participateData = await this.participateRepository.findOne({
       where: {
         userId: me.id,
+        workspaceId
       },
     });
 
