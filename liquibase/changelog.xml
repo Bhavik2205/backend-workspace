@@ -1024,4 +1024,11 @@
             <column name="activity"/>
         </createIndex>
     </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="97">
+        <addColumn tableName="documents">
+            <column name="mimeType" type="TEXT">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn> 
+    </changeSet>
 </databaseChangeLog>

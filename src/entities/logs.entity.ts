@@ -1,5 +1,7 @@
 import { ELogsActivity } from "@types";
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { UserEntity } from "./user.entity";
+import { WorkspaceEntity } from "./workspace.entity";
 
 @Entity("logs")
 export class LogEntity {
@@ -23,4 +25,10 @@ export class LogEntity {
 
   @UpdateDateColumn()
   public updatedAt: Date;
+
+  @ManyToMany(() => UserEntity, user => user.logs)
+  user: UserEntity[]
+
+  @ManyToMany(() => WorkspaceEntity, workspace => workspace.logs)
+  workspace: WorkspaceEntity[]
 }

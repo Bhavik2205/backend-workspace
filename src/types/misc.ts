@@ -49,7 +49,9 @@ export enum EActivityStatus {
   Question_Created = "Question Created",
   Question_Updated = "Question Updated",
   Question_Deleted = "Question Deleted",
-  Answer_Submitted = "Answer Submitted"
+  Answer_Submitted = "Answer Submitted",
+  Document_Created = "Document Created",
+  Document_Updated = "Document Updated"
 }
 
 export enum ERolesRole {

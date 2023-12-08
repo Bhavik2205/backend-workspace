@@ -1,7 +1,8 @@
 import { EWorkspacePurpose, EWorkspaceType } from "@types";
-import { Column, CreateDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { UserEntity } from "./user.entity";
 import { SettingEntity } from "./setting.entity";
+import { LogEntity } from "./logs.entity";
 
 @Entity("workspaces")
 export class WorkspaceEntity {
@@ -38,4 +39,12 @@ export class WorkspaceEntity {
 
   @OneToOne(() => SettingEntity, setting => setting.workspace)
   setting: SettingEntity;
+
+  @ManyToMany(() => LogEntity, log => log.workspace)
+  @JoinTable({
+    name: "logs", 
+    joinColumn: { name: "workspaceId", referencedColumnName: "id" },
+    inverseJoinColumn: { name: "id", referencedColumnName: "id" },
+  })
+  logs: LogEntity[];
 }

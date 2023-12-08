@@ -171,7 +171,7 @@ export class UserSubscriptionController {
       });
       res.status(200).json({ data: subscriptions });
     } catch (error) {
-      res.status(200).json({ error: error.msg });
+      res.status(200).json({ error: error.message });
     }
   };
 
@@ -201,7 +201,7 @@ export class UserSubscriptionController {
 
       res.status(200).json({ data: invoices });
     } catch (error) {
-      res.status(400).json({ error: error.msg });
+      res.status(400).json({ error: error.message });
     }
   };
 
@@ -235,7 +235,7 @@ export class UserSubscriptionController {
 
       res.status(200).json({ data: invoice });
     } catch (error) {
-      res.status(400).json({ error: error.msg });
+      res.status(400).json({ error: error.message });
     }
   };
 
@@ -253,7 +253,7 @@ export class UserSubscriptionController {
         limit,
       });
     } catch (error) {
-      res.status(200).json({ error: error.msg });
+      res.status(200).json({ error: error.message });
     }
   };
 }

@@ -1,5 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany, OneToOne } from "typeorm";
-import { ParticipateEntity, AnswersEntity, QuestionEntity, DocumentEntity, WorkflowEntity, WorkspaceEntity } from "@entities";
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany, OneToOne, ManyToMany, JoinTable } from "typeorm";
+import { ParticipateEntity, AnswersEntity, QuestionEntity, DocumentEntity, WorkflowEntity, WorkspaceEntity, LogEntity } from "@entities";
 
 @Entity("users")
 export class UserEntity {
@@ -68,4 +68,12 @@ export class UserEntity {
 
   @OneToOne(() => WorkspaceEntity, workspace => workspace.user)
   workspace: WorkspaceEntity;
+
+  @ManyToMany(() => LogEntity, log => log.user)
+  @JoinTable({
+    name: "logs", 
+    joinColumn: { name: "userId", referencedColumnName: "id" }, 
+    inverseJoinColumn: { name: "id", referencedColumnName: "id" },
+  })
+  logs: LogEntity[];
 }

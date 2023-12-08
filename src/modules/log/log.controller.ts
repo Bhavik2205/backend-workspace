@@ -60,12 +60,21 @@ export class LogController {
 
       const logsPromises = data.map(async act => {
         const activityEnumValue = getActivityEnumValue(act);
-        const logs = await this.logRepository.find({
-          where: {
+        const logs = await this.logRepository
+          .createQueryBuilder("logs")
+          .leftJoinAndSelect("logs.user", "user")
+          .leftJoinAndSelect("logs.workspace", "workspace")
+          .select([
+            "logs",
+            "user.email",
+            "user.firstName",
+            "user.lastName",
+            "workspace.name"
+          ])
+          .where({
             activity: activityEnumValue,
-            workspaceId: +workspaceId
-          },
-        });
+            workspaceId: +workspaceId })
+          .getMany();
 
         return { activity: act, data: logs };
       });

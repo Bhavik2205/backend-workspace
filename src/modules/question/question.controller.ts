@@ -1,4 +1,4 @@
-import { QuestionEntity, AnswersEntity, TeamEntity, ParticipateEntity, SettingEntity, LogEntity } from "@entities";
+import { QuestionEntity, AnswersEntity, TeamEntity, ParticipateEntity, SettingEntity, LogEntity, DocumentEntity } from "@entities";
 import { InitRepository, InjectRepositories, Utils } from "@helpers";
 import { EActivityStatus, ELogsActivity, TRequest, TResponse } from "@types";
 import { Repository } from "typeorm";
@@ -24,6 +24,9 @@ export class QuestionController {
 
   @InitRepository(LogEntity)
   logRepository: Repository<LogEntity>;
+
+  @InitRepository(DocumentEntity)
+  documentRepository: Repository<DocumentEntity>;
 
   constructor() {
     InjectRepositories(this);
@@ -55,17 +58,39 @@ export class QuestionController {
 
     await this.questionRepository.save(questionData);
 
+    const toTeamData = await this.teamRepository.findOne({
+      where: {
+        workspaceId,
+        id: to
+      }
+    })
+
+    const fromTeamData = await this.teamRepository.findOne({
+      where: {
+        workspaceId,
+        id: from
+      }
+    })
+
+    const documentNum = await this.documentRepository.findOne({
+      where: {
+        workspaceId,
+        id: documentId
+      }
+    })
+
     const logData = {
       topic,
-      to,
-      from,
+      to: toTeamData.name,
+      from: fromTeamData.name,
       question,
       documentId,
       sendForApproval,
       isHighPriority,
       isClosed,
       isNew: true,
-      Status: EActivityStatus.Question_Created,
+      status: EActivityStatus.Question_Created,
+      documentNum: documentNum.docNum 
     };
 
     const log = this.logRepository.create({
@@ -250,6 +275,14 @@ export class QuestionController {
     const { workspaceid: workspaceId } = req.headers;
     const { me } = req;
 
+    const document = await this.documentRepository.findOne({
+      where: {
+        workspaceId,
+        id: +questionId
+      }
+    })
+
+
     const question = await this.questionRepository.findOne({
       where: {
         id: +questionId,
@@ -257,7 +290,27 @@ export class QuestionController {
       }
     })
 
-    await this.questionRepository.delete(questionId);
+
+    const toTeamData = await this.teamRepository.findOne({
+      where: {
+        workspaceId,
+        id: question.to
+      }
+    })
+
+    const fromTeamData = await this.teamRepository.findOne({
+      where: {
+        workspaceId,
+        id: question.from
+      }
+    })
+
+    const documentNum = await this.documentRepository.findOne({
+      where: {
+        workspaceId,
+        id: question.documentId
+      }
+    })
 
     const logData = {
       question: question.question,
@@ -265,11 +318,12 @@ export class QuestionController {
       isNew: question.isNew,
       sendForApproval: question.sendForApproval,
       queNum: question.queNum,
-      to: question.to,
-      from: question.from,
+      to: toTeamData.name,
+      from: fromTeamData.name,
       documentId: question.documentId,
       isClosed: question.isClosed,
-      Status: EActivityStatus.Question_Deleted,
+      status: EActivityStatus.Question_Deleted,
+      documentNum: documentNum.docNum
     };
 
     const log = this.logRepository.create({
@@ -280,7 +334,8 @@ export class QuestionController {
     });
 
     await this.logRepository.save(log);
-
+    await this.documentRepository.delete(document.id)
+    await this.questionRepository.delete(questionId);
     res.status(200).json({ msg: l10n.t("QUESTION_DELETE_SUCCESS") });
   };
 
@@ -316,7 +371,7 @@ export class QuestionController {
     const logData = {
       question: currentThread.question,
       topic: currentThread.topic,
-      Status: EActivityStatus.Answer_Submitted,
+      status: EActivityStatus.Answer_Submitted,
     };
 
     const log = this.logRepository.create({
@@ -368,17 +423,39 @@ export class QuestionController {
       },
     });
 
+    const toTeamData = await this.teamRepository.findOne({
+      where: {
+        workspaceId,
+        id: to
+      }
+    })
+
+    const fromTeamData = await this.teamRepository.findOne({
+      where: {
+        workspaceId,
+        id: from
+      }
+    })
+
+    const documentNum = await this.documentRepository.findOne({
+      where: {
+        workspaceId,
+        id: documentId
+      }
+    })
+
     const logData = {
       topic,
-      to,
-      from,
+      to: toTeamData.name,
+      from: fromTeamData.name,
       question,
       documentId,
       sendForApproval,
       isHighPriority,
       isClosed,
       isNew: true,
-      Status: EActivityStatus.Question_Updated,
+      status: EActivityStatus.Question_Updated,
+      documentNum: documentNum.docNum 
     };
 
     const log = this.logRepository.create({
