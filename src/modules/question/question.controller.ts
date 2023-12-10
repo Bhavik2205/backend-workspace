@@ -275,14 +275,6 @@ export class QuestionController {
     const { workspaceid: workspaceId } = req.headers;
     const { me } = req;
 
-    const document = await this.documentRepository.findOne({
-      where: {
-        workspaceId,
-        id: +questionId
-      }
-    })
-
-
     const question = await this.questionRepository.findOne({
       where: {
         id: +questionId,
@@ -290,6 +282,12 @@ export class QuestionController {
       }
     })
 
+    const document = await this.documentRepository.findOne({
+      where: {
+        workspaceId,
+        id: question.documentId
+      }
+    })
 
     const toTeamData = await this.teamRepository.findOne({
       where: {
@@ -305,13 +303,6 @@ export class QuestionController {
       }
     })
 
-    const documentNum = await this.documentRepository.findOne({
-      where: {
-        workspaceId,
-        id: question.documentId
-      }
-    })
-
     const logData = {
       question: question.question,
       topic: question.topic,
@@ -323,7 +314,7 @@ export class QuestionController {
       documentId: question.documentId,
       isClosed: question.isClosed,
       status: EActivityStatus.Question_Deleted,
-      documentNum: documentNum.docNum
+      documentNum: document.docNum
     };
 
     const log = this.logRepository.create({
