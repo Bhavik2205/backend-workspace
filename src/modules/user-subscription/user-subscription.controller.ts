@@ -3,6 +3,7 @@ import { SubscriptionPlanEntity, UserEntity, UserSubscriptionEntity } from "@ent
 import { InitRepository, InjectRepositories } from "@helpers";
 import { TRequest, TResponse } from "@types";
 import { Repository } from "typeorm";
+import * as l10n from "jm-ez-l10n";
 import { CreateSubscriptionDto } from "./dto";
 
 const stripe = require("stripe")(env.stripeSecret);
@@ -160,6 +161,11 @@ export class UserSubscriptionController {
           userId: me.id,
         },
       });
+
+      if (!userData) {
+        return res.status(400).send({ error: l10n.t("NO_SUBSCRIPTION_FOUND") });
+      }
+
       const stripeSubscription = await stripe.subscriptions.list({
         customer: userData.customerId,
       });
@@ -169,9 +175,9 @@ export class UserSubscriptionController {
         },
         relations: ["plan"],
       });
-      res.status(200).json({ data: subscriptions });
+      return res.status(200).json({ data: subscriptions });
     } catch (error) {
-      res.status(200).json({ error: error.message });
+      return res.status(400).json({ error: error.message });
     }
   };
 
@@ -184,6 +190,10 @@ export class UserSubscriptionController {
           userId: me.id,
         },
       });
+
+      if (!subscribedData) {
+        return res.status(400).send({ error: l10n.t("NO_INVOICE_FOUND") });
+      }
 
       const invoiceData = await stripe.invoices.list({
         customer: subscribedData.customerId,
@@ -199,9 +209,9 @@ export class UserSubscriptionController {
         created: invoice.created,
       }));
 
-      res.status(200).json({ data: invoices });
+      return res.status(200).json({ data: invoices });
     } catch (error) {
-      res.status(400).json({ error: error.message });
+      return res.status(400).json({ error: error.message });
     }
   };
 
