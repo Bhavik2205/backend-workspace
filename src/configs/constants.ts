@@ -18,7 +18,7 @@ export class Constants {
     limit: 2000,
   };
 
-  public static readonly FROM_EMAIL = "no-reply@example.com";
+  public static readonly FROM_EMAIL = "contact@tesseractsquare.com";
 
   public static readonly BCRYPT_SALT_ROUND = 10;
 
