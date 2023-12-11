@@ -47,5 +47,7 @@
   "TEAM_DELETE_SUCCESS": "Team deleted successfully.",
   "THREAD_CLOSED": "Thread is closed. Cannot submit the answer.",
   "PARTICIPATE_EXISTS": "This email address already exists in this Workspace!",
-  "NO_SUBSCRIPTION": "Purchase a Ssubscription."
+  "NO_SUBSCRIPTION": "Purchase a Subscription.",
+  "NO_SUBSCRIPTION_FOUND": "No Subscription Found",
+  "NO_INVOICE_FOUND": "No Invoice Found"
 }
