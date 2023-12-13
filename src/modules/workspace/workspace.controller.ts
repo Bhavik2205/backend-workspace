@@ -298,7 +298,6 @@ export class WorkspaceController {
       .getMany();
 
     const modifiedData = data.map(workspace => ({
-      
       ...workspace,
       imageUrl: workspace.imageUrl ? `${env.azureURL}${workspace.imageUrl}` : null,
     }));

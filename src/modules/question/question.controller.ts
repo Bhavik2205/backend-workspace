@@ -61,23 +61,23 @@ export class QuestionController {
     const toTeamData = await this.teamRepository.findOne({
       where: {
         workspaceId,
-        id: to
-      }
-    })
+        id: to,
+      },
+    });
 
     const fromTeamData = await this.teamRepository.findOne({
       where: {
         workspaceId,
-        id: from
-      }
-    })
+        id: from,
+      },
+    });
 
     const documentNum = await this.documentRepository.findOne({
       where: {
         workspaceId,
-        id: documentId
-      }
-    })
+        id: documentId,
+      },
+    });
 
     const logData = {
       topic,
@@ -90,7 +90,7 @@ export class QuestionController {
       isClosed,
       isNew: true,
       status: EActivityStatus.Question_Created,
-      documentNum: documentNum.docNum 
+      documentNum: documentNum.docNum,
     };
 
     const log = this.logRepository.create({
@@ -112,7 +112,7 @@ export class QuestionController {
     const participateData = await this.participateRepository.findOne({
       where: {
         userId: me.id,
-        workspaceId
+        workspaceId,
       },
     });
 
@@ -278,30 +278,30 @@ export class QuestionController {
     const question = await this.questionRepository.findOne({
       where: {
         id: +questionId,
-        workspaceId
-      }
-    })
+        workspaceId,
+      },
+    });
 
     const document = await this.documentRepository.findOne({
       where: {
         workspaceId,
-        id: question.documentId
-      }
-    })
+        id: question.documentId,
+      },
+    });
 
     const toTeamData = await this.teamRepository.findOne({
       where: {
         workspaceId,
-        id: question.to
-      }
-    })
+        id: question.to,
+      },
+    });
 
     const fromTeamData = await this.teamRepository.findOne({
       where: {
         workspaceId,
-        id: question.from
-      }
-    })
+        id: question.from,
+      },
+    });
 
     const logData = {
       question: question.question,
@@ -314,7 +314,7 @@ export class QuestionController {
       documentId: question.documentId,
       isClosed: question.isClosed,
       status: EActivityStatus.Question_Deleted,
-      documentNum: document.docNum
+      documentNum: document.docNum,
     };
 
     const log = this.logRepository.create({
@@ -325,7 +325,7 @@ export class QuestionController {
     });
 
     await this.logRepository.save(log);
-    await this.documentRepository.delete(document.id)
+    await this.documentRepository.delete(document.id);
     await this.questionRepository.delete(questionId);
     res.status(200).json({ msg: l10n.t("QUESTION_DELETE_SUCCESS") });
   };
@@ -417,23 +417,23 @@ export class QuestionController {
     const toTeamData = await this.teamRepository.findOne({
       where: {
         workspaceId,
-        id: to
-      }
-    })
+        id: to,
+      },
+    });
 
     const fromTeamData = await this.teamRepository.findOne({
       where: {
         workspaceId,
-        id: from
-      }
-    })
+        id: from,
+      },
+    });
 
     const documentNum = await this.documentRepository.findOne({
       where: {
         workspaceId,
-        id: documentId
-      }
-    })
+        id: documentId,
+      },
+    });
 
     const logData = {
       topic,
@@ -446,7 +446,7 @@ export class QuestionController {
       isClosed,
       isNew: true,
       status: EActivityStatus.Question_Updated,
-      documentNum: documentNum.docNum 
+      documentNum: documentNum.docNum,
     };
 
     const log = this.logRepository.create({

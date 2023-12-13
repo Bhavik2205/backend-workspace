@@ -72,8 +72,8 @@ export class DocumentController {
       const blockBlobClient = AzureUtils.getBlockBlobClient(blobName, containerClient);
       await blockBlobClient.uploadData(e.data, {
         blobHTTPHeaders: {
-          blobContentType: e.mimetype || "application/octet-stream"
-        }
+          blobContentType: e.mimetype || "application/octet-stream",
+        },
       });
       const blobUrl = `${env.containerName}/${blobName}`;
 
@@ -87,7 +87,7 @@ export class DocumentController {
         isDownloadable,
         userId: me.id,
         workspaceId,
-        mimeType: e.mimetype
+        mimeType: e.mimetype,
       });
 
       const document = await this.documentRepository.save(updatedDocument);
@@ -98,16 +98,16 @@ export class DocumentController {
       const folder = await this.folderRepository.findOne({
         where: {
           workspaceId,
-          id: +folderId
-        }
-      })
+          id: +folderId,
+        },
+      });
 
       const category = await this.categoryRepository.findOne({
         where: {
           workspaceId,
-          id: +categoryId
-        }
-      })
+          id: +categoryId,
+        },
+      });
 
       const documentDetail = {
         file: updatedDocument.file,
@@ -116,7 +116,7 @@ export class DocumentController {
         fileName: updatedDocument.name,
         category: category.name,
         folder: folder.name,
-        status: EActivityStatus.Document_Created
+        status: EActivityStatus.Document_Created,
       };
 
       const log = await this.logRepository.create({
@@ -130,7 +130,7 @@ export class DocumentController {
       savedDocuments.push({
         id: document.id,
         size: document.size,
-        file:document.file,
+        file: document.file,
         folderId: document.folderId,
         categoryId: document.categoryId,
         userId: document.userId,
@@ -139,7 +139,7 @@ export class DocumentController {
         isDownloadable: document.isDownloadable,
         docNum: document.docNum,
         createdAt: document.createdAt,
-        updatedAt: document.updatedAt
+        updatedAt: document.updatedAt,
       });
 
       await this.documentRepository.save(document);
@@ -178,7 +178,8 @@ export class DocumentController {
         "document.size",
         "document.isEditable",
         "document.isDownloadable",
-        "document.folderId"
+        "document.folderId",
+        "document.userId",
       ])
       .where({ workspaceId })
       .getMany();
@@ -311,10 +312,10 @@ export class DocumentController {
       const blobName = `${EAzureFolder.Workspace}/${workspaceId}/${moment().format("YYYYMMDDHHmmss")}`;
       const containerClient = AzureUtils.getContainerClient(env.containerName);
       const blockBlobClient = AzureUtils.getBlockBlobClient(blobName, containerClient);
-      await blockBlobClient.uploadData(file?.data,  {
+      await blockBlobClient.uploadData(file?.data, {
         blobHTTPHeaders: {
-          blobContentType: file.mimetype || "application/octet-stream"
-        }
+          blobContentType: file.mimetype || "application/octet-stream",
+        },
       });
 
       const blobUrl = `${env.containerName}/${blobName}`;
@@ -329,23 +330,23 @@ export class DocumentController {
           size: file?.size,
           isEditable,
           isDownloadable,
-          mimeType: file.mimetype
+          mimeType: file.mimetype,
         },
       );
 
       const folder = await this.folderRepository.findOne({
         where: {
           workspaceId,
-          id: +folderId
-        }
-      })
+          id: +folderId,
+        },
+      });
 
       const category = await this.categoryRepository.findOne({
         where: {
           workspaceId,
-          id: +categoryId
-        }
-      })
+          id: +categoryId,
+        },
+      });
 
       const documentDetail = {
         file: blobUrl,
@@ -356,7 +357,7 @@ export class DocumentController {
         folder: folder.name,
         isEditable,
         isDownloadable,
-        status: EActivityStatus.Document_Updated
+        status: EActivityStatus.Document_Updated,
       };
 
       const log = await this.logRepository.create({
@@ -373,24 +374,23 @@ export class DocumentController {
           categoryId,
           folderId,
           isEditable,
-          isDownloadable
+          isDownloadable,
         },
       );
 
       const folder = await this.folderRepository.findOne({
         where: {
           workspaceId,
-          id: +folderId
-        }
-      })
+          id: +folderId,
+        },
+      });
 
       const category = await this.categoryRepository.findOne({
         where: {
           workspaceId,
-          id: +categoryId
-        }
-      })
-
+          id: +categoryId,
+        },
+      });
 
       const documentDetail = {
         file: documentData.file,
@@ -401,7 +401,7 @@ export class DocumentController {
         folder: folder.name,
         isEditable,
         isDownloadable,
-        status: EActivityStatus.Document_Updated
+        status: EActivityStatus.Document_Updated,
       };
 
       const log = await this.logRepository.create({

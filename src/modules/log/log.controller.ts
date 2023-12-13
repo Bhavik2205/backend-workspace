@@ -64,16 +64,11 @@ export class LogController {
           .createQueryBuilder("logs")
           .leftJoinAndSelect("logs.user", "user")
           .leftJoinAndSelect("logs.workspace", "workspace")
-          .select([
-            "logs",
-            "user.email",
-            "user.firstName",
-            "user.lastName",
-            "workspace.name"
-          ])
+          .select(["logs", "user.email", "user.firstName", "user.lastName", "workspace.name"])
           .where({
             activity: activityEnumValue,
-            workspaceId: +workspaceId })
+            workspaceId: +workspaceId,
+          })
           .getMany();
 
         return { activity: act, data: logs };

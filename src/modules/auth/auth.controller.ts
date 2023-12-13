@@ -142,11 +142,8 @@ export class AuthController {
     const resetPasswordRequest = await this.resetPasswordRequest.create({ id: uuidv4(), userId: user.id });
     await this.resetPasswordRequest.save(resetPasswordRequest);
 
-    const emailData = {
-      link: `${env.domain}/reset-password/${resetPasswordRequest.id}`,
-    };
     try {
-      await Notification.email("reset-password", emailData, [user.email]);
+      await Notification.email(10, [user.email], user.firstName, '', resetPasswordRequest.id);
 
       return res.status(200).json({ msg: l10n.t("RESET_PASSWORD_LINK") });
     } catch (err) {

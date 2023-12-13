@@ -71,8 +71,8 @@ export class UserEntity {
 
   @ManyToMany(() => LogEntity, log => log.user)
   @JoinTable({
-    name: "logs", 
-    joinColumn: { name: "userId", referencedColumnName: "id" }, 
+    name: "logs",
+    joinColumn: { name: "userId", referencedColumnName: "id" },
     inverseJoinColumn: { name: "id", referencedColumnName: "id" },
   })
   logs: LogEntity[];

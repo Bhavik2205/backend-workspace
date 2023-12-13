@@ -27,8 +27,8 @@ export class LogEntity {
   public updatedAt: Date;
 
   @ManyToMany(() => UserEntity, user => user.logs)
-  user: UserEntity[]
+  user: UserEntity[];
 
   @ManyToMany(() => WorkspaceEntity, workspace => workspace.logs)
-  workspace: WorkspaceEntity[]
+  workspace: WorkspaceEntity[];
 }

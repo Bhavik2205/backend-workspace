@@ -42,7 +42,7 @@ export class WorkspaceEntity {
 
   @ManyToMany(() => LogEntity, log => log.workspace)
   @JoinTable({
-    name: "logs", 
+    name: "logs",
     joinColumn: { name: "workspaceId", referencedColumnName: "id" },
     inverseJoinColumn: { name: "id", referencedColumnName: "id" },
   })

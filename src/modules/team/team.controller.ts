@@ -1,4 +1,4 @@
-import { LogEntity, ParticipateEntity, TeamEntity, UserEntity, UserRolesEntity } from "@entities";
+import { LogEntity, ParticipateEntity, TeamEntity, UserEntity, UserRolesEntity, WorkspaceEntity } from "@entities";
 import { InitRepository, InjectRepositories, Notification } from "@helpers";
 import { EActivityStatus, ELogsActivity, TRequest, TResponse } from "@types";
 import { In, Repository } from "typeorm";
@@ -21,6 +21,9 @@ export class TeamController {
 
   @InitRepository(UserRolesEntity)
   userRolesRepository: Repository<UserRolesEntity>;
+
+  @InitRepository(WorkspaceEntity)
+  workspaceRepository: Repository<WorkspaceEntity>;
 
   constructor() {
     InjectRepositories(this);
@@ -77,6 +80,18 @@ export class TeamController {
     const { workspaceid: workspaceId } = req.headers;
     const { me } = req;
 
+    const workspace = await this.workspaceRepository.findOne({
+      where: {
+        id: workspaceId,
+      },
+    });
+
+    const userData = await this.userRepository.findOne({
+      where: {
+        id: me.id,
+      },
+    });
+
     const participantsData = req.dto.participatesData;
 
     const dataPromises = participantsData.map(async participants => participants.email);
@@ -102,9 +117,6 @@ export class TeamController {
       });
 
       if (!user) {
-        const emailData = {
-          link: `${env.domain}/sign-up`,
-        };
 
         const invitedParticipate = await this.participateRepository.findOne({
           where: {
@@ -127,9 +139,9 @@ export class TeamController {
           const teamData = await this.teamRepository.findOne({
             where: {
               workspaceId,
-              id: +teamId
-            }
-          })
+              id: +teamId,
+            },
+          });
 
           const participantsDetail = {
             name: teamData.name,
@@ -151,7 +163,7 @@ export class TeamController {
           });
           await this.userRolesRepository.save(userRole);
 
-          await Notification.email("invitation", emailData, [email]);
+          await Notification.email(11, [email], userData.firstName, workspace.name, '');
         }
       } else {
         const userExists = await this.participateRepository.findOne({
@@ -174,9 +186,9 @@ export class TeamController {
           const teamData = await this.teamRepository.findOne({
             where: {
               workspaceId,
-              id: +teamId
-            }
-          })
+              id: +teamId,
+            },
+          });
 
           const participantsDetail = {
             name: teamData.name,
@@ -260,16 +272,16 @@ export class TeamController {
     const participantData = await this.participateRepository.findOne({
       where: {
         workspaceId,
-        id: +participateId
-      }
-    })
+        id: +participateId,
+      },
+    });
 
     const teamdata = await this.teamRepository.findOne({
       where: {
         workspaceId,
-        id: participantData.teamId
-      }
-    })
+        id: participantData.teamId,
+      },
+    });
 
     await this.participateRepository.delete(participateId);
 
@@ -292,12 +304,12 @@ export class TeamController {
 
   public readUserTeam = async (req: TRequest, res: TResponse) => {
     const { me } = req;
-    const { workspaceid: workspaceId } = req.headers; 
+    const { workspaceid: workspaceId } = req.headers;
 
     const data = await this.participateRepository.findOne({
       where: {
         userId: me.id,
-        workspaceId
+        workspaceId,
       },
     });
 
