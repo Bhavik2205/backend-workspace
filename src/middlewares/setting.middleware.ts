@@ -13,17 +13,17 @@ export class SettingMiddleware {
   }
 
   public setting = async (req: TRequest, res: TResponse, next: () => void) => {
-    const { workspaceId } = req.params;
+    const { workspaceid: workspaceId } = req.params;
     const { me } = req;
 
     try {
       const workspace = await this.workspaceRepository.findOne({
         where: {
           id: +workspaceId,
-          userId: me.id
+          userId: me.id,
         },
       });
-        
+
       if (workspace) {
         return next();
       }

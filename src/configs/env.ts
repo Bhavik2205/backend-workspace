@@ -83,6 +83,9 @@ class Env {
 
   @IsString()
   public stripePublic: string;
+
+  @IsString()
+  public brevoApiKey: string;
 }
 
 export const env = new Env();
@@ -113,3 +116,4 @@ env.connectionString = process.env.CONNECTION_STRING;
 env.azureURL = process.env.AZURE_URL;
 env.stripeSecret = process.env.STRIPE_SECRET;
 env.stripePublic = process.env.STRIPE_PUBLIC;
+env.brevoApiKey = process.env.BREVO_API_KEY;

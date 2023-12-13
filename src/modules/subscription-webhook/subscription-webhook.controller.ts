@@ -27,7 +27,6 @@ export class SubscriptionWebhookController {
     try {
       const { data } = req.body;
       const eventType = req.body.type;
-  
       switch (eventType) {
       case "payment_intent.amount_capturable_updated": {
         const paymentIntent = data.object;
@@ -107,11 +106,10 @@ export class SubscriptionWebhookController {
       default:
         return res.status(200).send(`Event type: ${eventType}.`);
       }
-  
+
       return res.status(200).json({ message: "success" });
     } catch (error) {
-      return res.status(400).json({ error: error.message})     
+      return res.status(400).json({ error: error.message });
     }
-    
   };
 }
