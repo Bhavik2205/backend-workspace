@@ -13,7 +13,7 @@ export class SettingMiddleware {
   }
 
   public setting = async (req: TRequest, res: TResponse, next: () => void) => {
-    const { workspaceid: workspaceId } = req.params;
+    const { workspaceId } = req.params;
     const { me } = req;
 
     try {
