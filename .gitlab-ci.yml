@@ -1,6 +1,8 @@
 stages:
   - build
   - deploy
+  - build-upload-production
+  - deploy-production
 
 build-upload:
   stage: build
@@ -27,3 +29,29 @@ deploy:
     - ssh -o StrictHostKeyChecking=no -i server.pem ubuntu@20.115.83.193 'bash /home/ubuntu/scripts/deploy.sh'
   only:
     - develop
+
+build-upload-production:
+  stage: build-upload-production
+  image: docker
+  services: 
+    - docker:dind
+  variables:
+    CI_DEBUG_PIPELINE: "true"
+  script:
+    - docker login $AZURE_REGISTRY_URL_PROD -u $AZURE_REGISTRY_USERNAME_PROD -p $AZURE_REGISTRY_PASSWORD_PROD
+    - docker build -t $AZURE_REGISTRY_URL_PROD/workspaceapp-api:latest .
+    - docker push $AZURE_REGISTRY_URL_PROD/workspaceapp-api:latest
+  only:
+    - main
+
+deploy-production:
+  stage: deploy-production
+  needs: ['build-upload-production']
+  script:
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" > server.pem
+    - chmod 400 server.pem
+    - ssh -o StrictHostKeyChecking=no -i server.pem ubuntu@4.237.56.175 'bash /home/ubuntu/scripts/deploy.sh'
+  only:
+    - main
