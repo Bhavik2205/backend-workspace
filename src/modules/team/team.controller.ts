@@ -144,6 +144,7 @@ export class TeamController {
           });
 
           const participantsDetail = {
+            email,
             name: teamData.name,
             isInvited: true,
             status: EActivityStatus.Participant_Created,
@@ -192,6 +193,7 @@ export class TeamController {
 
           const participantsDetail = {
             name: teamData.name,
+            email,
             isInvited: false,
             status: EActivityStatus.Participant_Created,
           };

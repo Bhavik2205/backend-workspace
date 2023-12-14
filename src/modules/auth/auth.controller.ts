@@ -2,10 +2,10 @@ import { MoreThanOrEqual, Repository } from "typeorm";
 import moment from "moment";
 import * as l10n from "jm-ez-l10n";
 import { v4 as uuidv4 } from "uuid";
-import { ELogsActivity, ERolesRole, TRequest, TResponse } from "@types";
+import { ELogsActivity,  TRequest, TResponse } from "@types";
 import { LogEntity, ParticipateEntity, ResetPasswordRequestEntity, TwoFactorAuthRequestEntity, UserEntity, RolesEntity, UserRolesEntity } from "@entities";
 import { InitRepository, InjectRepositories, Bcrypt, JwtHelper, GenerateOTP, Notification, PhoneNumberValidator } from "@helpers";
-import { Constants, env } from "@configs";
+import { Constants } from "@configs";
 import { CreateUserDto, ForgotPasswordDto, ResetPasswordDto, SendTwoFactorDto, SignInDto, VerifyTwoFactorDto } from "./dto";
 
 export class AuthController {
@@ -51,15 +51,15 @@ export class AuthController {
     await this.userRepository.save(user);
     const token = JwtHelper.encode({ id: user.id });
 
-    const roles = await this.rolesRepository.findOne({
-      where: { role: ERolesRole.Super_Admin },
-    });
+    // const roles = await this.rolesRepository.findOne({
+    //   where: { role: ERolesRole.Super_Admin },
+    // });
 
-    const userRole = await this.userRolesRepository.create({
-      userId: user.id,
-      roleId: roles.id,
-    });
-    await this.userRolesRepository.save(userRole);
+    // const userRole = await this.userRolesRepository.create({
+    //   userId: user.id,
+    //   roleId: roles.id,
+    // });
+    // await this.userRolesRepository.save(userRole);
 
     const participate = await this.participateRepository.findOne({
       where: {
