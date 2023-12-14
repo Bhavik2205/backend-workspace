@@ -337,14 +337,14 @@ export class DocumentController {
       const folder = await this.folderRepository.findOne({
         where: {
           workspaceId,
-          id: +folderId,
+          id: +folderId || documentData.folderId,
         },
       });
 
       const category = await this.categoryRepository.findOne({
         where: {
           workspaceId,
-          id: +categoryId,
+          id: +categoryId || documentData.categoryId,
         },
       });
 
@@ -381,14 +381,14 @@ export class DocumentController {
       const folder = await this.folderRepository.findOne({
         where: {
           workspaceId,
-          id: +folderId,
+          id: +folderId || documentData.folderId,
         },
       });
 
       const category = await this.categoryRepository.findOne({
         where: {
           workspaceId,
-          id: +categoryId,
+          id: +categoryId || documentData.categoryId,
         },
       });
 
