@@ -114,6 +114,7 @@ export class WorkspaceController {
 
     const participantsDetail = {
       name: team[0].name,
+      email: userData.email,
       isInvited: false,
       status: EActivityStatus.Participant_Created,
     };
@@ -126,16 +127,23 @@ export class WorkspaceController {
     });
     await this.logRepository.save(participateLog);
 
-    const data = await this.userRolesRepository.findOne({
-      where: {
-        userId: me.id,
-        roleId: roles.id,
-      },
+    const userRole = await this.userRolesRepository.create({
+      userId: me.id,
+      roleId: roles.id,
+      participateId: defaultParticipate.id
     });
+    await this.userRolesRepository.save(userRole);
 
-    await this.userRolesRepository.update(data.id, {
-      participateId: defaultParticipate.id,
-    });
+    // const data = await this.userRolesRepository.findOne({
+    //   where: {
+    //     userId: me.id,
+    //     roleId: roles.id,
+    //   },
+    // });
+
+    // await this.userRolesRepository.update(data.id, {
+    //   participateId: defaultParticipate.id,
+    // });
 
     const setting = await this.settingRepository.create({
       userId: me.id,
