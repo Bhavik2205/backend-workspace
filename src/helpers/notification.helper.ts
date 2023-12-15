@@ -33,9 +33,7 @@ export class Notification {
     let subject = "";
 
     if (templateNum === 10) {
-      htmlContent = response.data.htmlContent
-        .replace(/{{\s*contact\.FIRSTNAME\s*}}/, userName)
-        .replace(/{{\s*token\s*}}/, token)
+      htmlContent = response.data.htmlContent.replace(/{{\s*contact\.FIRSTNAME\s*}}/, userName).replace(/{{\s*token\s*}}/, token);
 
       subject = response.data.subject.replace(/{{\s*contact\.FIRSTNAME\s*\|\s*default\s*:\s*''\s*}}/, userName);
     } else if (templateNum === 11) {

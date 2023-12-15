@@ -1,7 +1,7 @@
 import fileUpload from "express-fileupload";
 import { RouterDelegates } from "@types";
 import { InjectCls, SFRouter, Validator } from "@helpers";
-import { isWorkspaceExist, AuthMiddleware, PermissionsMiddleware, Subscription, WorkspaceType } from "@middlewares";
+import { isWorkspaceExist, AuthMiddleware, PermissionsMiddleware, Subscription, WorkspaceType, DocumentMiddleware } from "@middlewares";
 import { Permissions } from "@acl";
 import { DocumentController } from "./document.controller";
 import { CreateDocumentDto, UpdateDocumentDto } from "./dto";
@@ -21,6 +21,9 @@ export class DocumentRouter extends SFRouter implements RouterDelegates {
 
   @InjectCls(WorkspaceType)
   workspaceType: WorkspaceType;
+
+  @InjectCls(DocumentMiddleware)
+  document: DocumentMiddleware;
 
   initRoutes(): void {
     this.router.post(
@@ -45,6 +48,7 @@ export class DocumentRouter extends SFRouter implements RouterDelegates {
       this.authMiddleware.auth,
       this.permission.acl(Permissions.DocumentUpload),
       this.workspaceType.document,
+      this.document.Edit,
       Validator.validate(UpdateDocumentDto),
       isWorkspaceExist(),
       this.documentController.edit,
