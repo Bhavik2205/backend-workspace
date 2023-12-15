@@ -6,3 +6,5 @@ export * from "./subscription.middleware";
 export * from "./workspaceType.middleare";
 export * from "./deleteParticipate.middleware";
 export * from "./setting.middleware";
+export * from "./document.middleware";
+export * from "./participate.middleware";

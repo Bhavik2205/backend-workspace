@@ -130,7 +130,7 @@ export class WorkspaceController {
     const userRole = await this.userRolesRepository.create({
       userId: me.id,
       roleId: roles.id,
-      participateId: defaultParticipate.id
+      participateId: defaultParticipate.id,
     });
     await this.userRolesRepository.save(userRole);
 
