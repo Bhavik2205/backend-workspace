@@ -1,7 +1,7 @@
 import { TResponse, TRequest } from "@types";
 import { InitRepository, InjectRepositories } from "@helpers";
 import { Repository } from "typeorm";
-import { DocumentEntity, ParticipateEntity, TeamEntity } from "@entities";
+import { DocumentEntity, ParticipateEntity } from "@entities";
 import * as l10n from "jm-ez-l10n";
 
 export class DocumentMiddleware {
@@ -10,9 +10,6 @@ export class DocumentMiddleware {
 
   @InitRepository(ParticipateEntity)
   participateRepository: Repository<ParticipateEntity>;
-
-  @InitRepository(TeamEntity)
-  teamRepository: Repository<TeamEntity>;
 
   constructor() {
     InjectRepositories(this);
@@ -38,13 +35,6 @@ export class DocumentMiddleware {
         },
       });
 
-      const uploadedteam = await this.teamRepository.findOne({
-        where: {
-          id: uploadedparticipant.teamId,
-          workspaceId,
-        },
-      });
-
       const userParticipate = await this.participateRepository.findOne({
         where: {
           userId: me.id,
@@ -52,14 +42,7 @@ export class DocumentMiddleware {
         },
       });
 
-      const userTeam = await this.teamRepository.findOne({
-        where: {
-          id: userParticipate.teamId,
-          workspaceId,
-        },
-      });
-
-      if (uploadedteam.name === userTeam.name) {
+      if (uploadedparticipant.teamId === userParticipate.teamId) {
         return next();
       }
 
