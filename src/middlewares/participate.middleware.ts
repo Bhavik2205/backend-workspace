@@ -31,6 +31,7 @@ export class ParticipateMiddleware {
             userId: me.id,
           },
         });
+        console.log("userRole", userRole);
 
         const userTeam = await this.teamRepository.findOne({
           where: {
@@ -38,6 +39,7 @@ export class ParticipateMiddleware {
             id: userRole.teamId,
           },
         });
+        console.log("userTeam", userTeam);
 
         const invitedTeam = await this.teamRepository.findOne({
           where: {
@@ -45,6 +47,7 @@ export class ParticipateMiddleware {
             id: +teamId,
           },
         });
+        console.log("invitedTeam", invitedTeam);
 
         if (roleId === 1) {
           if (invitedTeam.name === "Internal Team") {

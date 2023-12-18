@@ -27,6 +27,7 @@ export class DocumentMiddleware {
           workspaceId,
         },
       });
+      console.log("document", document);
 
       const uploadedparticipant = await this.participateRepository.findOne({
         where: {
@@ -34,6 +35,7 @@ export class DocumentMiddleware {
           workspaceId,
         },
       });
+      console.log("uploadedparticipant", uploadedparticipant);
 
       const userParticipate = await this.participateRepository.findOne({
         where: {
@@ -41,6 +43,7 @@ export class DocumentMiddleware {
           workspaceId,
         },
       });
+      console.log("userParticipate", userParticipate);
 
       if (uploadedparticipant.teamId === userParticipate.teamId) {
         return next();
