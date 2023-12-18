@@ -48,7 +48,7 @@ export class ParticipateMiddleware {
 
         if (roleId === 1) {
           if (invitedTeam.name === "Internal Team") {
-            if (!(userRole.roleId === 1 && userTeam.name === "Internal Team")) {
+            if (userRole.roleId !== 1 && userTeam.name !== "Internal Team") {
               return res.status(400).json({ msg: l10n.t("ERR_PERMISSION_DENIED") });
             }
           } else {
