@@ -1,0 +1,44 @@
+{
+	"folders": [
+		{
+			"name": "MicroservicesV2",
+			"path": "../../../../Investor_app_files_Australia/MicroservicesV2"
+		},
+		{
+			"name": "dicom_autoupdate",
+			"path": "../../../../AI Kalpa Netherlands/dicom_autoupdate"
+		},
+		{
+			"name": "MicroservicesV3TS",
+			"path": "../../../../MicroservicesV3TS"
+		},
+		{
+			"name": "TSwebsite",
+			"path": "../../../../TSwebsite"
+		},
+		{
+			"path": "../../../../monorepo"
+		},
+		{
+			"path": "../../../../filestructure"
+		},
+		{
+			"path": "../../../../tsmono"
+		},
+		{
+			"path": "../../../../Investor_app_files_Australia/Microservices"
+		},
+		{
+			"path": "../../.."
+		},
+		{
+			"path": "../../../../workspace-api-node-ts"
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "monorepo",
+		"cSpell.words": [
+			"companyadd"
+		]
+	}
+}

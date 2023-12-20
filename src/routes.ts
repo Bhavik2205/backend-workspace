@@ -14,6 +14,8 @@ import { LogRouter } from "@modules/log";
 import { UserSubscriptionRouter } from "@modules/user-subscription";
 import { SettingRouter } from "@modules/setting";
 import { SubscriptionWebhookRouter } from "@modules/subscription-webhook";
+import { SuperAdminAuthRouter } from "@modules/superadmin/auth";
+import { DataRouter } from "@modules/superadmin/data";
 
 export default class Routes {
   public configure() {
@@ -32,6 +34,8 @@ export default class Routes {
     router.use("/subscriptions", new UserSubscriptionRouter().router);
     router.use("/settings", new SettingRouter().router);
     router.use("/webhook", new SubscriptionWebhookRouter().router);
+    router.use('/admin', new SuperAdminAuthRouter().router);
+    router.use('/data', new DataRouter().router);
     router.all("/*", (req, res) =>
       res.status(404).json({
         error: l10n.t("ERR_URL_NOT_FOUND"),

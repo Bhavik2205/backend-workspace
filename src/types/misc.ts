@@ -92,3 +92,32 @@ export const enums: EnumTypes = {
     role: Object.values(ERolesRole),
   },
 };
+
+
+
+//superadmin enums
+export enum EUserType {
+  SuperAdmin = "SuperAdmin",
+  Member = "Member"
+}
+
+export enum EInvitedMemberRole {
+  SuperAdmin = "SuperAdmin",
+  Member = "Member"
+}
+
+export enum EInvitedMemberStatus {
+  Pending = "Pending",
+  Accepted = "Accepted"
+}
+
+export enum EEmailVerificationStatus {
+  Unverified = "Unverified",
+  Verified = "Verified"
+}
+
+export enum ESStatus { 
+  Active = "Active",
+  Inactive = "Inactive",
+  Admin_Deactivated = "Admin Deactivated"
+}
