@@ -1031,4 +1031,145 @@
             </column>
         </addColumn> 
     </changeSet>
+
+
+
+    <changeSet id="createSuperadminUserTable" author="Bhavik Patel">
+        <createTable tableName="superadminuser">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="firstName" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="lastName" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="varchar(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="password" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role" type="varchar(255)" defaultValue="Super Admin">
+                <constraints nullable="false"/>
+            </column>
+            <column name="emailVerificationStatus" type="varchar(255)" defaultValue="Unverified">
+                <constraints nullable="false" />
+            </column>
+            <column name="status" type="varchar(255)" defaultValue="Active">
+                <constraints nullable="false" />
+            </column>
+            <column name="createdAt" type="datetime" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updatedAt" type="datetime">
+                <constraints nullable="true"/>
+            </column>
+            <column name="ip" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create_reset_password_request_table" author="Bhavik Patel">
+        <createTable tableName="resetpasswordrequest">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="userId" type="integer">
+                <constraints nullable="true"/>
+            </column>
+            <column name="userType" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="boolean" defaultValue="true"/>
+            <column name="createdAt" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="Bhavik Patel" id="create-two-factor-auth-request-table">
+        <createTable tableName="twoFactorAuthRequest">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="userId" type="integer">
+                <constraints nullable="false"/>
+            </column>
+            <column name="userType" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="hashCode" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="createdAt" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="createLoginInfoTable" author="Bhavik Patel">
+        <createTable tableName="logininfo">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="token" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="userId" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="userType" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="systemId" type="VARCHAR">
+                <constraints nullable="true"/>
+            </column>
+            <column name="ip" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="BOOLEAN" defaultValue="true"/>
+            <column name="createdAt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updatedAt" type="TIMESTAMP">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+
+
+    <changeSet id="create_invitedusers_table" author="Bhavik Patel">
+        <createTable tableName="invitedusers">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="invitedBy" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="email" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="role" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="status" type="VARCHAR(255)" defaultValue="Pending">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="createdAt" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="updatedAt" type="TIMESTAMP">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+
+    </changeSet>
 </databaseChangeLog>
