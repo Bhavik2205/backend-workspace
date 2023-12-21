@@ -131,21 +131,19 @@ export class UserSubscriptionController {
 
   public delete = async (req: TRequest, res: TResponse) => {
     try {
-      const { planId } = req.params;
+      const { subscriptionId } = req.params;
       const { me } = req;
 
       const subscriptionDetail = await this.userSubscriptionRepository.findOne({
         where: {
           userId: me.id,
-          planId: +planId,
+          subscriptionId,
         },
       });
 
-      const deleted = await stripe.subscriptions.cancel(subscriptionDetail.subscriptionId);
+      const deleted = await stripe.subscriptions.cancel(subscriptionId);
 
-      await this.userSubscriptionRepository.update(subscriptionDetail.id, {
-        isActive: false,
-      });
+      await this.userSubscriptionRepository.delete(subscriptionDetail.id)
 
       res.status(200).json({ data: deleted.id });
     } catch (error) {

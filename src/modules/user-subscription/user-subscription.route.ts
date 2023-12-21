@@ -17,7 +17,7 @@ export class UserSubscriptionRouter extends SFRouter implements RouterDelegates 
   initRoutes(): void {
     this.router.post("/card-token", this.authMiddleware.auth, this.userSubscriptionController.cardToken);
     this.router.post("/", this.authMiddleware.auth, Validator.validate(CreateSubscriptionDto), this.userSubscriptionController.create);
-    this.router.post("/:planId", this.authMiddleware.auth, this.userSubscriptionController.delete);
+    this.router.post("/:subscriptionId", this.authMiddleware.auth, this.userSubscriptionController.delete);
     this.router.get("/", this.authMiddleware.auth, this.userSubscriptionController.read);
     this.router.get("/invoice", this.authMiddleware.auth, this.userSubscriptionController.readInvoice);
     this.router.get("/invoice/:invoiceId", this.authMiddleware.auth, this.userSubscriptionController.readOneInvoice);
