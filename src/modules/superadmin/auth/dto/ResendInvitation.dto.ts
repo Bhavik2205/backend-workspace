@@ -1,5 +1,5 @@
 import { IsEmail, IsEnum, IsNotEmpty, IsString, MaxLength } from "class-validator";
-import { Constants } from "../../../configs";
+import { Constants } from "@configs";
 
 export class ResendInviteDto {
     @IsString()

@@ -1,5 +1,5 @@
+import { Constants } from "@configs";
 import { IsNotEmpty, IsString, Length, Matches } from "class-validator";
-import { Constants } from "../../../configs";
 
 export class UpdatePasswordDto {
   @IsNotEmpty()

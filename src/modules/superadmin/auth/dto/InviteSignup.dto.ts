@@ -1,6 +1,6 @@
 import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, Length, Matches, MaxLength } from "class-validator";
-import { Constants } from "../../../configs";
-import { EUserType } from "../../../types";
+import { Constants } from "@configs";
+import { EUserType } from "@types";
 
 export class InviteSignupDto {
     @IsString()

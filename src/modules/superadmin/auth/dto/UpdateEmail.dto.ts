@@ -1,5 +1,5 @@
 import { IsEmail, IsNotEmpty, IsString, Length } from "class-validator";
-import { Constants } from "../../../configs";
+import { Constants } from "@configs";
 
 export class UpdateEmailDto {
   @IsNotEmpty()

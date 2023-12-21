@@ -1,4 +1,4 @@
-import { Constants } from "../../../configs";
+import { Constants } from "@configs";
 import { IsEmail, IsNotEmpty, IsString, MaxLength } from "class-validator";
 
 export class ForgotPasswordDto {
