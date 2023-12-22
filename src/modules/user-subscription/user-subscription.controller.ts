@@ -132,18 +132,8 @@ export class UserSubscriptionController {
   public delete = async (req: TRequest, res: TResponse) => {
     try {
       const { subscriptionId } = req.params;
-      const { me } = req;
-
-      const subscriptionDetail = await this.userSubscriptionRepository.findOne({
-        where: {
-          userId: me.id,
-          subscriptionId,
-        },
-      });
 
       const deleted = await stripe.subscriptions.cancel(subscriptionId);
-
-      await this.userSubscriptionRepository.delete(subscriptionDetail.id)
 
       res.status(200).json({ data: deleted.id });
     } catch (error) {
@@ -161,7 +151,7 @@ export class UserSubscriptionController {
       });
 
       if (!userData) {
-        return res.status(400).send({ error: l10n.t("NO_SUBSCRIPTION_FOUND") });
+        return res.status(200).send({ data: {} });
       }
 
       const stripeSubscription = await stripe.subscriptions.list({
@@ -190,7 +180,7 @@ export class UserSubscriptionController {
       });
 
       if (!subscribedData) {
-        return res.status(400).send({ error: l10n.t("NO_INVOICE_FOUND") });
+        return res.status(200).send({ data: [] });
       }
 
       const invoiceData = await stripe.invoices.list({
