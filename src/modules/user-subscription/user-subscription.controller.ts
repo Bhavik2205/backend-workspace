@@ -151,12 +151,17 @@ export class UserSubscriptionController {
       });
 
       if (!userData) {
-        return res.status(200).send({ data: {} });
+        return res.status(200).json({ data: {} });
       }
 
       const stripeSubscription = await stripe.subscriptions.list({
         customer: userData.customerId,
       });
+
+      if (stripeSubscription.data.length === 0) {
+        return res.status(200).json({ data: {} });
+      }
+
       const subscriptions = await this.userSubscriptionRepository.findOne({
         where: {
           subscriptionId: stripeSubscription.data[0].id,
@@ -180,7 +185,7 @@ export class UserSubscriptionController {
       });
 
       if (!subscribedData) {
-        return res.status(200).send({ data: [] });
+        return res.status(200).json({ data: [] });
       }
 
       const invoiceData = await stripe.invoices.list({
