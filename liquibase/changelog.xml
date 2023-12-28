@@ -1031,4 +1031,160 @@
             </column>
         </addColumn> 
     </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="98">
+        <addColumn tableName="subscriptionPlans">
+            <column name="slug" type="TEXT">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn> 
+    </changeSet>
+    <changeSet author="Dharmik Dalwadi" id="99">
+        <comment>Pre-load subscription plans</comment>
+        <sql>
+
+        UPDATE public."subscriptionPlans" SET 
+        name = 'Workspace Tier 3', 
+        description = null, 
+        price = 55, 
+        duration = '1 month', 
+        discount = null, 
+        "priceId" = 'price_1O3Va5B4ZEWdjEySPrwS2SyX', 
+        "metaData" = null, 
+        feature = '[
+      {
+             "name": "1 Workspace with up to 18 users",
+             "workspace": 1,
+             "user": 18
+      },
+      {
+             "name": "10 GB of storage space (more purchasable)",
+             "documentSize": "10737418240"
+      },
+      {
+             "name": "Upload, Download, Edit and View documents"
+      },
+      {
+             "name": "Q-A Enabled"
+      },
+      {
+            "name": "Able to create 4 teams per Workspace",
+            "team": 4
+      },
+      {
+            "name": "Download Audit logs and Q-A"
+      },
+      {
+            "name": "Access to Workflow tool"
+      },
+      {
+            "name": "Online Editor for documents (Zoho)"
+      }
+    ]', 
+        "productId" = 'prod_OrE2rAerGFlWhd', 
+        images = null,
+        slug = 'workspace-tier-3'
+
+    WHERE
+    id = 1;
+
+    UPDATE public."subscriptionPlans" SET 
+        name = 'Workspace Tier 2', 
+        description = null, 
+        price = 35, 
+        duration = '1 month', 
+        discount = null, 
+        "priceId" = 'price_1O3VXJB4ZEWdjEySVPjsFiUr', 
+        "metaData" = null, 
+        feature = '[
+      {
+             "name": "1 Workspace with up to 9 users",
+             "workspace": 1,
+             "user": 9
+      },
+      {
+             "name": "5 GB of storage space (more purchasable)",
+             "documentSize": "5368709120"
+      },
+      {
+             "name": "Upload, Download, Edit and View documents"
+      },
+      {
+             "name": "Q-A Enabled"
+      },
+      {
+            "name": "Create up to 3 teams per Workspace",
+            "team": 3
+      },
+      {
+            "name": "Download Audit logs and Q-A"
+      }
+    ]', 
+        "productId" = 'prod_OrDzz0IZEs6NC1', 
+        images = null,
+        slug = 'workspace-tier-2'
+
+    WHERE
+    id = 2;
+
+     UPDATE public."subscriptionPlans" SET 
+        name = 'Workspace Base Tier', 
+        description = null, 
+        price = 0, 
+        duration = '1 month', 
+        discount = null, 
+        "priceId" = 'price_1O3VS1B4ZEWdjEyS9NTUz0GK', 
+        "metaData" = null, 
+        feature = '[
+      {
+             "name": "1 Workspace with up to 2 users",
+             "workspace": 1,
+             "user": 2
+      },
+      {
+             "name": "100 MB of storage space (+ more purchasable)",
+             "documentSize": "104857600"
+      },
+      {
+             "name": "Upload, Download and View documents"
+      },
+      {
+             "name": "Create only 2 teams",
+             "team": 2
+      }
+    ]', 
+        "productId" = 'prod_OrDtBDUVnE7gF7', 
+        images = null,
+        slug = 'workspace-base-tier'
+
+    WHERE
+    id = 3;
+
+    UPDATE public."subscriptionPlans" SET 
+        name = 'Pro App Seats', 
+        description = 'Purchase Seats to invite Team Members', 
+        price = 15, 
+        duration = '1 month', 
+        discount = null, 
+        "priceId" = 'price_1O2pNEB4ZEWdjEySLt1nASXl', 
+        "metaData" = null, 
+        feature = '[
+      {
+             "name": "Dashboard to track Deal inflow and other KPI’s"
+      },
+      {
+             "name": "Invite team member to help you manage application"
+      },
+      {
+             "name": "Additional 10 GB of storage",
+             "documentSize": "10737418240"
+      }
+    ]', 
+        "productId" = 'prod_OqWQgSBtFJ4KMF', 
+        images = '["https://files.stripe.com/links/MDB8YWNjdF8xTzFnSEVCNFpFV2RqRXlTfGZsX3Rlc3RfbVNqdmZyRFR6VDhyUVhmZWNaSXdMZWYw00l9l5n6wq"]',
+        slug = 'additional-storage-space'
+
+    WHERE
+    id = 4;
+        </sql>
+    </changeSet>
 </databaseChangeLog>

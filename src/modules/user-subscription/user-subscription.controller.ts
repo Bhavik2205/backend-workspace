@@ -3,7 +3,7 @@ import { SubscriptionPlanEntity, UserEntity, UserSubscriptionEntity } from "@ent
 import { InitRepository, InjectRepositories } from "@helpers";
 import { TRequest, TResponse } from "@types";
 import { Repository } from "typeorm";
-import * as l10n from "jm-ez-l10n";
+import axios from "axios";
 import { CreateSubscriptionDto } from "./dto";
 
 const stripe = require("stripe")(env.stripeSecret);
@@ -105,7 +105,15 @@ export class UserSubscriptionController {
 
         await this.updateSubscriptionDetails(existingCustomer.data[0].id, plan.id, subscription.id, subscription.items.data[0].plan.product);
 
-        await this.userPlan(planId, user.id);
+        const planDetail = await this.subscriptionPlanRepository.findOne({
+          where: {
+            id: planId,
+          },
+        });
+
+        if (planDetail.slug !== "additional-storage-space") {
+          await this.userPlan(planId, user.id);
+        }
 
         res.status(200).json({ data: subscription.id });
       } else {
@@ -120,7 +128,15 @@ export class UserSubscriptionController {
 
         await this.updateSubscriptionDetails(customer.id, plan.id, subscription.id, subscription.items.data[0].plan.product);
 
-        await this.userPlan(planId, user.id);
+        const planDetail = await this.subscriptionPlanRepository.findOne({
+          where: {
+            id: planId,
+          },
+        });
+
+        if (planDetail.slug !== "additional-storage-space") {
+          await this.userPlan(planId, user.id);
+        }
 
         res.status(200).json({ data: subscription.id });
       }
@@ -132,9 +148,30 @@ export class UserSubscriptionController {
   public delete = async (req: TRequest, res: TResponse) => {
     try {
       const { subscriptionId } = req.params;
+      const { me } = req;
+
+      const user = await this.userRepository.findOne({
+        where: {
+          id: me.id,
+        },
+      });
 
       const deleted = await stripe.subscriptions.cancel(subscriptionId);
 
+      const subscription = await axios.get("https://api.dev.workspace.tesseractsquare.com/subscriptions", {
+        headers: {
+          Authorization: req.headers.authorization,
+        },
+      });
+      console.log(subscription);
+
+      if (subscription?.data?.data?.planId) {
+        user.planId = subscription.data.data.planId;
+      } else {
+        user.planId = null;
+      }
+
+      await this.userRepository.save(user);
       res.status(200).json({ data: deleted.id });
     } catch (error) {
       res.status(400).json({ error: error.message });

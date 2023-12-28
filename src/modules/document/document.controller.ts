@@ -1,10 +1,11 @@
 import { env } from "@configs";
-import { CategoryEntity, DocumentEntity, FolderEntity, LogEntity, UserEntity } from "@entities";
+import { CategoryEntity, DocumentEntity, FolderEntity, LogEntity, SubscriptionPlanEntity, UserEntity } from "@entities";
 import { AzureUtils, InitRepository, InjectRepositories, Utils } from "@helpers";
 import { EActivityStatus, EAzureFolder, ELogsActivity, TRequest, TResponse } from "@types";
 import * as l10n from "jm-ez-l10n";
 import moment from "moment";
 import { Repository } from "typeorm";
+import axios from "axios";
 import { CreateDocumentDto, UpdateDocumentDto } from "./dto";
 
 export class DocumentController {
@@ -22,6 +23,9 @@ export class DocumentController {
 
   @InitRepository(CategoryEntity)
   categoryRepository: Repository<CategoryEntity>;
+
+  @InitRepository(SubscriptionPlanEntity)
+  subscriptionPlanRepository: Repository<SubscriptionPlanEntity>;
 
   constructor() {
     InjectRepositories(this);
@@ -47,18 +51,38 @@ export class DocumentController {
     });
 
     const promises = file.map(async (e: any) => {
-      const totalSize = documentCount.reduce((acc, document) => acc + Number(document.size), 0);
-      const size = totalSize + e.size;
+      const totalSize = documentCount.reduce((acc, document) => acc + BigInt(document.size), BigInt(0));
+      const size = totalSize + BigInt(e.size);
 
-      const maxDocSizeByPlanId: {
-        [key: number]: number;
-      } = {
-        1: 10737418240,
-        2: 5368709120,
-        3: 104857600,
-      };
+      const planDetail = await this.subscriptionPlanRepository.findOne({
+        where: {
+          id: user.planId,
+        },
+      });
 
-      const hasReachedMaxDocSize = user && size > maxDocSizeByPlanId[user.planId];
+      const planData = planDetail.feature as any as { documentSize?: number }[];
+      let totalDocumentSize: bigint = BigInt(planData.find(d => d?.documentSize !== undefined)?.documentSize || 0);
+
+      const subscription = await axios.get("https://api.dev.workspace.tesseractsquare.com/subscriptions", {
+        headers: {
+          Authorization: req.headers.authorization,
+        },
+      });
+      console.log(subscription);
+
+      if (subscription?.data?.data?.plan?.slug === "additional-storage-space") {
+        const additionalStoragePlan = await this.subscriptionPlanRepository.findOne({
+          where: {
+            id: subscription?.data?.data?.planId,
+          },
+        });
+
+        const additionalStorageDetail = additionalStoragePlan.feature as any as { documentSize?: number }[];
+        const additionalDocumentStorage = BigInt(additionalStorageDetail.find(c => c?.documentSize !== undefined)?.documentSize || 0);
+        totalDocumentSize += additionalDocumentStorage;
+      }
+
+      const hasReachedMaxDocSize = user && size > totalDocumentSize;
 
       if (hasReachedMaxDocSize) {
         res.status(400).json({ error: "Maximum storage space reached for this workspace" });
@@ -286,22 +310,42 @@ export class DocumentController {
       },
     });
 
-    const totalSize = documentCount.reduce((acc, document) => acc + Number(document.size), 0);
+    const totalSize = documentCount.reduce((acc, document) => acc + BigInt(document.size), BigInt(0));
 
     let size;
     if (file) {
-      const remainingSize = totalSize - documentData.size;
-      size = remainingSize + file.size;
+      const remainingSize = totalSize - BigInt(documentData.size);
+      size = remainingSize + BigInt(file.size);
 
-      const maxDocSizeByPlanId: {
-        [key: number]: number;
-      } = {
-        1: 10737418240,
-        2: 5368709120,
-        3: 104857600,
-      };
+      const planDetail = await this.subscriptionPlanRepository.findOne({
+        where: {
+          id: user.planId,
+        },
+      });
 
-      const hasReachedMaxDocSize = user && size > maxDocSizeByPlanId[user.planId];
+      const planData = planDetail.feature as any as { documentSize?: number }[];
+      let totalDocumentSize: bigint = BigInt(planData.find(e => e?.documentSize !== undefined)?.documentSize || 0);
+
+      const subscription = await axios.get("https://api.dev.workspace.tesseractsquare.com/subscriptions", {
+        headers: {
+          Authorization: req.headers.authorization,
+        },
+      });
+      console.log(subscription);
+
+      if (subscription?.data?.data?.plan?.slug === "additional-storage-space") {
+        const additionalStoragePlan = await this.subscriptionPlanRepository.findOne({
+          where: {
+            id: subscription?.data?.data?.planId,
+          },
+        });
+
+        const additionalStorageDetail = additionalStoragePlan.feature as any as { documentSize?: number }[];
+        const additionalDocumentStorage = BigInt(additionalStorageDetail.find(e => e?.documentSize !== undefined)?.documentSize || 0);
+        totalDocumentSize += additionalDocumentStorage;
+      }
+
+      const hasReachedMaxDocSize = user && size > totalDocumentSize;
 
       if (hasReachedMaxDocSize) {
         return res.status(400).json({ error: "Maximum storage space reached for this workspace" });
@@ -350,7 +394,7 @@ export class DocumentController {
 
       const documentDetail = {
         file: blobUrl,
-        size,
+        size: size.toString(),
         workspaceId,
         fileName: file?.name,
         category: category.name,
@@ -394,7 +438,7 @@ export class DocumentController {
 
       const documentDetail = {
         file: documentData.file,
-        size: documentData.size,
+        size: documentData.size.toString(),
         workspaceId,
         fileName: documentData.name,
         category: category.name,
