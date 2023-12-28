@@ -1,6 +1,6 @@
 import { RouterDelegates } from "@types";
 import { InjectCls, SFRouter } from "@helpers";
-import { AuthMiddleware, PermissionsMiddleware, isWorkspaceExist } from "@middlewares";
+import { AuthMiddleware, PermissionsMiddleware, Subscription, isWorkspaceExist } from "@middlewares";
 import { Permissions } from "@acl";
 import { LogController } from "./log.controller";
 
@@ -14,7 +14,18 @@ export class LogRouter extends SFRouter implements RouterDelegates {
   @InjectCls(PermissionsMiddleware)
   permission: PermissionsMiddleware;
 
+  @InjectCls(Subscription)
+  subscription: Subscription;
+
   initRoutes(): void {
-    this.router.get("/download", this.authMiddleware.auth, this.permission.acl(Permissions.DownloadLog), isWorkspaceExist(), this.logController.download);
+    this.router.get(
+      "/download",
+      this.authMiddleware.auth,
+      this.subscription.isSubscribed,
+      this.permission.acl(Permissions.DownloadLog),
+      this.subscription.LogsAccess,
+      isWorkspaceExist(),
+      this.logController.download,
+    );
   }
 }

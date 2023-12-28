@@ -36,6 +36,9 @@ export class SubscriptionPlanEntity {
   @Column({ type: "text", nullable: true })
   images: string;
 
+  @Column({ type: "text", nullable: true })
+  slug: string;
+
   @CreateDateColumn()
   public createdAt: Date;
 

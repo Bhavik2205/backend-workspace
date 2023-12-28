@@ -28,16 +28,18 @@ export class TeamRouter extends SFRouter implements RouterDelegates {
     this.router.post(
       "/",
       this.authMiddleware.auth,
+      this.subscription.isSubscribed,
       this.permission.acl(Permissions.AddDeleteTeam),
       this.subscription.team,
       Validator.validate(CreateTeamDto),
       isWorkspaceExist(),
       this.teamController.create,
     );
-    this.router.get("/", this.authMiddleware.auth, isWorkspaceExist(), this.teamController.read);
+    this.router.get("/", this.authMiddleware.auth, this.subscription.isSubscribed, isWorkspaceExist(), this.teamController.read);
     this.router.post(
       "/participate/:teamId",
       this.authMiddleware.auth,
+      this.subscription.isSubscribed,
       this.permission.acl(Permissions.InviteParticipates),
       this.subscription.participate,
       this.addParticipate.add,
@@ -49,21 +51,30 @@ export class TeamRouter extends SFRouter implements RouterDelegates {
     this.router.delete(
       "/:participateId",
       this.authMiddleware.auth,
+      this.subscription.isSubscribed,
       this.permission.acl(Permissions.RemoveParticipate),
       this.permission.acl(Permissions.RemoveParticipatesGlobally),
       this.participate.delete,
       this.teamController.deleteParticipate,
     );
-    this.router.get("/user", this.authMiddleware.auth, this.teamController.readUserTeam);
-    this.router.get("/all-participate", this.authMiddleware.auth, isWorkspaceExist(), this.teamController.readAllParticipate);
+    this.router.get("/user", this.authMiddleware.auth, this.subscription.isSubscribed, this.teamController.readUserTeam);
+    this.router.get("/all-participate", this.authMiddleware.auth, this.subscription.isSubscribed, isWorkspaceExist(), this.teamController.readAllParticipate);
     this.router.put(
       "/team/:teamId",
       this.authMiddleware.auth,
+      this.subscription.isSubscribed,
       this.permission.acl(Permissions.AddDeleteTeam),
       Validator.validate(UpdateTeamDto),
       isWorkspaceExist(),
       this.teamController.updateTeam,
     );
-    this.router.delete("/team/:teamId", this.authMiddleware.auth, this.permission.acl(Permissions.AddDeleteTeam), isWorkspaceExist(), this.teamController.DeleteTeam);
+    this.router.delete(
+      "/team/:teamId",
+      this.authMiddleware.auth,
+      this.subscription.isSubscribed,
+      this.permission.acl(Permissions.AddDeleteTeam),
+      isWorkspaceExist(),
+      this.teamController.DeleteTeam,
+    );
   }
 }
