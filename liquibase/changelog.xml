@@ -169,10 +169,6 @@
             <column name="workspaceId" type="INTEGER">
                 <constraints nullable="false"/>
             </column>
-            <column name="parentId" type="INTEGER">
-            <!-- Add a column for parent folder ID, adjust type as needed -->
-                <constraints nullable="true"/>
-            </column>
             <column name="createdAt" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="now()">
                 <constraints nullable="false"/>
             </column>
@@ -183,10 +179,7 @@
         <createIndex tableName="folders" indexName="idx_folders_workspace_id">
             <column name="workspaceId"/>
         </createIndex>
-        <!-- Add an index for the parentId column if needed -->
-        <createIndex tableName="folders" indexName="idx_folders_parent_id">
-            <column name="parentId"/>
-        </createIndex>
+        
     </changeSet>
     <changeSet author="Dharmik Dalwadi" id="9">
         <addForeignKeyConstraint baseColumnNames="workspaceId" baseTableName="folders" constraintName="folders_workspaceId_fkey" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="workspaces" validate="true"/>
@@ -1039,6 +1032,7 @@
             </column>
         </addColumn> 
     </changeSet>
+<<<<<<< HEAD
     <changeSet author="Dharmik Dalwadi" id="98">
         <addColumn tableName="subscriptionPlans">
             <column name="slug" type="TEXT">
@@ -1194,5 +1188,18 @@
     WHERE
     id = 4;
         </sql>
+
+    </changeSet>
+    <changeSet author="Bhavik Patel" id="Add_Subfolder_ParentId_Column">
+        <addColumn tableName="folders">
+            <column name="parentId" type="INTEGER">
+            <!-- Add a column for parent folder ID, adjust type as needed -->
+                <constraints nullable="true"/>
+            </column>
+            <!-- Add an index for the parentId column if needed -->
+            <createIndex tableName="folders" indexName="idx_folders_parent_id">
+                <column name="parentId"/>
+            </createIndex>
+        </addColumn>
     </changeSet>
 </databaseChangeLog>

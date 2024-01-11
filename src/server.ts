@@ -28,6 +28,9 @@ import {
   RolesEntity,
   TransactionEntity,
 } from "@entities";
+
+import {InvitedUsersEntity, LoginInfoEntity, SuperadminUserEntity, ResetPasswordRequestEntity as SResetPasswordRequestEntity, TwoFactorAuthRequestEntity as STwoFactorAuthRequestEntity} from './entities/superadmin'
+
 import { destructPager } from "middlewares";
 import { Cors, EnvValidator, HandleUnhandledPromise, Log } from "./helpers";
 
@@ -70,6 +73,11 @@ export default class App {
         RolesEntity,
         UserRolesEntity,
         TransactionEntity,
+        SuperadminUserEntity,
+        InvitedUsersEntity,
+        LoginInfoEntity,
+        SResetPasswordRequestEntity,
+        STwoFactorAuthRequestEntity
       ],
     });
 

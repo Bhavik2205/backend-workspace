@@ -86,6 +86,9 @@ class Env {
 
   @IsString()
   public brevoApiKey: string;
+
+  @IsString()
+  public startup_domain: string;
 }
 
 export const env = new Env();
@@ -117,3 +120,4 @@ env.azureURL = process.env.AZURE_URL;
 env.stripeSecret = process.env.STRIPE_SECRET;
 env.stripePublic = process.env.STRIPE_PUBLIC;
 env.brevoApiKey = process.env.BREVO_API_KEY;
+env.startup_domain = process.env.STARTUP_DOMAIN;

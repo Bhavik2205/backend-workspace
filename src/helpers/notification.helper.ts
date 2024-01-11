@@ -5,6 +5,7 @@ import { Constants, env } from "@configs";
 import axios from "axios";
 import { Log } from "./logger.helper";
 
+
 export class Notification {
   public static async email(templateNum: number, to: string[], userName: string, workspace?: string, token?: string) {
     const logger = Log.getLogger();

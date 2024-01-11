@@ -22,7 +22,9 @@ export class FolderController {
     if (parentId) {
       // If parentId is provided, create a subfolder
       const parentFolder = await this.folderRepository.findOne({
-        where: {parentId}
+        where: {
+          id: parentId
+        }
       });
       if (!parentFolder) {
         return res.status(404).json({ msg: "Parent folder not found." });
@@ -31,7 +33,7 @@ export class FolderController {
       folder = await this.folderRepository.create({
         name,
         workspaceId,
-        parent: parentFolder,
+        parentId: parentFolder.id,
       });
     } else {
       // If parentId is not provided, create a top-level folder
