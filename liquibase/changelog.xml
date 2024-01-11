@@ -169,6 +169,10 @@
             <column name="workspaceId" type="INTEGER">
                 <constraints nullable="false"/>
             </column>
+            <column name="parentId" type="INTEGER">
+            <!-- Add a column for parent folder ID, adjust type as needed -->
+                <constraints nullable="true"/>
+            </column>
             <column name="createdAt" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="now()">
                 <constraints nullable="false"/>
             </column>
@@ -178,6 +182,10 @@
         </createTable>
         <createIndex tableName="folders" indexName="idx_folders_workspace_id">
             <column name="workspaceId"/>
+        </createIndex>
+        <!-- Add an index for the parentId column if needed -->
+        <createIndex tableName="folders" indexName="idx_folders_parent_id">
+            <column name="parentId"/>
         </createIndex>
     </changeSet>
     <changeSet author="Dharmik Dalwadi" id="9">

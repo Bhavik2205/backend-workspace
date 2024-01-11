@@ -14,16 +14,35 @@ export class FolderController {
   }
 
   public create = async (req: TRequest<CreateFolderDto>, res: TResponse) => {
-    const { name } = req.dto;
+    const { name, parentId } = req.dto;
     const { workspaceid: workspaceId } = req.headers;
-
-    const category = await this.folderRepository.create({
-      name,
-      workspaceId,
-    });
-
-    await this.folderRepository.save(category);
-    res.status(200).json({ msg: l10n.t("FOLDER_CREATE_SUCCESS"), data: category });
+  
+    let folder: FolderEntity;
+  
+    if (parentId) {
+      // If parentId is provided, create a subfolder
+      const parentFolder = await this.folderRepository.findOne({
+        where: {parentId}
+      });
+      if (!parentFolder) {
+        return res.status(404).json({ msg: "Parent folder not found." });
+      }
+  
+      folder = await this.folderRepository.create({
+        name,
+        workspaceId,
+        parent: parentFolder,
+      });
+    } else {
+      // If parentId is not provided, create a top-level folder
+      folder = await this.folderRepository.create({
+        name,
+        workspaceId,
+      });
+    }
+  
+    await this.folderRepository.save(folder);
+    res.status(200).json({ msg: l10n.t("FOLDER_CREATE_SUCCESS"), data: folder });  
   };
 
   public read = async (req: TRequest, res: TResponse) => {
