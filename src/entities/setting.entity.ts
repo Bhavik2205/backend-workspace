@@ -15,6 +15,12 @@ export class SettingEntity {
   @Column({ type: "boolean", default: false })
   isTeamSpecificQA: boolean;
 
+  @Column({ type: "boolean", default: false })
+  isFeedbackActive: boolean;
+
+  @Column({ type: "text", nullable: true })
+  link: string;
+
   @Column({ type: "integer" })
   workspaceId: number;
 

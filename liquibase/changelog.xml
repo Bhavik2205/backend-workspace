@@ -1032,7 +1032,6 @@
             </column>
         </addColumn> 
     </changeSet>
-<<<<<<< HEAD
     <changeSet author="Dharmik Dalwadi" id="98">
         <addColumn tableName="subscriptionPlans">
             <column name="slug" type="TEXT">
@@ -1193,13 +1192,21 @@
     <changeSet author="Bhavik Patel" id="Add_Subfolder_ParentId_Column">
         <addColumn tableName="folders">
             <column name="parentId" type="INTEGER">
-            <!-- Add a column for parent folder ID, adjust type as needed -->
                 <constraints nullable="true"/>
             </column>
-            <!-- Add an index for the parentId column if needed -->
+        </addColumn>
             <createIndex tableName="folders" indexName="idx_folders_parent_id">
                 <column name="parentId"/>
             </createIndex>
+    </changeSet>
+        <changeSet author="Bhavik Patel" id="Add_workspace_feedback">
+        <addColumn tableName="settings">
+            <column name="isFeedbackActive" type="boolean" defaultValueComputed="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="link" type="TEXT">
+                <constraints nullable="true"/>
+            </column>
         </addColumn>
     </changeSet>
 </databaseChangeLog>
