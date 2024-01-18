@@ -201,8 +201,9 @@ export class ProfileController {
     return res.status(200).json({ data: image });
   };
 
-  public update2fa = async (req: TRequest, res: TResponse) => {
+  public update2fa = async (req: TRequest<UpdateMobileDto>, res: TResponse) => {
     const { me } = req;
+    const { mobile } = req.body;
 
     const userData = await this.userRepository.findOne({
       where: {
@@ -210,12 +211,14 @@ export class ProfileController {
       },
     });
 
+
     const updatedStatus = !userData.is2FAEnabled;
 
     await this.userRepository.update(
       { id: me.id },
       {
         is2FAEnabled: updatedStatus,
+        mobile: mobile
       },
     );
     res.status(200).json({ msg: l10n.t("TWO_FACTOR_AUTHENTICATION_STATUS_UPDATED_SUCCESS") });
