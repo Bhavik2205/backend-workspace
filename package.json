@@ -23,7 +23,7 @@
     "node": ">=18.16.0 <=18"
   },
   "private": true,
-  "author": "Seaflux Technologies",
+  "author": "Bhavik Patel",
   "license": "ISC",
   "dependencies": {
     "@azure/storage-blob": "^12.16.0",
